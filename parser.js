@@ -33,6 +33,19 @@ function defineTypePairs() {
 }
 defineTypePairs();
 
+function canBeA(receivedType, dominantType) {
+    const FLOAT_ACCEPT = [
+        TYPE.FLOAT,
+        TYPE.INTEGER
+    ]
+    //TODO: undefined?
+    if (dominantType === TYPE.FLOAT) {
+        return FLOAT_ACCEPT.indexOf(receivedType) > -1 ? true : false;
+    } else {
+        return receivedType === dominantType ? true : false;
+    }
+}
+
 function unpack(elem) {
     elem = elem.ast();
     elem = Array.isArray(elem) ? elem : [elem];
