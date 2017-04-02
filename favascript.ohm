@@ -1,0 +1,81 @@
+Favascript {
+    Program     = Block
+    Block       = Statement+
+    Statement   = Exp "?" Block ":" Block                               -- conditional
+                | id "(" (Param ("," Param)*)? ")"
+                  "{" Block "}"                                         -- funcDecl
+                | "class" classId "{" Block "}"                         -- classDecl
+                | MatchExp                                              -- match
+                | "if" Exp "{" Block "}"
+                  ("elif" Exp "{" Block "}" )*
+                  ("else" "{" Block "}")?                               -- ifElse
+                | "while" Exp "{" Block "}"                             -- while
+                | "for" id "in" IdExp "{" Block "}"                     -- forIn
+                | "print" "(" Exp ")"                                   -- print
+                | IdExp assignOp (Exp | MatchExp)                       -- assign
+                | IdExp                                                 -- identifier
+                | "ret" Exp                                             -- return
+    Param       = id ("=" Var)?
+    MatchExp    = ("match" IdExp "with" "|"? Var Match
+                  ("|" Var Match)* ("|" "_" Match)?)
+    Match       = "->" (Block | Var)
+
+    Exp         = Exp orOp BoolAndExp                                  -- reg
+                | BoolAndExp                                           -- pass
+    BoolAndExp  = BoolAndExp andOp RelExp                              -- reg
+                | RelExp                                               -- pass
+    RelExp      = AddExp relOp AddExp                                  -- reg
+                | AddExp                                               -- pass
+    AddExp      = AddExp addOp MulExp                                  -- reg
+                | MulExp                                               -- pass
+    MulExp      = MulExp mulOp ExponExp                                -- reg
+                | ExponExp                                             -- pass
+    ExponExp    = PrefixExp exponOp AddExp                             -- reg
+                | PrefixExp                                            -- pass
+    PrefixExp   = prefixOp ParenExp                                    -- reg
+                | ParenExp                                             -- pass
+    ParenExp    = "(" Exp ")"                                          -- reg
+                | Var                                                  -- pass
+    Var         = (boolLit | IdExp | List | Tuple | Dictionary
+                | intLit | floatLit | stringLit | nullLit)
+
+    IdExp       = IdExpBody idPostOp?
+    IdExpBody   = IdExpBody (periodId | Arguments | IdSelector)        -- recursive
+                | (id | "this")                                        -- base
+    periodId    = "." id
+    Arguments   = "(" VarList ")"
+    IdSelector  = "[" Var "]"
+    idPostOp    = "++" | "--"
+
+    List        = "[" VarList "]"
+    Tuple       = "(" VarList ")"
+    Dictionary  = "{" (IdValuePair ("," IdValuePair)*)? "}"
+    IdValuePair = id ":" Var
+    VarList     = (Var ("," Var)*)?
+
+    orOp        = "||"
+    andOp       = "&&"
+    exponOp     = "^"
+    assignOp    = "=" | "+=" | "-=" | "*=" | "/="
+    addOp       = "+" | "-"
+    mulOp       = "*" | "//" | "/" | "%"
+    relOp       = "<=" | "<" | "==" | "!=" | ">=" | ">"
+    prefixOp    = "--" | "-" | "!" | "++"
+
+    boolLit     = "true" | "false"
+    intLit      = ~floatLit digit+
+    floatLit    = digit+ "." digit+
+    stringLit   = "\"" ("\\\"" | (~"\"" any))* "\""
+    nullLit     = "null"
+
+    keyword     = ("class" | "true" | "false" | "match" | "with" | "if"
+                | "else" | "while" | "for" | "in" | "this" | "print" | "ret" | "null") ~idrest
+    id          = ~keyword letter idrest*                               -- variable
+                | constId                                               -- constant
+    idrest      = "_" | alnum
+    constId     = ~keyword upper ("_" | upper)*
+    classId     = upper idrest*
+
+    space      += comment
+    comment     = "#" (~"\n" any)* "\n"
+}
