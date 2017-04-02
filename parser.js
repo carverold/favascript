@@ -167,17 +167,15 @@ class FunctionDeclarationStatement extends Statement {
 
         let signature = [];
 
-        // But, we still must check that the non-default variables were used.
+        // But, we still must check that the parameters were used.
         this.parameterArray.forEach(function(parameter) {
-            if (parameter.defaultValue == null) {
-                let entry = self.block.context.get(
-                    parameter.id,
-                    true,  // silent = true
-                    true  // onlyThisContext = true
-                );
-                if (!entry) {
-                    context.declareUnusedLocalVariable(parameter.id);
-                }
+            let entry = blockContext.get(
+                parameter.id,
+                true,  // silent = true
+                true  // onlyThisContext = true
+            );
+            if (!entry) {
+                context.declareUnusedLocalVariable(parameter.id);
             }
             // At the same time, build the parameters signature
             signature.push(context.get(parameter.id).type);
