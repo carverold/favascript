@@ -13,3 +13,13 @@ f(n, m) {
 g(n, m, o) {
     ret (n * m) + o
 }
+
+
+
+
+
+
+#      x[3]
+#      y["asdf"]
+#      z()              parameter signature matching
+#      w.a
