@@ -6,7 +6,7 @@ $(document).ready(function() {
     });
     setTimeout(function(){
         $("#intro2").typed({
-            strings: ["Guavascript."],
+            strings: ["Favascript."],
             typeSpeed: 15,
             showCursor: false
         });
