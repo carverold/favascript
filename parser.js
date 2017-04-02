@@ -317,7 +317,7 @@ class AssignmentStatement extends Statement {
     }
     analyze(context) {
 
-        this.idExp.analyze(context);
+        this.idExp.analyze(context);  // Will have id and type
         this.exp.analyze(context);
 
         let expectedPairs;
@@ -472,30 +472,12 @@ class BinaryExpression extends Expression {
 
         if (this.op == "||" || this.op == "&&") {
             expectedPairs = [[TYPE.BOOLEAN, TYPE.BOOLEAN]];
-        } else if (this.op == "+") {
-            expectedPairs = [
-                [TYPE.INTEGER, TYPE.INTEGER],
-                [TYPE.INTEGER, TYPE.FLOAT],
-                [TYPE.FLOAT, TYPE.INTEGER],
-                [TYPE.FLOAT, TYPE.FLOAT],
-                [TYPE.STRING, TYPE.STRING],
-                [TYPE.LIST, TYPE.LIST],
-                [TYPE.DICTIONARY, TYPE.DICTIONARY]
-            ];
-        } else if (["-", "/", "<=", "<", ">=", ">", "^"].indexOf(this.op) > -1) {
+        } else if (["+", "-", "/", "*", "<=", "<", ">=", ">", "^"].indexOf(this.op) > -1) {
             expectedPairs = [
                 [TYPE.INTEGER, TYPE.INTEGER],
                 [TYPE.INTEGER, TYPE.FLOAT],
                 [TYPE.FLOAT, TYPE.INTEGER],
                 [TYPE.FLOAT, TYPE.FLOAT]
-            ];
-        } else if (this.op == "*") {
-            expectedPairs = [
-                [TYPE.INTEGER, TYPE.INTEGER],
-                [TYPE.INTEGER, TYPE.FLOAT],
-                [TYPE.FLOAT, TYPE.INTEGER],
-                [TYPE.FLOAT, TYPE.FLOAT],
-                [TYPE.STRING, TYPE.INTEGER]
             ];
         } else if (this.op == "//" || this.op == "%") {
             expectedPairs = [
