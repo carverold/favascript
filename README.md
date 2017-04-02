@@ -31,19 +31,19 @@ Favascript is a strongly and statically typed language that compiles down to Jav
 * Int: `4`, `8`, `666`
 * Float: `4.0`, `3.1415926`, `0.7734`
 * Boolean: `true`, `false`
-* String: `“guava”`, `“Don’t throw guavas in the lavas”`, `“The guava said, \“I am delicious.\””`
-* List (Heterogeneous allowed): `[1, 2, 3, 4, 5]`, `[“I”, 8, 50.4, “guavas”]`
-* Tuple (Heterogeneous allowed): `(30, 0.5, “guava”)`
-* Dictionary: `{key:“value”, bestColor:“Guava”, worstLanguage: “php”}`
+* String: `“fava”`, `“Don’t throw favas in the lavas”`, `“The fava said, \“I am delicious.\””`
+* List (Heterogeneous allowed): `[1, 2, 3, 4, 5]`, `[“I”, 8, 50.4, “favas”]`
+* Tuple (Heterogeneous allowed): `(30, 0.5, “fava”)`
+* Dictionary: `{key:“value”, bestColor:“fava”, worstLanguage: “php”}`
 * Comments: `# Single line comment`
 
 ## Example Programs
-Guavascript on the left, Javascript on the right
+Favascript on the left, Javascript on the right
 
 __Variable Declarations__
 
 ```
-name = "guav"                               let name = “guav”
+name = "fav"                               let name = “fav”
 age = 21                                    var age = 21
 female = true                               let female = true
 ```
@@ -81,7 +81,7 @@ match fruit with
     | pear   -> puke.exe()                 if (fruit == pear) { puke.exe(); }
     | apple  -> puke.exe()                 else if (fruit == apple) { puke.exe(); }
     | banana -> puke.exe()                 else if (fruit == banana) { puke.exe(); }
-    | guava  -> observe("delicious")       else if (fruit == guava) {
+    | fava  -> observe("delicious")       else if (fruit == fava) {
                 observe("nutritious")          observe("delicious");
     | _      -> puke.exe()                     observe("nutritious");
                                            } else { puke.exe(); }
