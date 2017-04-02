@@ -5,9 +5,6 @@ const semanticErrors = {
         return `ChangedImmutableType error: tried to change ${id} `
             + `from type ${expectedType} to ${receivedType}`;
     },
-    useBeforeDeclaration(id) {
-        return `UseBeforeDeclaration error: ${id} was used but undeclared`;
-    },
     isNotAFunction(id) {
         return `IsNotAFunction error: ${id} is not a function`;
     },
@@ -96,11 +93,7 @@ class Context {
         if (this.symbolTable.hasOwnProperty(id)) {
             return this.symbolTable[id];
         } else if (this.parent === null) {
-            if (silent) {
-                return undefined;
-            } else {
-                throw new Error(semanticErrors.useBeforeDeclaration(id));
-            }
+            return undefined;
         } else {
             if (onlyThisContext) {
                 return undefined;

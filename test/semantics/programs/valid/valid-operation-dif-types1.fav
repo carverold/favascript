@@ -1,4 +1,0 @@
-# Should pass since this is a operands are compatible types for the operation
-
-bigString = "BIG" + " " + "STRING"
-bigString += "!!!"

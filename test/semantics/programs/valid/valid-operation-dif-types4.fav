@@ -1,4 +1,0 @@
-# Should pass since this is a operands are compatible types for the operation
-
-oneToSeven = {one: 1, two: 2} + {three: 3, four: 4, five: 5}
-oneToSeven += {six: 6, seven: 7}
