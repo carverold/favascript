@@ -493,11 +493,29 @@ class BinaryExpression extends Expression {
             expectedPairs = allTypePairs;
         }
 
+        if (this.left.type == undefined) {
+            this.left.enforceType(inferredType);
+        }
+
+        if (this.right.type == undefined) {
+            this.right.enforceType(inferredType);
+        }
+
+        // TODO: What if inferredType is undefined, like when op = "==" or "!="?
+
+        // Need to make an enforceType method on expressions so that inferredType can be enforced on ambigious variables
+
         context.assertBinaryOperandIsOneOfTypePairs(
             this.op,
             expectedPairs,
             [this.left.type, this.right.type]
         );
+
+        if (canBeA(this.operand.type, inferredType)) {
+            if (this.operand.type == "undefined") {
+                this.type =
+            }
+        }
 
         // Important: the type of the expression is always the type of it's left operand
         // Example: "string" * 5 is TYPE.STRING
@@ -537,6 +555,13 @@ class UnaryExpression extends Expression {
         }
 
         context.assertUnaryOperandIsOneOfTypes(this.op, expectedTypes, this.operand.type);
+
+        // if (canBeA(this.operand.type, inferredType)) {
+        //     if (this.operand.type == "undefined") {
+        //         this.type =
+        //     }
+        // }
+
         this.type = this.operand.type;
     }
     toString(indent = 0) {
