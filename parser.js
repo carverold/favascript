@@ -613,6 +613,8 @@ class IdExpression extends Expression {
         this.type;
     }
     analyze(context) {
+        console.log("analyzing");
+        console.log("body: ", this.idExpBody);
         this.idExpBody.analyze(context);
         if (this.idPostOp == "++" || this.idPostOp == "--") {
             context.assertUnaryOperandIsOneOfTypes(this.idPostOp, [TYPE.INTEGER], this.idExpBody.type)
@@ -635,11 +637,32 @@ class IdExpressionBodyRecursive {
         this.appendageOp = idAppendage === 'undefined' ? 'undefined' : idAppendage.getOp();
         this.id;
         this.type;
+        console.log("A", this.idExpBody);
+        console.log("B", this.idAppendage);
+        console.log("C", this.appendageOp);
+        console.log("D", this.id);
+        console.log("E", this.type);
     }
     analyze(context) {
+        console.log("analyzing rec");
         this.idExpBody.analyze(context);
+        this.appendageOp.analyze(context);
         this.id = this.idExpBody.id;
         this.type = this.idExpBody.type;
+        console.log("type", this.type);
+        if (this.idExpBody.type === TYPE.DICTIONARY && this.appendageOp === ".") {
+            if (this.appendageOp === ".") {
+                context.assertUnaryOperandIsOneOfTypes(this.appendageOp, [TYPE.INTEGER], this.idAppendage.type);
+            } else if (this.appendageOp === "[]") {
+                console.log("in if");
+                context.assertUnaryOperandIsOneOfTypes(this.appendageOp, [TYPE.STRING], this.idAppendage.type);
+            }
+        } else if (this.idExpBody.type === TYPE.LIST && this.appendageOp === "[]") {
+            context.assertUnaryOperandIsOneOfTypes(this.appendageOp, [TYPE.INTEGER], this.idAppendage.type);
+        } else if (this.idExpBody.type === TYPE.FUNCTION && this.appendageOp === "()") {
+            context.assertUnaryOperandIsOneOfTypes(this.appendageOp, [TYPE.INTEGER], this.idAppendage.type);
+
+        }
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.appendageOp}` +
