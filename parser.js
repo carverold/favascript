@@ -175,6 +175,7 @@ class FunctionDeclarationStatement extends Statement {
                 true  // onlyThisContext = true
             );
             if (!entry) {
+                // If you can't find a parameter in the block, throw unusedLocalVariable
                 context.declareUnusedLocalVariable(parameter.id);
             }
             // At the same time, build the parameters signature
@@ -395,7 +396,7 @@ class ReturnStatement extends Statement {
     }
     analyze(context) {
         context.assertReturnInFunction();
-        this.exp.analyze();
+        this.exp.analyze(context);
         this.returnType = this.exp.type;
     }
     toString(indent = 0) {
