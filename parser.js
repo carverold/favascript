@@ -299,8 +299,8 @@ class PrintStatement extends Statement {
         super();
         this.exp = exp;
     }
-    analyze() {
-        // TODO
+    analyze(context) {
+        this.exp.analyze(context);
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(Print` +
@@ -647,7 +647,7 @@ class IdExpression extends Expression {
     toString(indent = 0) {
         return  `${spacer.repeat(indent)}(IdExpression\n` +
                 `${this.idExpBody.toString(++indent)}` +
-                `${(this.idPostOp.length === 0) ? "" : `\n${spacer.repeat(++indent)}${this.idPostOp}`}` +
+                `${(this.idPostOp) ? "" : `\n${spacer.repeat(++indent)}${this.idPostOp}`}` +
                 `\n${spacer.repeat(--indent)})`;
     }
 }
@@ -1026,7 +1026,7 @@ semantics = grammar.createSemantics().addOperation('ast', {
     ParenExp_pass(variable) {return new Variable(variable.ast());},
     Var(input) {return new Variable(input.ast());},
 
-    IdExp(idExpBody, idPostOp) {return new IdExpression(idExpBody.ast(), idPostOp.ast());},
+    IdExp(idExpBody, idPostOp) {return new IdExpression(idExpBody.ast(), unpack(idPostOp));},
     IdExpBody_recursive(idExpBody, selector) {return new IdExpressionBodyRecursive(idExpBody.ast(), selector.ast());},
     IdExpBody_base(id) {return new IdExpressionBodyBase(id.sourceString);},
     periodId(period, id) {return new PeriodId(id.sourceString);},
