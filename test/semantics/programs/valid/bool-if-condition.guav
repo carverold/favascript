@@ -1,0 +1,9 @@
+# Should analyze fine since the conditional exp's for the if statements are ultimately type boolean
+
+if false {
+    print("nope")
+} elif (3 + 1) < 2 {
+    print("still nope")
+} elif 2 >= 1 {
+    print("ah yeah")
+}

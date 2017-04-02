@@ -1,0 +1,13 @@
+Semantic Analysis To Do's:
+    - How are we going to store the "id", the key value in the
+        lookup table, of something like "f[2]" or "object.thing.method(42)[0].call(true)"
+    - How are we going to check for match case exhaustiveness?
+    - Add a "used" field to each local variable in order to check for unusedLocalVariable error
+    - For function declarations, need to infer type of parameters and add it to a field in it's
+        symbolTable entry. With the type signature, we can check for parameterArgumentMismatch
+    - For class declarations, need to store a constructor parameter signature field so that we
+        can check for parameterArgumentMismatch for classes.
+    - Analyze the recursive part of idExpression
+    - When you declare a class, you need to also declare a function with the same name
+        (the constructor) so that you can legally instantiate an instance of the class.
+        How do you get the parameter signature from the constructor inside the class?

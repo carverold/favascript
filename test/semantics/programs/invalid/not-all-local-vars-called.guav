@@ -1,0 +1,11 @@
+# Not all declared variables are used
+
+x = 2
+y = 5
+z = 1
+
+print(x + y)
+
+f(n, m) {
+    ret n
+}

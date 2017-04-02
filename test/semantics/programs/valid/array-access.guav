@@ -1,0 +1,4 @@
+# Should analyze successfully since a has type array and x has type integer
+
+a = ["zero", "one", "two", "three"]
+print(a[2])

@@ -1,0 +1,5 @@
+# Should be able to reassign z to different values of the same type
+
+z = true
+z = false
+z = true

@@ -1,0 +1,7 @@
+# Should analyze successfully since all relational expressions have comparable types
+# This tests comparable, but DIFFERENT types
+
+a = 3 < 4.1
+b = 4.13 <= 14873
+c = "not null" == null
+d = 42 != null

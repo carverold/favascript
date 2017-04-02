@@ -1,0 +1,5 @@
+# Should cover all possible matches of y without using "_"
+
+match y with
+    | true  -> "This language deserves an A"
+    | false -> "This language deserves an F"

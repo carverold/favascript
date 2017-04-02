@@ -1,0 +1,5 @@
+# Should fail since exp not type bool
+
+if ("cat") {
+    print("nope")
+}

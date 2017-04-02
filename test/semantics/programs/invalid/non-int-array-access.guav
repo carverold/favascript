@@ -1,0 +1,5 @@
+# Should fail since x is not type integer
+
+x = 4.2
+a = ["zero", "one", "two", "three"]
+print(a[x])

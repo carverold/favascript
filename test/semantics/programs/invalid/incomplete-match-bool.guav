@@ -1,0 +1,4 @@
+# Should fail since match doesn't cover all possibilities
+
+match y with
+    | true  -> "This language deserves an A"

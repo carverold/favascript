@@ -1,0 +1,4 @@
+# Should fail since static typing
+
+y = "one thousand"
+y = 1000

@@ -1,0 +1,4 @@
+# Should fail since incompatible operand types
+
+x = {one: 1, two: 2}
+x += three  # (4 should be [4] for this to be semantically correct)

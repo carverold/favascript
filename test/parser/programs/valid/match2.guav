@@ -1,0 +1,3 @@
+y = match x with
+  true -> "truth"
+| _    -> "lies"

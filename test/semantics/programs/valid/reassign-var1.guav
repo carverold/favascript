@@ -1,0 +1,7 @@
+# Should be able to reassign x to different values of the same type
+
+x = 1234
+x = 0
+x = -1325325
+x = 64444
+x = 1001001001

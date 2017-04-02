@@ -1,0 +1,3 @@
+# Should fail since relational expression has incomparable types
+
+d = "dog" > 4.1

@@ -1,0 +1,7 @@
+# Should be able to create a new var x inside the new block
+
+x = 1
+
+if (true) {
+    x = 2
+}

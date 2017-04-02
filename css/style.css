@@ -1,0 +1,376 @@
+/* =============================================================================
+   HTML5 CSS Reset Minified - Eric Meyer
+   ========================================================================== */
+
+/* ---- base ---- */
+
+html,body{ 
+  width:100%;
+  height:100%;
+  min-height: 100%;
+  text-decoration: none;
+}
+
+::-webkit-scrollbar { 
+    display: none; 
+}
+
+body {
+  background: #f9f9f9 !important;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.container {
+  width: 70%;
+  min-width: 70%;
+  overflow: hidden;
+}
+
+.row {
+  overflow: hidden;
+}
+
+#particles-js{
+  width: 100%;
+  height: 100%;
+  background-color: #0f0f0f !important;
+  background-size: cover;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  z-index: 3;
+}
+.vertical-center {
+    display: flex;
+    align-items: center;
+}
+
+.horizontal-center {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+.full-height {
+  height: 100vh;
+  min-height: 100vh;
+  overflow-y: scroll !important;
+}
+
+.fullscreen {
+  width: 100%;
+  min-width: 100%;
+  min-height: 100%;
+}
+
+.one-third {
+  width: 100%;
+  min-width: 100%;
+  min-height: 33%;
+  margin-bottom: 20px;
+}
+
+.one-fifth {
+  width: 100%;
+  min-width: 100%;
+  min-height: 20%;
+  margin-bottom: 10px;
+}
+
+
+.nine-tenths {
+  width: 100%;
+  min-width: 100%;
+  min-height: 90%;
+}
+
+.one-half {
+  width: 100%;
+  min-width: 100%;
+  min-height: 50%;
+}
+
+img {
+  pointer-events: none;
+}
+
+
+.text, h1, h2, h3 {
+  font-family: 'Merriweather', serif !important;
+}
+
+.text, h1 {
+  font-size: 7rem !important;
+  color: black;
+  line-height: 120% !important;
+  font-weight: 700 !important;
+}
+
+a {
+  color: #0f0f0f !important;
+}
+
+h1, h2, h3, h4, h5 {
+  margin-top: 0px !important;
+}
+
+h4, h5, h6, p, li {
+  font-family: 'Roboto Mono', monospace, sans-serif !important;
+}
+
+p, li, #names {
+  font-weight: 300 !important;
+  line-height: 240%;
+  font-size: 1.3rem !important;
+}
+
+h2, span, #intro {
+  font-weight: 300 !important;
+  font-size: 4rem !important;
+}
+
+h3 {
+  font-weight: 300 !important;
+  line-height: 200% !important;
+  font-size: 2.7rem !important;
+}
+
+h4 {
+  font-weight: 300 !important;
+  line-height: 200% !important;
+  font-size: 1.9rem !important;
+}
+
+h5 {
+  font-weight: 500 !important;
+  font-size: 1.5rem !important;
+  letter-spacing: 0.3rem;
+  text-transform: uppercase;
+  margin-top: 25px !important;
+}
+
+h6 {
+  font-weight: 400 !important;
+  line-height: 240% !important;
+  font-size: 1.3rem !important;
+  display: inline-block !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+li, a {
+  color:#b2b2b2;
+  /* First we need to help some browsers along for this to work.
+     Just because a vendor prefix is there, doesn't mean it will
+     work in a browser made by that vendor either, it's just for
+     future-proofing purposes I guess. */
+  -o-transition:.3s;
+  -ms-transition:.3s;
+  -moz-transition:.3s;
+  -webkit-transition:.3s;
+  /* ...and now for the proper property */
+  transition:.3s;
+}
+li:hover, a:hover { color:black; }
+
+li {
+  display: inline-block;
+  margin-left: 40px;
+}
+
+a {
+  text-decoration: none !important;
+}
+
+.navbar .col-xs-6 {
+  margin-left: 30px;
+  margin-right: 30px;
+}
+
+.navbar .col-xs-6 ul {
+  margin-top: 11px;
+}
+
+.navbar {
+  width: 100%;
+  min-width: 100%;
+  z-index: 2;
+  height: 5rem !important;
+  height: 8%;
+  background: white;
+  border-bottom: 1px solid #e2e2e2;
+  display: flex;
+}
+
+.container {
+  height: 100%;
+  min-height: 100%;
+}
+
+#navbar-mobile-screens {
+  display: none !important;
+}
+
+#pulldown-icon {
+  position: relative;
+  z-index: 2;
+}
+
+#pulldown {
+  position: absolute;
+  z-index: 1;
+  display: none;
+}
+
+#pulldown ul {
+  display: block;
+  margin-top: 3rem;
+  float: right !important;
+  right: 0;
+  left: auto;
+}
+
+#pulldown li {
+  display: block;
+  min-width: 12rem;
+  min-height: 3rem;
+  background: #0f0f0f;
+  padding: 1rem;
+  padding-right: 8rem;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+     -khtml-user-select: none; /* Konqueror */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  not supported by any browser */
+}
+
+.button {
+  border: none !important;
+  border-radius: 15px;
+  color: white;
+
+  padding: 5px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.low-margin {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.no-margin {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+#footer {
+  background: white;
+  min-width: 100%;
+  height: 10%;
+  border-top: 1px solid #e2e2e2;
+}
+
+.green {
+  color: #9acb5c;
+}
+
+.col-xs-12 {
+  margin-bottom: 30px; 
+  margin-top: 30px;
+}
+
+.example {
+  background: white !important;
+  border: 1px solid #e2e2e2;
+  border-radius: 30px;
+  padding: 30px;
+}
+
+
+@media screen and (max-width: 50rem) {
+    h1 {
+      font-size: 1rem !important;
+    }
+    h2 {
+      font-size: 4.2rem !important;
+    }
+    h3 {
+      font-size: 3.5rem !important;
+    }
+    h5, .tagline {
+      font-size: 1.8rem !important;
+    }
+}
+
+@media screen and (max-width: 35rem) {
+  h1 {
+    font-size: 1rem !important;
+  }
+  h2 {
+    font-size: 3rem !important;
+  }
+  h3 {
+    font-size: 2rem !important;
+  }
+  h5, .tagline {
+    font-size: 1.6rem !important;
+  }
+
+  .navbar {
+    display: none !important;
+  }
+}
+
+
+
+.examples p {
+  line-height: 1;
+}
+
+
+.syntaxdiagrams > div {
+  font: 16px monospace;
+}
+svg.railroad-diagram path {
+    stroke-width: 3;
+    stroke: black;
+    fill: rgba(0,0,0,0);
+}
+svg.railroad-diagram text {
+    font: 14px monospace;
+    text-anchor: middle;
+}
+svg.railroad-diagram text.diagram-text {
+    font-size: 12px;
+}
+svg.railroad-diagram text.diagram-arrow {
+    font-size: 16px;
+}
+svg.railroad-diagram text.label {
+    text-anchor: start;
+}
+svg.railroad-diagram text.comment {
+    font: italic 12px monospace;
+}
+svg.railroad-diagram rect {
+    stroke-width: 3;
+    stroke: black;
+    fill: #9acb5c;
+}
+svg.railroad-diagram path.diagram-text {
+    stroke-width: 3;
+    stroke: black;
+    fill: white;
+    cursor: help;
+}
+svg.railroad-diagram g.diagram-text:hover path.diagram-text {
+    fill: #eee;
+}

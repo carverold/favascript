@@ -1,0 +1,11 @@
+# A fairly useless example, all declared variables are used
+
+x = 2
+y = 5
+z = 1
+
+print(x + y + z)
+
+f(n, m) {
+    ret n + m
+}

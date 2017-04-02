@@ -1,0 +1,18 @@
+# Should pass since you can set any type to null
+
+x = 1
+x = null
+y = 2.4
+y = null
+z = "string"
+z = null
+w = [1, 2, 3]
+w = null
+a = {one: 1, two: 2}
+a = null
+b = null
+b = null
+d () {
+    ret 1
+}
+d = null

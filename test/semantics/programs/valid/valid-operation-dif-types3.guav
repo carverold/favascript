@@ -1,0 +1,4 @@
+# Should pass since this is a operands are compatible types for the operation
+
+oneToSeven = [1, 2] + [3, 4, 5]
+oneToSeven += [6, 7]

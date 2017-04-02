@@ -1,0 +1,4 @@
+# Should fail since static typing
+
+z = [1, 2, 3]
+z = {one: 1, two: 2, three: 3}

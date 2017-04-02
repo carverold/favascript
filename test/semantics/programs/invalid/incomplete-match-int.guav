@@ -1,0 +1,6 @@
+# Should fail since match doesn't cover all cases
+
+match x with
+    | 1 -> print("one")
+    | 2 -> print("two")
+    | 3 -> print("three")

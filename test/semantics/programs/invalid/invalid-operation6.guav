@@ -1,0 +1,3 @@
+# Should fail since incompatible operand types
+
+x = ["ar", "ray"] + {dic: "tionary"}

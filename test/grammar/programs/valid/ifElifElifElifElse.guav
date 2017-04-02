@@ -1,0 +1,11 @@
+if (x == 1) {
+    ret true
+} elif (x == 2) {
+    ret true
+} elif (x == 3) {
+    ret true
+} elif (x == 4) {
+    ret true
+} else {
+    ret false
+}

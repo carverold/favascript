@@ -1,0 +1,5 @@
+class Ball {
+	is_round () {
+		ret True
+	}
+}

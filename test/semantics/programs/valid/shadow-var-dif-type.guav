@@ -1,0 +1,9 @@
+# Should be able to make an x in the new context without changing the outer x
+
+x = 3
+
+if (true) {
+    x = "string yay"
+}
+
+y = x / 2

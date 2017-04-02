@@ -1,0 +1,4 @@
+# Should pass since this is a operands are compatible types for the operation
+
+wowWowWowWowWowWow = "wow" * 2
+wowWowWowWowWowWow *= 3

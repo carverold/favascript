@@ -1,0 +1,4 @@
+# Should fail since incompatible operand types
+
+x = [1, 2, 3]
+x += 4  # (4 should be [4] for this to be semantically correct)

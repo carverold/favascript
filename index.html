@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Guavascript</title>
+  <link rel="stylesheet" media="screen" href="css/style.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:300,400,500" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Merriweather:300,700" rel="stylesheet">
+  <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+
+</head>
+<body>
+  <script src="//code.jquery.com/jquery-latest.min.js"></script>
+  <script src="js/typed.js"></script>
+  <script src="js/script.js"></script>
+  <script src="js/railroad.js"></script>
+  <script src="js/railroad_insert.js"></script>
+
+  <script src="js/railroad.js"></script>
+  <div class="vertical-center navbar" style="display: flex;" id="navbar-large-screens">
+    <div id="intro"></div>
+    <div class="col-xs-6">
+      <a href="">
+        <img src="images/Guavascript logo.png" width="130px">
+      </a>
+    </div>
+
+    <div class="col-xs-6">
+      <nav>
+        <ul class="light-gray vertical-center pull-right">
+            <a href="#intro"><li class="frontpage-nav">Intro</li></a>
+            <a href="#about"><li class="about-nav">About</li></a>
+            <a href="#examples"><li class="projects-nav">Examples</li></a>
+            <a href="#syntax-diagrams-section"><li class="contact-nav">Diagrams</li></a>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  
+  <div class="one-half" id="intro">
+    <div class="container vertical-center">
+      <div class="row horizontal-center">
+        <div class="col-xs-12 text-center">
+          <br>
+          <br>
+          <span id="intro1"></span><span id="intro2" class="green"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="one-third" id="about">
+    <div class="container vertical-center">
+      <div class="row horizontal-center">
+        <div class="col-xs-12 text-center">
+          <p>Guavascript is a strongly and statically typed language that compiles down to Javascript. With type inference, first class functions, and other features, Guavascript's goal is to enable a programmer to sketch out ideas quickly without sacrificing focus to lower-level details. For example, the language is designed with a minimalistic approach to reduce the amount of time programmers have to spend typing a worrying about language-specific syntax. Similarly, Guavascript incorporates pattern matching and the for-in loop to produce a more intuitive programming language that cuts out unnecessary in-between logic. Guavascript takes much inspiration from Python for its expressiveness and high-level abstraction.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br>
+  <br>
+
+  <div class="one-fifth" id="examples">
+    <div class="container vertical-center">
+      <div class="row horizontal-center">
+        <div class="col-xs-12 text-center">
+          <h3>Example Programs</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="one-third examples">
+    <div class="container example vertical-center">
+      <div class="row horizontal-center">
+        <div class="col-xs-12 text-center">
+          <h4>Variable Declarations</h4>
+          <br>
+          <br>
+          <p>let name = guav</p>
+          <p>age = 21</p>
+          <p>female = true</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="one-third examples">
+    <div class="container example vertical-center">
+      <div class="row horizontal-center">
+        <div class="col-xs-12 text-center">
+          <h4>Constant Declarations</h4>
+          <br>
+          <br>
+          <p>PI = 3.14159265359</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="one-third examples">
+    <div class="container example vertical-center">
+      <div class="row horizontal-center">
+        <div class="col-xs-12 text-center">
+          <h4>Arithmetic</h4>
+          <br>
+          <br>
+          <p>x = ((2 + 3) * (6 - 1) ^ 2) / 4</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="one-third examples">
+    <div class="container example vertical-center">
+      <div class="row horizontal-center">
+        <div class="col-xs-12">
+          <h4 class="text-center">Functions</h4>
+          <br>
+          <br>
+          <p>numbers = [1, 2, 3, 4, 5, 6]</p>
+          <p>add_even_numbers() {</p>
+          <p>&nbsp&nbsp result = 0</p>
+          <p>&nbsp&nbsp for num in numbers {</p>
+          <p>&nbsp&nbsp&nbsp&nbsp if num % 2 == 0 { </p>
+          <p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp result += i </p>
+          <p>&nbsp&nbsp&nbsp&nbsp }</p>
+          <p>&nbsp&nbsp }</p>
+          <p>&nbsp&nbsp ret result</p>
+          <p>}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="one-third examples">
+    <div class="container example vertical-center">
+      <div class="row horizontal-center">
+        <div class="col-xs-12">
+          <h4 class="text-center">Class Declarations</h4>
+          <br>
+          <br>
+          <p>class Ball {</p>
+          <p>&nbsp&nbsp Ball (radius, weight = 1.0) { </p>
+          <p>&nbsp&nbsp&nbsp&nbsp this.radius = radius</p>
+          <p>&nbsp&nbsp&nbsp&nbsp this.weight = weight</p>
+          <p>&nbsp&nbsp }</p>
+          <p>&nbsp&nbsp is_round() {</p>
+          <p>&nbsp&nbsp &nbsp&nbsp ret true</p>
+          <p>&nbsp&nbsp }</p>
+          <p>}</p>
+          <p>bouncyBall = Ball(0.2)</p>
+          <p>bouncyBall.is_round()</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br>
+  <br>
+
+  <div class="one-fifth" id="syntax-diagrams-section">
+    <div class="container vertical-center">
+      <div class="row horizontal-center">
+        <div class="col-xs-12 text-center">
+          <h3>Syntax Diagrams</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="syntax-diagrams">
+    <script>
+    $('#syntax-diagrams').append($(railroad_insert(`Diagram(NonTerminal('Block')).addTo();`, "Program")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`Diagram(ZeroOrMore('Statement')).addTo();`, "Block")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+          Sequence('Exp', '"?"', 'Block', '":"', 'Block'),
+          Sequence('id', '"("', Optional(Sequence('(Param', ZeroOrMore(Sequence('","', 'Param)')))),'")"'),
+          Sequence('"class"', 'classId', '"{"', 'Block', '"}"'),
+          Sequence('MatchExp'),
+          Sequence('"if"', 'Exp', '"{"', 'Block', '"}"', ZeroOrMore(Sequence('"elif"', 'Exp', '"{"', 'Block', '"}"')), Optional(Sequence('"else"', '"{"', 'Block', '"}"'))),
+      Sequence('"while"', 'Exp', '"{"', 'Block', '"}"'),
+      Sequence('"for"', 'id', '"in"', 'IdExp', '"{"', 'Block', '"}"'),
+      Sequence('"print"', '"("', 'Exp', '")"'),
+      Sequence('IdExp', 'assignOp', Choice(0, 'Exp', 'MatchExp')),
+      Sequence('IdExp'),
+      Sequence('"ret"', 'Exp')
+      )).addTo();`, "Statement")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Sequence('id', Optional(Sequence('"="', 'Var'))))
+      )
+      .addTo();`, "Param")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Stack('"Match"', 'IdExp', '"with"', Optional('"|"'), 'Var', 'Match', ZeroOrMore(Sequence('"|"', 'Var', 'Match')), Optional(Sequence('"|"', '"_"', 'Match')))  
+      ))
+      .addTo();`, "MatchExp")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Sequence('"->"', Choice(0, 'Block', 'Var'))
+      ))
+      .addTo();`, "Match")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Sequence('Exp', 'orOp', 'BoolAndExp'),
+        'BoolAndExp'
+      ))
+      .addTo();`, "Exp")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Sequence('BoolAndExp', 'andOp', 'RelExp'),
+        'RelExp'
+      ))
+      .addTo();`, "BoolAndExp")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Sequence('AddExp', 'relOp', 'AddExp'),
+        'AddExp'
+      ))
+      .addTo();`, "RelExp")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Sequence('AddExp', 'addOp', 'MulExp'),
+        'MulExp'
+      ))
+      .addTo();`, "AddExp")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Sequence('MulExp', 'mulOp', 'ExponExp'),
+        'ExponExp'
+      ))
+      .addTo();`, "MulExp")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Sequence('PrefixExp', 'exponOp', 'AddExp'),
+        'PrefixExp'
+      ))
+      .addTo();`, "ExponExp")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Sequence('prefixOp', 'ParenExp'),
+        'ParenExp'
+      ))
+      .addTo();`, "PrefixExp")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Sequence('"("', 'Exp', '")"'),
+        'Var'
+      ))
+      .addTo();`, "ParenExp")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        'booLit', 'IdExp', 'List', 'Tuple', 'Dictionary', 'intLit', 'floatLit', 'stringLit', 'nullLit'
+      ))
+      .addTo();`, "Var")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Sequence('IdExpBody', Optional('idPostOp'))
+      ))
+      .addTo();`, "IdExp")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Sequence('IdExpBody', Choice(0, 'periodId', 'Arguments', 'IdSelector', 'id', '"this"'))
+      ))
+      .addTo();`, "IdExpBody")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Sequence('"."', 'id')
+      ))
+      .addTo();`, "periodId")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Sequence('"("', 'VarList', '")"')
+      ))
+      .addTo();`, "Arguments")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Sequence('"["', 'VarList', '"]"')
+      ))
+      .addTo();`, "IdSelector")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        '"++"', '"--"'
+      ))
+      .addTo();`, "idPostOp")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Sequence('"["', 'VarList', '"]"')
+      ))
+      .addTo();`, "List")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Sequence('"("', 'VarList', '")"')
+      ))
+      .addTo();`, "Tuple")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Sequence('"{"', Optional(Sequence('IdValuePair', ZeroOrMore(Sequence('","', 'IdValuePair')))), '"}"')
+      ))
+      .addTo();`, "Dictionary")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Sequence('id', '":"', 'Var')
+      ))
+      .addTo();`, "IdValuePair")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Optional(Sequence('Var', ZeroOrMore(Sequence('","', 'Var'))))
+      ))
+      .addTo();`, "VarList")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        '"||"'
+      ))
+      .addTo();`, "orOp")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        '"&&"'
+      ))
+      .addTo();`, "andOp")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        '"^"'
+      ))
+      .addTo();`, "exponOp")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        '"="', '"+="', '"-="', '"*="', '"/="'
+      ))
+      .addTo();`, "assignOp")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        '"+"', '"-"'
+      ))
+      .addTo();`, "addOp")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        '"*"', '"//"', '"/"', '"%"'
+      ))
+      .addTo();`, "mulOp")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        '"<="', '"<"', '"=="', '"!="', '">="', '">"'
+      ))
+      .addTo();`, "relOp")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        '"--"', '"-"', '"!"', '"++"'
+      ))
+      .addTo();`, "prefixOp")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        '"true"', '"false"'
+      ))
+      .addTo();`, "boolit")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+       Comment('Negative Lookahead floatLit'),
+      OneOrMore('digit')
+      ))
+      .addTo();`, "intlit")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+      Sequence(OneOrMore('digit'),
+      '"."', OneOrMore('digit'))
+      ))
+      .addTo();`, "floatlit")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Sequence('"<forward-slash>""', ZeroOrMore(Choice(0, '"<forward-slash><forward-slash><forward-slash>""', Sequence(Comment('negative lookahead "<forward-slash>""'), 'any'))), '"<forward-slash>""')
+      ))
+      .addTo();`, "stringlit")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        '"null"'
+      ))
+      .addTo();`, "nullLit")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Sequence(Choice(0,'"class"', '"true"', '"false"', '"match"', '"with"', '"if"', '"else"', '"while"', '"for"', '"in"', '"this"', '"print"', '"ret"', '"null"'), Comment('negative lookahead idrest'))
+      ))
+      .addTo();`, "keyword")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Choice(0, Sequence(Comment('negative lookahead keyword'), 'letter', ZeroOrMore('idrest')), 'constId')
+      ))
+      .addTo();`, "id")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Choice(0, '"_"', 'alnum')))
+      .addTo();`, "idrest")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Sequence(Comment('negative lookahead keyword'), 'upper', ZeroOrMore(Choice(0, '"_"', 'upper'))
+       )))
+      .addTo();`, "constId")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Sequence('upper', ZeroOrMore('idrest'))
+       ))
+      .addTo();`, "classId")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        OneOrMore('comment')
+       ))
+      .addTo();`, "space")));
+
+    $('#syntax-diagrams').append($(railroad_insert(`
+      Diagram(
+        Choice(0,
+        Sequence('"#"', ZeroOrMore(Sequence(Comment('negative lookahead <forward-slash> n'), 'any')), '<forward-slash> n')
+       ))
+      .addTo();`, "comment")));
+
+    </script>
+
+  </div>
+
+  <div id="footer">
+    <div class="container vertical-center text-center">
+      <div class="row vertical-center" style="min-height: 100%; min-width: 100%;">
+        <div class="col-xs-12">
+          <p class="medium-gray center-block" style="margin-bottom: 0 !important">© 2017 Dream Team (<span id="names"></span>)</p>
+          <a href="#intro"><li class="frontpage-nav">Back To Top</li></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+names = ["Evan", "Allen", "Max", "Anson"];
+for(var i = names.length-1; i>=0; i--){
+  $("#names").append(`${names.splice(Math.floor(Math.random()*names.length), 1)[0]},  `);
+}
+$("#names").text($("#names").text().substring(0, 26))
+</script>
+
+</body>
+</html>

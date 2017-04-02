@@ -1,0 +1,4 @@
+# Should fail since static typing
+
+x = 1234
+x = true

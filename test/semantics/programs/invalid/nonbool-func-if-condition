@@ -1,0 +1,13 @@
+# Should fail since the function doesn't return bool.
+
+isPositive(n) {
+    ret 43
+}
+
+x = 5
+
+if (isPositive(x)) {
+    print("5 is positive")
+} else {
+    print("Logic does not exist")
+}

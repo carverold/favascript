@@ -1,0 +1,11 @@
+# Should pass since class instantiation arguments match class constructor function parameters
+
+class Person {
+    Person(name = "unnamed", height = 50.0, vocabulary = []) {
+        this.name = name
+        this.height = height
+        this.vocabulary = vocabulary
+    }
+}
+
+Allen = Person("Allen Vartanian", 0.0001, ["Java", "is", "amazing"])

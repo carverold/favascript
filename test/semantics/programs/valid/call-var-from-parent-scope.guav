@@ -1,0 +1,7 @@
+# Should be able to call the x outside the if statement
+
+x = 2
+
+if (true) {
+    y = x + 1
+}

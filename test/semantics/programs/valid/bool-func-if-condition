@@ -1,0 +1,13 @@
+# Should analyze fine since the function returns boolean.
+
+isPositive(n) {
+    ret n >= 0
+}
+
+x = 5
+
+if (isPositive(x)) {
+    print("5 is positive")
+} else {
+    print("Logic does not exist")
+}

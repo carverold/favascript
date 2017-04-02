@@ -1,0 +1,35 @@
+{
+  "name": "guavascript",
+  "version": "1.0.0",
+  "description": "Allen, Anson, Evan, and Max's project for Compiler's class.",
+  "main": "index.js",
+  "scripts": {
+    "test": "eslint **/*.js && mocha test/**/*.js",
+    "lint": "eslint **/*.js",
+    "start": "node guavascript.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnsonAdams/guavascript.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AnsonAdams/guavascript/issues"
+  },
+  "homepage": "https://github.com/AnsonAdams/guavascript#readme",
+  "devDependencies": {
+    "babel-eslint": "^6.1.2",
+    "eslint": "^3.16.1",
+    "eslint-config-google": "^0.7.1",
+    "eslint-config-standard": "^6.2.1",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-promise": "^3.4.0",
+    "eslint-plugin-standard": "^2.0.1",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.2.0"
+  },
+  "dependencies": {
+    "ohm-js": "^0.12.3"
+  }
+}
