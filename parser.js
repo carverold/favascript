@@ -182,7 +182,7 @@ class FunctionDeclarationStatement extends Statement {
         });
 
         // If you can't find a parameter in the block, throw unusedLocalVariable
-        context.setVariable(this.id, {type: TYPE.FUNCTION, returnType: block.returnType, parameters: signature});
+        context.setVariable(this.id, {type: TYPE.FUNCTION, returnType: this.block.returnType, parameters: signature});
 
     }
 
