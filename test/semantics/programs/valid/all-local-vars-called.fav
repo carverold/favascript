@@ -9,3 +9,7 @@ print(x + y + z)
 f(n, m) {
     ret n + m
 }
+
+g(n, m, o) {
+    ret (n * m) + o
+}
