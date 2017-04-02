@@ -17,7 +17,7 @@ const TYPE = {
     FUNCTION: "FUNCTION",
     CLASS: "CLASS",
     NULL: "NULL"
-};
+}
 
 function defineTypePairs() {
     allTypePairs = [];
@@ -30,27 +30,14 @@ function defineTypePairs() {
             }
         }
     }
-};
+}
 defineTypePairs();
-
-function canBeA(receivedType, dominantType) {
-    const FLOAT_ACCEPT = [
-        TYPE.FLOAT,
-        TYPE.INTEGER
-    ];
-    //TODO: undefined?
-    if (dominantType === TYPE.FLOAT) {
-        return FLOAT_ACCEPT.indexOf(receivedType) > -1 ? true : false;
-    } else {
-        return receivedType === dominantType ? true : false;
-    }
-};
 
 function unpack(elem) {
     elem = elem.ast();
     elem = Array.isArray(elem) ? elem : [elem];
     return elem.length === 0 ? null : elem[0];
-};
+}
 
 function joinParams(parameter, parameters) {
     parameter = Array.isArray(parameter.ast()) ? parameter.ast() : [parameter.ast()];
@@ -58,7 +45,7 @@ function joinParams(parameter, parameters) {
         return parameter.concat(unpack(parameters));
     }
     return parameter;
-};
+}
 
 class Program {
     constructor(block) {
@@ -524,16 +511,19 @@ class BinaryExpression extends Expression {
             [this.left.type, this.right.type]
         );
 
-        if (canBeA(this.operand.type, inferredType)) {
-            if (this.operand.type == "undefined") {
-                this.type =
-            }
-        }
+        // if (canBeA(this.operand.type, inferredType)) {
+        //     if (this.operand.type == "undefined") {
+        //         this.type =
+        //     }
+        // }
 
         // Important: the type of the expression is always the type of it's left operand
         // Example: "string" * 5 is TYPE.STRING
         this.type = this.left.type;
 
+    }
+    enforceType(type) {
+        return true;
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.op}` +
