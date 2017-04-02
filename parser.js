@@ -338,7 +338,9 @@ class AssignmentStatement extends Statement {
                     [TYPE.INTEGER, TYPE.FLOAT],
                     [TYPE.FLOAT, TYPE.INTEGER],
                     [TYPE.FLOAT, TYPE.FLOAT],
-                    [TYPE.STRING, TYPE.STRING]
+                    [TYPE.STRING, TYPE.STRING],
+                    [TYPE.LIST, TYPE.LIST],
+                    [TYPE.DICTIONARY, TYPE.DICTIONARY]
                 ];
             } else if (this.assignOp == "*=") {
                 expectedPairs = [
