@@ -5,8 +5,6 @@ Semantic Analysis To Do's:
     - Add a "used" field to each local variable in order to check for unusedLocalVariable error
     - For function declarations, need to infer type of parameters and add it to a field in it's
         symbolTable entry. With the type signature, we can check for parameterArgumentMismatch
-    - For class declarations, need to store a constructor parameter signature field so that we
-        can check for parameterArgumentMismatch for classes.
     - Analyze the recursive part of idExpression
     - When you declare a class, you need to also declare a function with the same name
         (the constructor) so that you can legally instantiate an instance of the class.

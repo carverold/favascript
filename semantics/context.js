@@ -36,8 +36,11 @@ const semanticErrors = {
     returnOutsideFunction() {
         return `ReturnOutsideFunction error: found a return statement outside of a function`;
     },
-    multipleReturnsInABlock(){
+    multipleReturnsInABlock() {
         return `MultipleReturnsInABlock error: found more than one return statement in a block`;
+    },
+    cantResolveTypes(receivedType, dominantType) {
+        return `CantResolveTypes error: cannot cast a ${receivedType} to a ${dominantType}`;
     }
 };
 
@@ -148,6 +151,10 @@ class Context {
 
     throwMultipleReturnsInABlockError() {
         throw new Error(semanticErrors.multipleReturnsInABlock());
+    }
+
+    throwCantResolveTypesError(recievedType, dominantType) {
+        throw new Error(semanticErrors.cantResolveTypes(recievedType, dominantType))
     }
 
     // Use these when a Program is newly created:
