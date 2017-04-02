@@ -1,4 +1,4 @@
-Guavascript {
+Favascript {
     Program     = Block
     Block       = Statement+
     Statement   = Exp "?" Block ":" Block                               -- conditional
@@ -7,7 +7,7 @@ Guavascript {
                 | "class" classId "{" Block "}"                         -- classDecl
                 | MatchExp                                              -- match
                 | "if" Exp "{" Block "}"
-                  ("elif" Exp "{" Block "}" )* 
+                  ("elif" Exp "{" Block "}" )*
                   ("else" "{" Block "}")?                               -- ifElse
                 | "while" Exp "{" Block "}"                             -- while
                 | "for" id "in" IdExp "{" Block "}"                     -- forIn
