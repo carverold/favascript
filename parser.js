@@ -470,9 +470,11 @@ class BinaryExpression extends Expression {
         this.right.analyze(context);
 
         let expectedPairs;
+        let inferredType;
 
         if (this.op == "||" || this.op == "&&") {
             expectedPairs = [[TYPE.BOOLEAN, TYPE.BOOLEAN]];
+            inferredType = TYPE.BOOLEAN;
         } else if (["+", "-", "/", "*", "<=", "<", ">=", ">", "^"].indexOf(this.op) > -1) {
             expectedPairs = [
                 [TYPE.INTEGER, TYPE.INTEGER],
@@ -480,11 +482,13 @@ class BinaryExpression extends Expression {
                 [TYPE.FLOAT, TYPE.INTEGER],
                 [TYPE.FLOAT, TYPE.FLOAT]
             ];
+            inferredType = TYPE.FLOAT;
         } else if (this.op == "//" || this.op == "%") {
             expectedPairs = [
                 [TYPE.INTEGER, TYPE.INTEGER],
                 [TYPE.FLOAT, TYPE.INTEGER]
             ];
+            inferredType = TYPE.INTEGER;
         } else if (this.op == "==" || this.op == "!=") {
             expectedPairs = allTypePairs;
         }
@@ -517,13 +521,22 @@ class UnaryExpression extends Expression {
     }
     analyze(context) {
         this.operand.analyze(context);
+
+        let expectedTypes;
+        let inferredType;
+
         if (this.op == "--" || this.op == "++") {
-            context.assertUnaryOperandIsOneOfTypes(this.op, [TYPE.INTEGER], this.operand.type);
+            expectedTypes = [TYPE.INTEGER];
+            inferredType = TYPE.INTEGER;
         } else if (this.op == "-") {
-            context.assertUnaryOperandIsOneOfTypes(this.op, [TYPE.INTEGER, TYPE.FLOAT], this.operand.type);
+            expectedTypes = [TYPE.INTEGER, TYPE.FLOAT];
+            inferredType = TYPE.FLOAT;
         } else if (this.op == "!") {
-            context.assertUnaryOperandIsOneOfTypes(this.op, [TYPE.BOOLEAN], this.operand.type);
+            expectedTypes = [TYPE.BOOLEAN];
+            inferredType = TYPE.BOOLEAN;
         }
+
+        context.assertUnaryOperandIsOneOfTypes(this.op, expectedTypes, this.operand.type);
         this.type = this.operand.type;
     }
     toString(indent = 0) {
