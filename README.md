@@ -1,13 +1,13 @@
-![Guavascript Logo](https://raw.githubusercontent.com/AnsonAdams/guavascript/master/images/Guavascript%20logo.png "Guavascript Logo")
+![Favascript Logo](https://raw.githubusercontent.com/AnsonAdams/favascript/master/images/Favascript%20logo.png "Favascript Logo")
 
-https://ansonadams.github.io/guavascript/
+https://ansonadams.github.io/favascript/
 
 ## Introduction
 
-Guavascript is a strongly and statically typed language that compiles down to Javascript. With type inference, first class functions, and other features, Guavascript's goal is to enable a programmer to sketch out ideas quickly without sacrificing focus to lower-level details. For example, the language is designed with a minimalistic approach to reduce the amount of time programmers have to spend typing a worrying about language-specific syntax. Similarly, Guavascript incorporates pattern matching and the for-in loop to produce a more intuitive programming language that cuts out unnecessary in-between logic. Guavascript takes much inspiration from Python for its expressiveness and high-level abstraction.
+Favascript is a strongly and statically typed language that compiles down to Javascript. With type inference, first class functions, and other features, Favascript's goal is to enable a programmer to sketch out ideas quickly without sacrificing focus to lower-level details. For example, the language is designed with a minimalistic approach to reduce the amount of time programmers have to spend typing a worrying about language-specific syntax. Similarly, Favascript incorporates pattern matching and the for-in loop to produce a more intuitive programming language that cuts out unnecessary in-between logic. Favascript takes much inspiration from Python for its expressiveness and high-level abstraction.
 
 ## Features
-* .guav File Extension
+* .fav File Extension
 * Curly Braces
 * Pattern Matching
 * Object-oriented

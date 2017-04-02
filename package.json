@@ -1,23 +1,23 @@
 {
-  "name": "guavascript",
+  "name": "favascript",
   "version": "1.0.0",
-  "description": "Allen, Anson, Evan, and Max's project for Compiler's class.",
+  "description": "Allen and Anson's project for Compiler's class.",
   "main": "index.js",
   "scripts": {
     "test": "eslint **/*.js && mocha test/**/*.js",
     "lint": "eslint **/*.js",
-    "start": "node guavascript.js"
+    "start": "node favascript.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AnsonAdams/guavascript.git"
+    "url": "git+https://github.com/AnsonAdams/favascript.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/AnsonAdams/guavascript/issues"
+    "url": "https://github.com/AnsonAdams/favascript/issues"
   },
-  "homepage": "https://github.com/AnsonAdams/guavascript#readme",
+  "homepage": "https://github.com/AnsonAdams/favascript#readme",
   "devDependencies": {
     "babel-eslint": "^6.1.2",
     "eslint": "^3.16.1",

@@ -1,6 +1,6 @@
 const fs = require('fs');
 const ohm = require('ohm-js');
-const grammarContents = fs.readFileSync('guavascript.ohm');
+const grammarContents = fs.readFileSync('favascript.ohm');
 const grammar = ohm.grammar(grammarContents);
 const Context = require('./semantics/context');
 
@@ -895,7 +895,7 @@ class ClassId {
     }
 }
 
-// Guavascript CST -> AST
+// Favascript CST -> AST
 semantics = grammar.createSemantics().addOperation('ast', {
     Program(block) {return new Program(block.ast());},
     Block(statements) {return new Block(statements.ast());},

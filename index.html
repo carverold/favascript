@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Guavascript</title>
+  <title>Favascript</title>
   <link rel="stylesheet" media="screen" href="css/style.css">
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:300,400,500" rel="stylesheet">
@@ -23,7 +23,7 @@
     <div id="intro"></div>
     <div class="col-xs-6">
       <a href="">
-        <img src="images/Guavascript logo.png" width="130px">
+        <img src="images/Favascript logo.png" width="130px">
       </a>
     </div>
 
@@ -39,7 +39,7 @@
     </div>
   </div>
 
-  
+
   <div class="one-half" id="intro">
     <div class="container vertical-center">
       <div class="row horizontal-center">
@@ -56,7 +56,7 @@
     <div class="container vertical-center">
       <div class="row horizontal-center">
         <div class="col-xs-12 text-center">
-          <p>Guavascript is a strongly and statically typed language that compiles down to Javascript. With type inference, first class functions, and other features, Guavascript's goal is to enable a programmer to sketch out ideas quickly without sacrificing focus to lower-level details. For example, the language is designed with a minimalistic approach to reduce the amount of time programmers have to spend typing a worrying about language-specific syntax. Similarly, Guavascript incorporates pattern matching and the for-in loop to produce a more intuitive programming language that cuts out unnecessary in-between logic. Guavascript takes much inspiration from Python for its expressiveness and high-level abstraction.</p>
+          <p>Favascript is a strongly and statically typed language that compiles down to Javascript. With type inference, first class functions, and other features, Favascript's goal is to enable a programmer to sketch out ideas quickly without sacrificing focus to lower-level details. For example, the language is designed with a minimalistic approach to reduce the amount of time programmers have to spend typing a worrying about language-specific syntax. Similarly, Favascript incorporates pattern matching and the for-in loop to produce a more intuitive programming language that cuts out unnecessary in-between logic. Favascript takes much inspiration from Python for its expressiveness and high-level abstraction.</p>
         </div>
       </div>
     </div>
@@ -206,7 +206,7 @@
     $('#syntax-diagrams').append($(railroad_insert(`
       Diagram(
         Choice(0,
-        Stack('"Match"', 'IdExp', '"with"', Optional('"|"'), 'Var', 'Match', ZeroOrMore(Sequence('"|"', 'Var', 'Match')), Optional(Sequence('"|"', '"_"', 'Match')))  
+        Stack('"Match"', 'IdExp', '"with"', Optional('"|"'), 'Var', 'Match', ZeroOrMore(Sequence('"|"', 'Var', 'Match')), Optional(Sequence('"|"', '"_"', 'Match')))
       ))
       .addTo();`, "MatchExp")));
 
@@ -522,7 +522,7 @@
   </div>
 
 <script>
-names = ["Evan", "Allen", "Max", "Anson"];
+names = ["Allen", "Anson"];
 for(var i = names.length-1; i>=0; i--){
   $("#names").append(`${names.splice(Math.floor(Math.random()*names.length), 1)[0]},  `);
 }
