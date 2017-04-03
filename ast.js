@@ -158,6 +158,8 @@ class FunctionDeclarationStatement extends Statement {
             if (parameter.defaultValue !== null) {
                 blockContext.setVariable(parameter.id, {type: parameter.defaultValue.type});
                 console.log(`Set ${parameter.id} to type ${parameter.defaultValue.type}`);
+            } else {
+                blockContext.addUndeclaredParameter(parameter.id);
             }
         });
         this.block.analyze(blockContext);
@@ -642,10 +644,10 @@ class IdExpression extends Expression {
         this.id = this.idExpBody.id;
         this.type = this.idExpBody.type;
     }
-    enforceType(type, context, returnType = "undefined") {
+    enforceType(type, context) {
         console.log(`Enforcing type ${type} for IdExpression`);
         if (this.type == "undefined") {
-            this.idExpBody.enforceType(type, context, returnType);
+            this.idExpBody.enforceType(type, context);
             this.type = this.idExpBody.type;
             this.returnType = this.returnType;
         }
@@ -698,13 +700,13 @@ class IdExpressionBodyRecursive {
             }
         }
     }
-    enforceType(type, context, returnType = "undefined") {
+    enforceType(type, context) {
         console.log(`Enforcing type ${type} for IdExpressionBodyRecursive`);
         if (this.appendageOp === "[]") {
             this.returnType = type;
         }
         if (this.type == "undefined") {
-            this.idExpBody.enforceType(type, context, returnType);
+            this.idExpBody.enforceType(type, context, returnType, undeclaredIds);
             this.type = this.idExpBody.type;
             this.returnType = this.idExpBody.returnType;
         }
@@ -729,13 +731,18 @@ class IdExpressionBodyBase {
     }
     enforceType(type, context, returnType = "undefined") {
         if (this.type === "undefined") {
-            this.type = type;
-            console.log(`Enforcing type ${type} for id ${this.id}. Set variable.`)
-            if (returnType !== "undefined") {
-                context.setVariable(this.id, {type: type, returnType: returnType});
-                this.returnType = returnType;
+            if (context.isUndeclaredParameter(this.id)) {
+                this.type = type;
+                console.log(`Enforcing type ${type} for id ${this.id}. Set variable.`)
+                if (returnType !== "undefined") {
+                    context.setVariable(this.id, {type: type, returnType: returnType});
+                    this.returnType = returnType;
+                } else {
+                    context.setVariable(this.id, {type: type});
+                }
+                context.removeUndeclaredParameter(this.id);
             } else {
-                context.setVariable(this.id, {type: type});
+                context.throwUseBeforeDeclarationError(this.id);
             }
         }
         console.log("enforced type: ", type);

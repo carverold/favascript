@@ -49,6 +49,9 @@ const semanticErrors = {
     },
     noClassConstructor(id) {
         return `NoClassConstructor error: did not find a constructor in class ${id}`;
+    },
+    useBeforeDeclaration(id) {
+        return `useBeforeDeclaration error: tried to use ${id} before it was declared`;
     }
     // TODO: add back usedBeforeDeclared. This would happen with x in the program "y = x + 1"
 };
@@ -67,6 +70,7 @@ class Context {
         this.parent = parent || null;
         this.currentFunction = currentFunction || null;
         this.isInLoop = isInLoop;
+        this.undeclaredParameters = []
 
         // Need Object.create(null) so things like toString are not in this.symbolTable
         this.symbolTable = {};
@@ -82,6 +86,18 @@ class Context {
 
     createChildContextForFunction(currentFunction) {
         return new Context(this, currentFunction, false);
+    }
+
+    addUndeclaredParameter(id) {
+        this.undeclaredParameters.push(id);
+    }
+
+    removeUndeclaredParameter(id) {
+        this.undeclaredParameters.splice(this.undeclaredParameters.indexOf(id), 1);
+    }
+
+    isUndeclaredParameter(id) {
+        return this.undeclaredParameters.indexOf(id) > -1;
     }
 
     setVariable(id, signature) {
@@ -184,6 +200,10 @@ class Context {
 
     throwNoClassConstructorError(id) {
         throw new Error(semanticErrors.noClassConstructor(id));
+    }
+
+    throwUseBeforeDeclarationError(id) {
+        throw new Error(semanticErrors.useBeforeDeclaration(id));
     }
 
     // Use these when a Program is newly created:
