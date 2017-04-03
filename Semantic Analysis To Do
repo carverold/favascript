@@ -1,5 +1,0 @@
-Semantic Analysis To Do's:
-    - Add a "used" field to each local variable in order to check for unusedLocalVariable error
-    - When you declare a class, you need to also declare a function with the same name
-        (the constructor) so that you can legally instantiate an instance of the class.
-        How do you get the parameter signature from the constructor inside the class?
