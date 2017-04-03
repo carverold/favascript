@@ -158,6 +158,14 @@ class Context {
         throw new Error(semanticErrors.cantResolveTypes(recievedType, dominantType))
     }
 
+    throwNotAFunctionError(id) {
+        throw new Error(semanticErrors.isNotAFunction(id));
+    }
+
+    throwParameterArgumentMismatchError(id, parameterTypeList, argumentTypeList) {
+        throw new Error(semanticErrors.parameterArgumentMismatch(id, parameterTypeList, argumentTypeList));
+    }
+
     // Use these when a Program is newly created:
     // Context.INITIAL = new Context();  // eslint doesn't like the "." after Context ???
 

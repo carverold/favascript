@@ -60,6 +60,12 @@ function joinParams(parameter, parameters) {
     return parameter;
 }
 
+function canArgumentsFitParameters(args, params) {
+    return (args.length == params.length) && args.every(function(element, index) {
+        return canBeA(element, params[index]);
+    });
+}
+
 class Program {
     constructor(block) {
         this.block = block;
@@ -708,8 +714,14 @@ class IdExpressionBodyRecursive {
         } else if (this.idExpBody.type === TYPE.LIST && this.appendageOp === "[]") {
             context.assertUnaryOperandIsOneOfTypes(this.appendageOp, [TYPE.INTEGER], this.idAppendage.type);
         } else if (this.idExpBody.type === TYPE.FUNCTION && this.appendageOp === "()") {
-            context.assertUnaryOperandIsOneOfTypes(this.appendageOp, [TYPE.INTEGER], this.idAppendage.type);
-
+            let entry = context.get(this.idExpBody.id);
+            console.log("entry: ", entry);
+            if (entry.type !== TYPE.FUNCTION) {
+                context.throwNotAFunctionError(this.idExpBody.id);
+            }
+            if (!canArgumentsFitParameters(this.idAppendage.signature, entry.parameters)) {
+                context.throwParameterArgumentMismatchError(this.idExpBody.id, entry.parameters, this.idAppendage.signature);
+            }
         }
     }
     enforceType(type, context) {
