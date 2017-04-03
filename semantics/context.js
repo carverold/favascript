@@ -1,4 +1,5 @@
-const astClasses = require('../parser.js');
+const parser = require('../parser.js');
+console.log("AST: ", parser);
 
 const semanticErrors = {
     changedImmutableType(id, expectedType, receivedType) {
@@ -41,6 +42,9 @@ const semanticErrors = {
     },
     cantResolveTypes(receivedType, dominantType) {
         return `CantResolveTypes error: cannot cast a ${receivedType} to a ${dominantType}`;
+    },
+    invalidAccessType(lookUpType, receivedType, expectedType) {
+        return `InvalidAccessType error: cannot use ${receivedType} to access ${lookUpType}. Expected ${expectedType}`;
     }
 };
 
@@ -156,6 +160,24 @@ class Context {
     throwCantResolveTypesError(recievedType, dominantType) {
         throw new Error(semanticErrors.cantResolveTypes(recievedType, dominantType))
     }
+
+    assertAccessType(lookUpType, receivedType) {
+        // if (lookUpType === )
+    }
+
+    // if (this.idExpBody.type === TYPE.DICTIONARY && this.appendageOp === ".") {
+    //     if (this.appendageOp === ".") {
+    //         context.assertUnaryOperandIsOneOfTypes(this.appendageOp, [TYPE.INTEGER], this.idAppendage.type);
+    //     } else if (this.appendageOp === "[]") {
+    //         console.log("in if");
+    //         context.assertUnaryOperandIsOneOfTypes(this.appendageOp, [TYPE.STRING], this.idAppendage.type);
+    //     }
+    // } else if (this.idExpBody.type === TYPE.LIST && this.appendageOp === "[]") {
+    //     context.assertUnaryOperandIsOneOfTypes(this.appendageOp, [TYPE.INTEGER], this.idAppendage.type);
+    // } else if (this.idExpBody.type === TYPE.FUNCTION && this.appendageOp === "()") {
+    //     context.assertUnaryOperandIsOneOfTypes(this.appendageOp, [TYPE.INTEGER], this.idAppendage.type);
+    //
+    // }
 
     // Use these when a Program is newly created:
     // Context.INITIAL = new Context();  // eslint doesn't like the "." after Context ???

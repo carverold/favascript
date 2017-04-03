@@ -22,7 +22,7 @@ const path = require('path');
 const parser = require(path.resolve('./parser.js'));
 
 fs.readFile(argv._[0], 'utf-8', (err, text) => {
-    let program = parser(text);
+    let program = parser.parse(text);
     if (argv.a) {
         console.log(program.toString());
         return;
