@@ -1,0 +1,5 @@
+arr = 8
+y = 0
+for a in arr {
+    y += arr[a] 
+}

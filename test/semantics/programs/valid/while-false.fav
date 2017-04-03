@@ -1,0 +1,4 @@
+x = false
+while x {
+    y = 2
+}
