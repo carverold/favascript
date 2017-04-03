@@ -114,7 +114,7 @@ class BranchStatement extends Statement {
     analyze(context) {
         this.conditions.forEach(function(condition) {
             condition.analyze(context);
-            context.assertIsTypeBoolean(condition);
+            context.assertIsTypeBoolean(condition.returnType? condition.returnType : condition.type);
         });
         this.thenBlocks.forEach(block => block.analyze(context.createChildContextForBlock()));
         if (this.elseBlock !== null) {
@@ -175,6 +175,9 @@ class FunctionDeclarationStatement extends Statement {
                 signature.push(blockContext.get(parameter.id).type);
             }
         });
+
+        console.log(`returnType: ${this.block.returnType}`);
+
         context.setVariable(this.id, {type: TYPE.FUNCTION, returnType: this.block.returnType, parameters: signature});
     }
 
@@ -498,7 +501,7 @@ class BinaryExpression extends Expression {
         );
 
         // Should we be taking this.left.type or inferredType?
-        this.type = this.left.type;
+        this.type = ["<=", "<", ">=", ">"].indexOf(this.op) > -1 ? TYPE.BOOLEAN : this.left.type;
 
     }
     enforceType(type, context) {
@@ -635,7 +638,7 @@ class IdExpression extends Expression {
             context.assertUnaryOperandIsOneOfTypes(this.idPostOp, [TYPE.INTEGER], this.idExpBody.type)
         }
         this.id = this.idExpBody.id;
-        this.type = this.idExpBody.type;
+        this.type = this.idExpBody.returnType ? this.idExpBody.returnType : this.idExpBody.type;
     }
     enforceType(type, context) {
         if (this.type == "undefined") {
@@ -722,11 +725,6 @@ class IdExpressionBodyBase {
         if (this.type === "undefined" && !context.isUndeclaredParameter(this.id) && !beingAssignedTo) {
             context.throwUseBeforeDeclarationError(this.id);
         }
-        // if (entry !== "undefined") {
-        //     if (!context.isUndeclaredParameter(this.id)) {
-        //         context.throwUseBeforeDeclarationError(this.id);
-        //     }
-        // }
     }
     enforceType(type, context, returnType = "undefined") {
         console.log(`Trying to enforce type ${type} for ${this.id}`);
