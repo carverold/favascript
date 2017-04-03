@@ -2,9 +2,9 @@
 
 class Person {
     Person(name = "unnamed", height = 50.0, vocabulary = []) {
-        this.name = name
-        this.height = height
-        this.vocabulary = vocabulary
+        myName = name
+        myHeight = height
+        myVocabulary = vocabulary
     }
 }
 

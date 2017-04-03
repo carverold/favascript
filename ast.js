@@ -220,8 +220,12 @@ class Parameter {
         this.type;
     }
     analyze(context) {
-        this.defaultValue.analyze(context);
-        this.type = this.defaultValue.type;
+        if (this.defaultValue) {
+            this.defaultValue.analyze(context);
+            this.type = this.defaultValue.type;
+        } else {
+            this.type = "undefined";
+        }
     }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent)}(id ${this.id}`;
@@ -331,12 +335,7 @@ class AssignmentStatement extends Statement {
         this.exp.analyze(context);
 
         if (this.assignOp == "=") {
-            console.log("assign exp type: ", this.exp.type);
-            if (this.exp.id !== "undefined") {
-                context.setVariable(this.idExp.id, {type: context.get(this.exp.id)});
-            } else {
-                context.setVariable(this.idExp.id, {type: this.exp.type});
-            }
+            context.setVariable(this.idExp.id, {type: this.exp.type});
         } else {
             let expectedPairs = [
                 [TYPE.INTEGER, TYPE. INTEGER],
