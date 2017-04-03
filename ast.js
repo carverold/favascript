@@ -16,7 +16,8 @@ const TYPE = {
     TUPLE: "TUPLE",
     FUNCTION: "FUNCTION",
     CLASS: "CLASS",
-    NULL: "NULL"
+    NULL: "NULL",
+    OBJECT: "OBJECT"
 }
 
 function defineTypePairs() {
@@ -150,13 +151,8 @@ class FunctionDeclarationStatement extends Statement {
         this.block = block;
     }
     analyze(context) {
-
         let blockContext = context.createChildContextForFunction(this.id);
-
         let self = this;
-
-        // If there is a default value, instantiate the variable in the block.
-        // For all vars with a default, then they must match the type.
         this.parameterArray.forEach(function(parameter) {
             parameter.analyze(context);
             if (parameter.defaultValue !== null) {
@@ -164,17 +160,8 @@ class FunctionDeclarationStatement extends Statement {
                 console.log(`Set ${parameter.id} to type ${parameter.defaultValue.type}`);
             }
         });
-
-        // But what about ambiguous variables? They will automatically be added to the
-        // context as they are declared. We would want the type of the first declaration
-        // to be the official type of the var. So, we get type checking for non-default vars
-        // in the rest of the function for free.
-
         this.block.analyze(blockContext);
-
         let signature = [];
-
-        // But, we still must check that the parameters were used.
         this.parameterArray.forEach(function(parameter) {
             let entry = blockContext.get(
                 parameter.id,
@@ -182,16 +169,12 @@ class FunctionDeclarationStatement extends Statement {
                 true  // onlyThisContext = true
             );
             if (!entry) {
-                // If you can't find a parameter in the block, throw unusedLocalVariable
                 context.declareUnusedLocalVariable(parameter.id);
             } else {
-                // At the same time, build the parameters signature
                 signature.push(blockContext.get(parameter.id).type);
             }
         });
-
         context.setVariable(this.id, {type: TYPE.FUNCTION, returnType: this.block.returnType, parameters: signature});
-
     }
 
     toString(indent = 0) {
@@ -244,8 +227,14 @@ class ClassDeclarationStatement extends Statement {
         this.block = block;
     }
     analyze(context) {
-        this.block.analyze(context.createChildContextForBlock());
-        context.setVariable(this.id, {type: TYPE.CLASS});
+        let classContext = context.createChildContextForBlock();
+        this.block.analyze(classContext);
+        let constructorFunction = classContext.get(this.id);
+        if (constructorFunction == "undefined") {
+            context.throwNoClassConstructorError(this.id);
+        } else {
+            context.setVariable(this.id, {type: TYPE.FUNCTION, returnType: TYPE.OBJECT, parameters: constructorFunction.parameters});
+        }
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(Class` +
@@ -643,6 +632,7 @@ class IdExpression extends Expression {
         this.idPostOp = idPostOp;
         this.id;  // baseline identifier. example: x in x.doThis(3)[1].lalala
         this.type;
+        this.returnType;
     }
     analyze(context) {
         this.idExpBody.analyze(context);
@@ -652,11 +642,12 @@ class IdExpression extends Expression {
         this.id = this.idExpBody.id;
         this.type = this.idExpBody.type;
     }
-    enforceType(type, context) {
+    enforceType(type, context, returnType = "undefined") {
         console.log(`Enforcing type ${type} for IdExpression`);
         if (this.type == "undefined") {
-            this.idExpBody.enforceType(type, context);
+            this.idExpBody.enforceType(type, context, returnType);
             this.type = this.idExpBody.type;
+            this.returnType = this.returnType;
         }
     }
     toString(indent = 0) {
@@ -674,6 +665,7 @@ class IdExpressionBodyRecursive {
         this.appendageOp = idAppendage === 'undefined' ? 'undefined' : idAppendage.getOp();
         this.id;
         this.type;
+        this.returnType;
     }
     analyze(context) {
         this.idExpBody.analyze(context);
@@ -706,11 +698,15 @@ class IdExpressionBodyRecursive {
             }
         }
     }
-    enforceType(type, context) {
+    enforceType(type, context, returnType = "undefined") {
         console.log(`Enforcing type ${type} for IdExpressionBodyRecursive`);
+        if (this.appendageOp === "[]") {
+            this.returnType = type;
+        }
         if (this.type == "undefined") {
-            this.idExpBody.enforceType(type, context);
+            this.idExpBody.enforceType(type, context, returnType);
             this.type = this.idExpBody.type;
+            this.returnType = this.idExpBody.returnType;
         }
     }
     toString(indent = 0) {
@@ -725,16 +721,22 @@ class IdExpressionBodyBase {
     constructor(id) {
         this.id = id;
         this.type;
+        this.returnType;
     }
     analyze(context) {
         let entry = context.get(this.id, true);
         this.type = (typeof entry !== "undefined") ? entry.type : "undefined";
     }
-    enforceType(type, context) {
+    enforceType(type, context, returnType = "undefined") {
         if (this.type === "undefined") {
             this.type = type;
             console.log(`Enforcing type ${type} for id ${this.id}. Set variable.`)
-            context.setVariable(this.id, {type: type});
+            if (returnType !== "undefined") {
+                context.setVariable(this.id, {type: type, returnType: returnType});
+                this.returnType = returnType;
+            } else {
+                context.setVariable(this.id, {type: type});
+            }
         }
         console.log("enforced type: ", type);
         console.log("get id type: ", context.get(this.id).type);

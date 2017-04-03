@@ -46,6 +46,9 @@ const semanticErrors = {
     invalidAccessType(collectionType, receivedAccessorType, expectedAccessorType) {
         return `InvalidAccessType error: cannot use ${receivedAccessorType} to access ` +
             `${collectionType}. Expected ${expectedAccessorType}`;
+    },
+    noClassConstructor(id) {
+        return `NoClassConstructor error: did not find a constructor in class ${id}`;
     }
     // TODO: add back usedBeforeDeclared. This would happen with x in the program "y = x + 1"
 };
@@ -177,6 +180,10 @@ class Context {
         } else if (collectionType === "LIST" && !(accessorType === "INTEGER")) {
             throw new Error(semanticErrors.invalidAccessType("LIST", accessorType, "INTEGER"));
         }
+    }
+
+    throwNoClassConstructorError(id) {
+        throw new Error(semanticErrors.noClassConstructor(id));
     }
 
     // Use these when a Program is newly created:
