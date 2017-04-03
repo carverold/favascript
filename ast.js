@@ -1063,3 +1063,4 @@ module.exports = {
     ClassId: ClassId,
     Types: TYPE
 };
+console.log("AST: ", module.exports);

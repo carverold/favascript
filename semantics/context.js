@@ -1,4 +1,5 @@
-const parser = require('../ast.js');
+const ASTClasses = require('../ast.js');
+console.log("CONTEXT: ", ASTClasses);
 
 const semanticErrors = {
     changedImmutableType(id, expectedType, receivedType) {
@@ -127,7 +128,7 @@ class Context {
     }
 
     assertIsFunction(value) {  // eslint-disable-line class-methods-use-this
-        if (value.constructor !== astClasses.FunctionDeclarationStatement) {
+        if (value.constructor !== ASTClasses.FunctionDeclarationStatement) {
             throw new Error(semanticErrors.isNotAFunction(value.id));
         }
     }
