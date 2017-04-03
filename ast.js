@@ -947,9 +947,7 @@ class IntLit {
         this.digits = digits;
         this.type = TYPE.INTEGER;
     }
-    analyze() {
-        // TODO
-    }
+    analyze() {}
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.digits})`;
     }
@@ -960,9 +958,7 @@ class FloatLit {
         this.value = value;
         this.type = TYPE.FLOAT;
     }
-    analyze() {
-        // TODO
-    }
+    analyze() {}
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.value})`;
     }
@@ -973,9 +969,7 @@ class StringLit {
         this.value = value.substring(1, value.length - 1);
         this.type = TYPE.STRING;
     }
-    analyze() {
-        // TODO
-    }
+    analyze() {}
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.value})`;
     }
@@ -986,9 +980,7 @@ class BoolLit {
         this.boolVal = boolVal;
         this.type = TYPE.BOOLEAN;
     }
-    analyze() {
-        // TODO
-    }
+    analyze() {}
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.boolVal})`;
     }
@@ -998,59 +990,85 @@ class NullLit {
     constructor() {
         this.type = TYPE.NULL
     }
-    analyze() {
-        // TODO
-    }
+    analyze() {}
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(null)`;
     }
 }
 
-class IdVariable {
-    constructor(value) {
-        this.value = value;
-    }
-    analyze() {
-        // TODO
-    }
-    toString(indent = 0) {
-        return `${spacer.repeat(indent)}(\n${this.value})`;
-    }
-}
-
 class ConstId {
     constructor(firstWord, rest) {
-        this.words = firstWord;
-        this.rest = rest;
+        this.id = firstWord + [rest];
+        this.type;
+        this.returnType;
     }
-    analyze() {
-        // TODO
+    analyze(context, beingAssignedTo = false) {
+        let entry = context.get(this.id, true);
+        this.type = (typeof entry !== "undefined") ? entry.type : "undefined";
+        this.returnType = (typeof entry !== "undefined") ? entry.returnType : "undefined";
+        if (this.type === "undefined" && !context.isUndeclaredParameter(this.id) && !beingAssignedTo) {
+            context.throwUseBeforeDeclarationError(this.id);
+        }
+    }
+    enforceType(type, context, returnType = "undefined") {
+        if (this.type === "undefined") {
+            if (context.isUndeclaredParameter(this.id)) {
+                this.type = type;
+                if (returnType !== "undefined") {
+                    context.setVariable(this.id, {type: type, returnType: returnType});
+                    this.returnType = returnType;
+                } else {
+                    context.setVariable(this.id, {type: type});
+                }
+                context.removeUndeclaredParameter(this.id);
+            } else {
+                context.throwUseBeforeDeclarationError(this.id);
+            }
+        }
+        if (!canBeA(context.get(this.id).type, type)) {
+            this.context.throwCantResolveTypesError(this.type, type);
+        }
     }
     toString(indent = 0) {
-        var string = `${spacer.repeat(indent)}(\n${this.firstWord.toString()}`;
-        for (var char in this.rest) {
-            string += `\n${this.rest[char].toString()}`
-        }
-        string += ")"
-        return string;
+        return `${spacer.repeat(indent)}(\n${this.id})`;
     }
 }
 
 class ClassId {
     constructor(className, rest) {
-        this.className = className;
-        this.rest = rest;
+        this.id = className + [rest];
+        this.type;
+        this.returnType;
     }
-    analyze() {
-        // TODO
+    analyze(context, beingAssignedTo = false) {
+        let entry = context.get(this.id, true);
+        this.type = (typeof entry !== "undefined") ? entry.type : "undefined";
+        this.returnType = (typeof entry !== "undefined") ? entry.returnType : "undefined";
+        if (this.type === "undefined" && !context.isUndeclaredParameter(this.id) && !beingAssignedTo) {
+            context.throwUseBeforeDeclarationError(this.id);
+        }
+    }
+    enforceType(type, context, returnType = "undefined") {
+        if (this.type === "undefined") {
+            if (context.isUndeclaredParameter(this.id)) {
+                this.type = type;
+                if (returnType !== "undefined") {
+                    context.setVariable(this.id, {type: type, returnType: returnType});
+                    this.returnType = returnType;
+                } else {
+                    context.setVariable(this.id, {type: type});
+                }
+                context.removeUndeclaredParameter(this.id);
+            } else {
+                context.throwUseBeforeDeclarationError(this.id);
+            }
+        }
+        if (!canBeA(context.get(this.id).type, type)) {
+            this.context.throwCantResolveTypesError(this.type, type);
+        }
     }
     toString(indent = 0) {
-        var string = `${spacer.repeat(indent)}(\n${this.className.toString()}`
-        for (var char in this.rest) {
-            string += `\n${this.rest[char].toString()}`
-        }
-        string += ")"
-        return string;
+        return `${spacer.repeat(indent)}(\n${this.id})`;
     }
 }
 
@@ -1091,8 +1109,6 @@ module.exports = {
     FloatLit: FloatLit,
     StringLit: StringLit,
     NullLit: NullLit,
-    IdVariable: IdVariable,
-    // constId: constId,
     ConstId: ConstId,
     ClassId: ClassId,
     Types: TYPE
