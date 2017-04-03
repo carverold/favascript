@@ -340,47 +340,31 @@ class AssignmentStatement extends Statement {
         this.idExp.analyze(context);  // Will have id and type
         this.exp.analyze(context);
 
-        let expectedPairs;
-        let idType = this.idExp.type;
-
-        // console.log(util.inspect(this, {depth: null}));
-
         if (this.assignOp == "=") {
             // TODO: Not sure what the input id should be. Change from sourceString when we figure it out
             // console.log(`Set ${this.idExp.id} to ${this.exp} with type ${this.exp.type}`);
             context.setVariable(this.idExp.id, {type: this.exp.type});
         } else {
-            if (this.assignOp == "+=") {
-                expectedPairs = [
-                    [TYPE.INTEGER, TYPE. INTEGER],
-                    [TYPE.INTEGER, TYPE.FLOAT],
-                    [TYPE.FLOAT, TYPE.INTEGER],
-                    [TYPE.FLOAT, TYPE.FLOAT],
-                    [TYPE.STRING, TYPE.STRING],
-                    [TYPE.LIST, TYPE.LIST],
-                    [TYPE.DICTIONARY, TYPE.DICTIONARY]
-                ];
-            } else if (this.assignOp == "*=") {
-                expectedPairs = [
-                    [TYPE.INTEGER, TYPE. INTEGER],
-                    [TYPE.INTEGER, TYPE.FLOAT],
-                    [TYPE.FLOAT, TYPE.INTEGER],
-                    [TYPE.FLOAT, TYPE.FLOAT],
-                    [TYPE.STRING, TYPE.STRING],
-                    [TYPE.STRING, TYPE.INTEGER]
-                ];
-            } else if (["-=", "/="].indexOf(this.assignOp) > -1) {
-                expectedPairs = [
-                    [TYPE.INTEGER, TYPE. INTEGER],
-                    [TYPE.INTEGER, TYPE.FLOAT],
-                    [TYPE.FLOAT, TYPE.INTEGER],
-                    [TYPE.FLOAT, TYPE.FLOAT],
-                ];
+            let expectedPairs = [
+                [TYPE.INTEGER, TYPE. INTEGER],
+                [TYPE.INTEGER, TYPE.FLOAT],
+                [TYPE.FLOAT, TYPE.INTEGER],
+                [TYPE.FLOAT, TYPE.FLOAT],
+            ];
+            let inferredType = TYPE.FLOAT;
+
+            if (this.idExp.type === "undefined") {
+                this.idExp.enforceType(inferredType, context);
             }
+
+            if (this.exp.type === "undefined") {
+                this.exp.enforceType(inferredType, context);
+            }
+
             context.assertBinaryOperandIsOneOfTypePairs(
                 this.assignOp,
                 expectedPairs,
-                [idType, this.exp.type]
+                [this.idExp.type, this.exp.type]
             );
         }
     }
@@ -705,6 +689,15 @@ class IdExpressionBodyRecursive {
         this.id = this.idExpBody.id;
         this.type = this.idExpBody.type;
 
+        if (this.appendageOp === ".") {
+
+        } else if (this.appendageOp === "[]") {
+            if (this.idExpBody == "undefined") {
+                this.idExpBody.enforceType(TYPE.LIST);
+            }
+            context.assertIsValidListAccess(this.idExpBody.id, this.idExpBody.type, this.idAppendage.type);
+        }
+
         if (this.idExpBody.type === TYPE.DICTIONARY && this.appendageOp === ".") {
             if (this.appendageOp === ".") {
                 context.assertUnaryOperandIsOneOfTypes(this.appendageOp, [TYPE.INTEGER], this.idAppendage.type);
@@ -813,6 +806,9 @@ class IdSelector {
     }
     analyze(context) {
         this.variable.analyze(context);
+        if (this.type == "undefined") {
+            this.variable.enforceType(TYPE.INTEGER);
+        }
         this.type = this.variable.type;
     }
     getOp() {
