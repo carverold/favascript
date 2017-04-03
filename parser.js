@@ -626,8 +626,6 @@ class IdExpression extends Expression {
         this.type;
     }
     analyze(context) {
-        console.log("analyzing");
-        console.log("body: ", this.idExpBody);
         this.idExpBody.analyze(context);
         if (this.idPostOp == "++" || this.idPostOp == "--") {
             context.assertUnaryOperandIsOneOfTypes(this.idPostOp, [TYPE.INTEGER], this.idExpBody.type)
@@ -647,7 +645,7 @@ class IdExpression extends Expression {
     toString(indent = 0) {
         return  `${spacer.repeat(indent)}(IdExpression\n` +
                 `${this.idExpBody.toString(++indent)}` +
-                `${(this.idPostOp) ? "" : `\n${spacer.repeat(++indent)}${this.idPostOp}`}` +
+                `${(this.idPostOp === null) ? "" : `\n${spacer.repeat(++indent)}${this.idPostOp}`}` +
                 `\n${spacer.repeat(--indent)})`;
     }
 }
@@ -659,24 +657,17 @@ class IdExpressionBodyRecursive {
         this.appendageOp = idAppendage === 'undefined' ? 'undefined' : idAppendage.getOp();
         this.id;
         this.type;
-        console.log("A", this.idExpBody);
-        console.log("B", this.idAppendage);
-        console.log("C", this.appendageOp);
-        console.log("D", this.id);
-        console.log("E", this.type);
     }
     analyze(context) {
-        console.log("analyzing rec");
         this.idExpBody.analyze(context);
-        this.appendageOp.analyze(context);
+        this.idAppendage.analyze(context);
         this.id = this.idExpBody.id;
         this.type = this.idExpBody.type;
-        console.log("type", this.type);
+
         if (this.idExpBody.type === TYPE.DICTIONARY && this.appendageOp === ".") {
             if (this.appendageOp === ".") {
                 context.assertUnaryOperandIsOneOfTypes(this.appendageOp, [TYPE.INTEGER], this.idAppendage.type);
             } else if (this.appendageOp === "[]") {
-                console.log("in if");
                 context.assertUnaryOperandIsOneOfTypes(this.appendageOp, [TYPE.STRING], this.idAppendage.type);
             }
         } else if (this.idExpBody.type === TYPE.LIST && this.appendageOp === "[]") {
@@ -745,9 +736,14 @@ class PeriodId {
 class Arguments {
     constructor(args) {
         this.args = args;
+        this.signature = [];
     }
-    analyze() {
-        // TODO
+    analyze(context) {
+        let self = this;
+        this.args.forEach(function(argument) {
+            argument.analyze(context);
+            self.signature.push(argument.type)
+        });
     }
     getOp() {
         return "()";
@@ -767,9 +763,11 @@ class Arguments {
 class IdSelector {
     constructor(variable) {
         this.variable = variable;
+        this.type;
     }
-    analyze() {
-        // TODO
+    analyze(context) {
+        this.variable.analyze(context);
+        this.type = this.variable.type;
     }
     getOp() {
         return "[]";
