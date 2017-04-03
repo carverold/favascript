@@ -51,6 +51,9 @@ const semanticErrors = {
     },
     invalidMatchType(matcherType, matchVarType) {
         return `InvalidMatchType error: can't match ${matcherType} with ${matchVarType}`;
+    },
+    nonHomogenousTypes(expectedType, receivedType) {
+        return `NonHomogenousTypes error: expected element of type ${receivedType} to be of type ${expectedType})`;
     }
 };
 
@@ -209,6 +212,13 @@ class Context {
             throw new Error(semanticErrors.invalidMatchType(matcherType, matchVarType));
         }
     }
+
+    assertTypesAreHomogeneous(expectedType, receivedType) {
+        if (expectedType !== receivedType) {
+            throw new Error(semanticErrors.nonHomogenousTypes(expectedType, receivedType));
+        }
+    }
+
 
     // Use these when a Program is newly created:
     // Context.INITIAL = new Context();  // eslint doesn't like the "." after Context ???

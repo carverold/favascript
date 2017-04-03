@@ -878,11 +878,18 @@ class Tuple {
 class Dictionary {
     constructor(idValuePairs) {
         this.idValuePairs = idValuePairs;
-        this.type = TYPE.DICTIONARY
-        // TODO: NEED AN ELEMENT TYPE (KEY VAL PAIR)
+        this.type = TYPE.DICTIONARY;
+        this.keyType = TYPE.STRING;
+        this.valueType;
     }
-    analyze() {
-        // TODO
+    analyze(context) {
+        for (let p in this.idValuePairs) {
+            this.idValuePairs[p].analyze(context);
+        }
+        this.valueType = this.idValuePairs[0].variable.type;
+        for (let p in this.idValuePairs) {
+            context.assertTypesAreHomogeneous(this.valueType, this.idValuePairs[p].variable.type);
+        }
     }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent++)}(Dictionary`
@@ -903,8 +910,8 @@ class IdValuePair {
         this.id = id;
         this.variable = variable;
     }
-    analyze() {
-        // TODO
+    analyze(context) {
+        this.variable.analyze(context);
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.id} : ${this.variable.toString()})`;
