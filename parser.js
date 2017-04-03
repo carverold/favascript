@@ -653,11 +653,6 @@ class IdExpression extends Expression {
         this.type;
     }
     analyze(context) {
-<<<<<<< HEAD
-        // console.log("analyzing");
-        // console.log("body: ", this.idExpBody);
-=======
->>>>>>> fce8192b72c31c2199f534a1af599ae19782b59e
         this.idExpBody.analyze(context);
         if (this.idPostOp == "++" || this.idPostOp == "--") {
             context.assertUnaryOperandIsOneOfTypes(this.idPostOp, [TYPE.INTEGER], this.idExpBody.type)
@@ -675,11 +670,7 @@ class IdExpression extends Expression {
     toString(indent = 0) {
         return  `${spacer.repeat(indent)}(IdExpression\n` +
                 `${this.idExpBody.toString(++indent)}` +
-<<<<<<< HEAD
                 `${(!this.idPostOp) ? "" : `\n${spacer.repeat(++indent)}${this.idPostOp}`}` +
-=======
-                `${(this.idPostOp === null) ? "" : `\n${spacer.repeat(++indent)}${this.idPostOp}`}` +
->>>>>>> fce8192b72c31c2199f534a1af599ae19782b59e
                 `\n${spacer.repeat(--indent)})`;
     }
 }
@@ -691,30 +682,13 @@ class IdExpressionBodyRecursive {
         this.appendageOp = idAppendage === 'undefined' ? 'undefined' : idAppendage.getOp();
         this.id;
         this.type;
-<<<<<<< HEAD
-        // console.log("A", this.idExpBody);
-        // console.log("B", this.idAppendage);
-        // console.log("C", this.appendageOp);
-        // console.log("D", this.id);
-        // console.log("E", this.type);
     }
     analyze(context) {
-        // console.log("analyzing rec");
-=======
-    }
-    analyze(context) {
->>>>>>> fce8192b72c31c2199f534a1af599ae19782b59e
         this.idExpBody.analyze(context);
         this.idAppendage.analyze(context);
         this.id = this.idExpBody.id;
         this.type = this.idExpBody.type;
-<<<<<<< HEAD
-        // console.log("type", this.type);
-=======
 
-<<<<<<< HEAD
->>>>>>> fce8192b72c31c2199f534a1af599ae19782b59e
-=======
         if (this.appendageOp === ".") {
 
         } else if (this.appendageOp === "[]") {
@@ -724,15 +698,10 @@ class IdExpressionBodyRecursive {
             context.assertIsValidListAccess(this.idExpBody.id, this.idExpBody.type, this.idAppendage.type);
         }
 
->>>>>>> 3cb8ec8ab7fb0d9af52dec6b77890740ba7083b1
         if (this.idExpBody.type === TYPE.DICTIONARY && this.appendageOp === ".") {
             if (this.appendageOp === ".") {
                 context.assertUnaryOperandIsOneOfTypes(this.appendageOp, [TYPE.INTEGER], this.idAppendage.type);
             } else if (this.appendageOp === "[]") {
-<<<<<<< HEAD
-                // console.log("in if");
-=======
->>>>>>> fce8192b72c31c2199f534a1af599ae19782b59e
                 context.assertUnaryOperandIsOneOfTypes(this.appendageOp, [TYPE.STRING], this.idAppendage.type);
             }
         } else if (this.idExpBody.type === TYPE.LIST && this.appendageOp === "[]") {
