@@ -132,3 +132,23 @@ class Ball {                                 class Ball {
 bouncyBall = Ball(0.2)                       let bouncyBall = new Ball(0.2, 1.0);
 bouncyBall.is_round()                        bouncyBall.is_round();
 ```
+
+## Semantic Errors
+
+The following is a list of semantic errors and example output.
+
+* `changedImmutableType` : tried to change x from type INTEGER to STRING
+* `isNotAFunction` : f is not a function
+* `isNotAList` : l is not a list
+* `isNotADictionary` : d is not a dictionary
+* `invalidBinaryOperands` : LIST and INTEGER cannot be used with +
+* `invalidUnaryOperand` : STRING cannot be used with !
+* `parameterArgumentMismatch` : f has signature INT, LIST, FLOAT but was called with signature STRING, LIST, FLOAT
+* `expressionIsNotTypeBoolean` : x + 3 is type INTEGER but must be type BOOLEAN
+* `unusedLocalVariable` : local variable x is declared but never used
+* `useBeforeDeclaration` : tried to use x before it was declared
+* `returnOutsideFunction` : found a return statement outside of a function
+* `multipleReturnsInABlock` : found more than one return statement in a block
+* `cantResolveTypes` : cannot cast a STRING to a FLOAT
+* `invalidAccessType` : cannot use OBJECT to access LIST. Expected INTEGER
+* `noClassConstructor` : did not find a constructor in class C
