@@ -46,6 +46,7 @@ const semanticErrors = {
     invalidAccessType(lookUpType, receivedType, expectedType) {
         return `InvalidAccessType error: cannot use ${receivedType} to access ${lookUpType}. Expected ${expectedType}`;
     }
+    // TODO: add back usedBeforeDeclared. This would happen with x in the program "y = x + 1"
 };
 
 function checkArrayinArray(arrA, arrB) {
@@ -161,23 +162,13 @@ class Context {
         throw new Error(semanticErrors.cantResolveTypes(recievedType, dominantType))
     }
 
-    assertAccessType(lookUpType, receivedType) {
-        // if (lookUpType === )
+    throwNotAFunctionError(id) {
+        throw new Error(semanticErrors.isNotAFunction(id));
     }
 
-    // if (this.idExpBody.type === TYPE.DICTIONARY && this.appendageOp === ".") {
-    //     if (this.appendageOp === ".") {
-    //         context.assertUnaryOperandIsOneOfTypes(this.appendageOp, [TYPE.INTEGER], this.idAppendage.type);
-    //     } else if (this.appendageOp === "[]") {
-    //         console.log("in if");
-    //         context.assertUnaryOperandIsOneOfTypes(this.appendageOp, [TYPE.STRING], this.idAppendage.type);
-    //     }
-    // } else if (this.idExpBody.type === TYPE.LIST && this.appendageOp === "[]") {
-    //     context.assertUnaryOperandIsOneOfTypes(this.appendageOp, [TYPE.INTEGER], this.idAppendage.type);
-    // } else if (this.idExpBody.type === TYPE.FUNCTION && this.appendageOp === "()") {
-    //     context.assertUnaryOperandIsOneOfTypes(this.appendageOp, [TYPE.INTEGER], this.idAppendage.type);
-    //
-    // }
+    throwParameterArgumentMismatchError(id, parameterTypeList, argumentTypeList) {
+        throw new Error(semanticErrors.parameterArgumentMismatch(id, parameterTypeList, argumentTypeList));
+    }
 
     // Use these when a Program is newly created:
     // Context.INITIAL = new Context();  // eslint doesn't like the "." after Context ???

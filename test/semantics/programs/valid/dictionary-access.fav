@@ -1,5 +1,5 @@
 # Should analyze successfully since b has type dictionary and y has type string
 
-b = {one: 1, two: 2, three: 3}
+b = {one: 1, two: "asdf", three: 3}
 print(b.three)
 print(b["two"])
