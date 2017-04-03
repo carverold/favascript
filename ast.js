@@ -672,20 +672,22 @@ class IdExpressionBodyRecursive {
     analyze(context) {
         this.idExpBody.analyze(context);
         this.id = this.idExpBody.id;
-        this.type = this.idExpBody.type;
+        // this.type = this.idExpBody.type; NO- NEED TO BE MORE SPECIFIC
 
         if (this.appendageOp === "[]") {
-            this.idAppendage.analyze(context, this.idExpBody.id);
+            this.idAppendage.analyze(context);
             if (this.idExpBody.type == "undefined") {
                 this.idExpBody.enforceType(TYPE.LIST, context);
             }
-            context.assertIsValidListAccess(this.idExpBody.type, this.idAppendage.type);
+            context.assertIsValidListAccess(this.idExpBody.type, this.idAppendage.type);  // TODO: this.idAppendage.type is undefined
+            this.type = context.get(this.idExpBody.id).elementType;
         } else if (this.appendageOp === ".") {
             this.idAppendage.analyze(context);
             if (this.idExpBody.type == "undefined") {
                 this.idExpBody.enforceType(TYPE.DICTIONARY, context);
             }
             context.assertIsValidListAccess(this.idExpBody.type, this.idAppendage.type);
+            this.type = context.get(this.idExpBody.id).elementType;
         } else if (this.appendageOp === "()") {
             this.idAppendage.analyze(context);
             let entry = context.get(this.idExpBody.id);
@@ -744,8 +746,14 @@ class PeriodId {
     constructor(id) {
         this.id = id;
     }
-    analyze() {
-        // TODO
+    analyze(context) {
+
+        // TODO: Need to work on more pressing issues so will improve the obviously flawed dictionary access later
+        // this.variable.analyze(context);
+        // if (this.variable.type == "undefined") {
+        //     this.variable.enforceType(TYPE.INTEGER, context);
+        // }
+        this.type = TYPE.STRING; //this.variable.type;
     }
     getOp() {
         return ".";
@@ -785,12 +793,12 @@ class IdSelector {
         this.variable = variable;
         this.type;
     }
-    analyze(context, arrayId) {
+    analyze(context) {
         this.variable.analyze(context);
-        if (this.type == "undefined") {
+        if (this.variable.type == "undefined") {
             this.variable.enforceType(TYPE.INTEGER, context);
         }
-        this.type = context.get(arrayId).elementType;
+        this.type = this.variable.type;
     }
     getOp() {
         return "[]";
