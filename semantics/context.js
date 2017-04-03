@@ -24,8 +24,8 @@ const semanticErrors = {
         return `ParameterArgumentMismatch error: ${id} has signature ${parameterTypeList} `
             + `but was called with signature ${argumentTypeList}`;
     },
-    expressionIsNotTypeBoolean(exp, receivedType) {
-        return `ExpressionIsNotTypeBoolean error: ${exp} is type ${receivedType} but must be type BOOLEAN`;
+    expressionIsNotTypeBoolean(receivedType) {
+        return `ExpressionIsNotTypeBoolean error: expression is type ${receivedType} but must be type BOOLEAN`;
     },
     unusedLocalVariable(id) {
         return `UnusedLocalVariable error: local variable ${id} is declared but never used`;
@@ -150,9 +150,9 @@ class Context {
         }
     }
 
-    assertIsTypeBoolean(exp) {
-        if (!exp.type == "boolean") {
-            throw new Error(semanticErrors.expressionIsNotTypeBoolean(exp, exp.type));
+    assertIsTypeBoolean(type) {
+        if (type !== "BOOLEAN") {
+            throw new Error(semanticErrors.expressionIsNotTypeBoolean(type));
         }
     }
 

@@ -114,7 +114,7 @@ class BranchStatement extends Statement {
     analyze(context) {
         this.conditions.forEach(function(condition) {
             condition.analyze(context);
-            context.assertIsTypeBoolean(condition);
+            context.assertIsTypeBoolean(condition.returnType? condition.returnType : condition.type);
         });
         this.thenBlocks.forEach(block => block.analyze(context.createChildContextForBlock()));
         if (this.elseBlock !== null) {
@@ -175,6 +175,9 @@ class FunctionDeclarationStatement extends Statement {
                 signature.push(blockContext.get(parameter.id).type);
             }
         });
+
+        console.log(`returnType: ${this.block.returnType}`);
+
         context.setVariable(this.id, {type: TYPE.FUNCTION, returnType: this.block.returnType, parameters: signature});
     }
 
@@ -322,7 +325,7 @@ class AssignmentStatement extends Statement {
     }
     analyze(context) {
 
-        this.idExp.analyze(context);  // Will have id and type
+        this.idExp.analyze(context, true);  // Will have id and type
         this.exp.analyze(context);
 
         if (this.assignOp == "=") {
@@ -508,7 +511,7 @@ class BinaryExpression extends Expression {
         );
 
         // Should we be taking this.left.type or inferredType?
-        this.type = this.left.type;
+        this.type = ["<=", "<", ">=", ">"].indexOf(this.op) > -1 ? TYPE.BOOLEAN : this.left.type;
 
     }
     enforceType(type, context) {
@@ -611,8 +614,8 @@ class Variable extends Expression {
         this.var = variable;
         this.type;
     }
-    analyze(context) {
-        this.var.analyze(context);
+    analyze(context, beingAssignedTo = false) {
+        this.var.analyze(context, beingAssignedTo);
         this.type = this.var.type;
     }
     enforceType(type, context) {
@@ -639,13 +642,13 @@ class IdExpression extends Expression {
         this.type;
         this.returnType;
     }
-    analyze(context) {
-        this.idExpBody.analyze(context);
+    analyze(context, beingAssignedTo = false) {
+        this.idExpBody.analyze(context, beingAssignedTo);
         if (this.idPostOp == "++" || this.idPostOp == "--") {
             context.assertUnaryOperandIsOneOfTypes(this.idPostOp, [TYPE.INTEGER], this.idExpBody.type)
         }
         this.id = this.idExpBody.id;
-        this.type = this.idExpBody.type;
+        this.type = this.idExpBody.returnType ? this.idExpBody.returnType : this.idExpBody.type;
     }
     enforceType(type, context) {
         if (this.type == "undefined") {
@@ -671,8 +674,8 @@ class IdExpressionBodyRecursive {
         this.type;
         this.returnType;
     }
-    analyze(context) {
-        this.idExpBody.analyze(context);
+    analyze(context, beingAssignedTo = false) {
+        this.idExpBody.analyze(context, beingAssignedTo);
         this.id = this.idExpBody.id;
         // this.type = this.idExpBody.type; NO- NEED TO BE MORE SPECIFIC
 
@@ -725,16 +728,16 @@ class IdExpressionBodyBase {
         this.type;
         this.returnType;
     }
-    analyze(context) {
+    analyze(context, beingAssignedTo = false) {
         let entry = context.get(this.id, true);
         this.type = (typeof entry !== "undefined") ? entry.type : "undefined";
-        // if (entry !== "undefined") {
-        //     if (!context.isUndeclaredParameter(this.id)) {
-        //         context.throwUseBeforeDeclarationError(this.id);
-        //     }
-        // }
+        console.log(`Analyzed ${this.id}`);
+        if (this.type === "undefined" && !context.isUndeclaredParameter(this.id) && !beingAssignedTo) {
+            context.throwUseBeforeDeclarationError(this.id);
+        }
     }
     enforceType(type, context, returnType = "undefined") {
+        console.log(`Trying to enforce type ${type} for ${this.id}`);
         if (this.type === "undefined") {
             if (context.isUndeclaredParameter(this.id)) {
                 this.type = type;

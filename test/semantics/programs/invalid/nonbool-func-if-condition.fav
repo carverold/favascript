@@ -1,7 +1,7 @@
 # Should fail since the function doesn't return bool.
 
 isPositive(n) {
-    ret 43
+    ret n + 43
 }
 
 x = 5
