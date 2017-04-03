@@ -176,8 +176,6 @@ class FunctionDeclarationStatement extends Statement {
             }
         });
 
-        console.log(`returnType: ${this.block.returnType}`);
-
         context.setVariable(this.id, {type: TYPE.FUNCTION, returnType: this.block.returnType, parameters: signature});
     }
 
@@ -731,13 +729,11 @@ class IdExpressionBodyBase {
     analyze(context, beingAssignedTo = false) {
         let entry = context.get(this.id, true);
         this.type = (typeof entry !== "undefined") ? entry.type : "undefined";
-        console.log(`Analyzed ${this.id}`);
         if (this.type === "undefined" && !context.isUndeclaredParameter(this.id) && !beingAssignedTo) {
             context.throwUseBeforeDeclarationError(this.id);
         }
     }
     enforceType(type, context, returnType = "undefined") {
-        console.log(`Trying to enforce type ${type} for ${this.id}`);
         if (this.type === "undefined") {
             if (context.isUndeclaredParameter(this.id)) {
                 this.type = type;
