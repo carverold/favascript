@@ -265,8 +265,10 @@ class WhileStatement extends Statement {
         this.exp = exp;
         this.block = block;
     }
-    analyze() {
-        // TODO
+    analyze(context) {
+        exp.analyze(context);
+        context.assertIsTypeBoolean(exp.returnType? exp.returnType : exp.type);
+        this.block.analyze(context.createChildContextForBlock());
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(While` +
@@ -287,8 +289,11 @@ class ForInStatement extends Statement {
         this.iDExp = iDExp;
         this.block = block;
     }
-    analyze() {
-        // TODO
+    analyze(context) {
+        this.iDExp.analyze(context);
+        let blockContext = context.createChildContextForBlock();
+        blockContext.setVariable(this.id, {type: this.iDExp.returnType});
+        this.block.analyze(blockContext);
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(For id (${this.id}) in` +
