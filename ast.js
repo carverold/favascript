@@ -157,7 +157,6 @@ class FunctionDeclarationStatement extends Statement {
             parameter.analyze(context);
             if (parameter.defaultValue !== null) {
                 blockContext.setVariable(parameter.id, {type: parameter.defaultValue.type});
-                console.log(`Set ${parameter.id} to type ${parameter.defaultValue.type}`);
             } else {
                 blockContext.addUndeclaredParameter(parameter.id);
             }
@@ -304,6 +303,7 @@ class PrintStatement extends Statement {
         this.exp = exp;
     }
     analyze(context) {
+
         this.exp.analyze(context);
     }
     toString(indent = 0) {
@@ -480,8 +480,6 @@ class BinaryExpression extends Expression {
         this.right.analyze(context);
 
         if (this.left.type === "undefined") {
-            console.log("left:", this.left);
-            console.log("right:", this.right);
             this.left.enforceType(inferredType, context);
         }
 
@@ -504,7 +502,6 @@ class BinaryExpression extends Expression {
 
     }
     enforceType(type, context) {
-        console.log(`Enforcing type ${type} for BinaryExpression`);
         if (this.left.type == "undefined") {
             this.left.enforceType(type, context);
         }
@@ -560,7 +557,6 @@ class UnaryExpression extends Expression {
         this.type = this.operand.type;  // TODO: or should this be inferredType?
     }
     enforceType(type, context) {
-        console.log(`Enforcing type ${type} for UnaryExpression`);
         if (this.operand.type == "undefined") {
             this.operand.enforceType(type, context);
             this.type = this.operand.type;
@@ -585,7 +581,6 @@ class ParenthesisExpression extends Expression {
         this.type = this.exp.type;
     }
     enforceType(type, context) {
-        console.log(`Enforcing type ${type} for ParenthesisExpression`);
         if (this.exp.type == "undefined") {
             this.exp.enforceType(type, context);
             this.type = this.exp.type;
@@ -607,12 +602,10 @@ class Variable extends Expression {
         this.type;
     }
     analyze(context) {
-        console.log("Analyzing Variable");
         this.var.analyze(context);
         this.type = this.var.type;
     }
     enforceType(type, context) {
-        console.log(`Enforcing type ${type} for Variable`);
         if (this.type == "undefined") {
             this.var.enforceType(type, context);
             this.type = this.var.type;
@@ -645,7 +638,6 @@ class IdExpression extends Expression {
         this.type = this.idExpBody.type;
     }
     enforceType(type, context) {
-        console.log(`Enforcing type ${type} for IdExpression`);
         if (this.type == "undefined") {
             this.idExpBody.enforceType(type, context);
             this.type = this.idExpBody.type;
@@ -691,7 +683,6 @@ class IdExpressionBodyRecursive {
         } else if (this.appendageOp === "()") {
             this.idAppendage.analyze(context);
             let entry = context.get(this.idExpBody.id);
-            console.log("entry: ", entry);
             if (entry.type !== TYPE.FUNCTION) {
                 context.throwNotAFunctionError(this.idExpBody.id);
             }
@@ -701,7 +692,6 @@ class IdExpressionBodyRecursive {
         }
     }
     enforceType(type, context) {
-        console.log(`Enforcing type ${type} for IdExpressionBodyRecursive`);
         if (this.appendageOp === "[]") {
             this.returnType = type;
         }
@@ -728,12 +718,17 @@ class IdExpressionBodyBase {
     analyze(context) {
         let entry = context.get(this.id, true);
         this.type = (typeof entry !== "undefined") ? entry.type : "undefined";
+        // if (entry !== "undefined") {
+        //     if (!context.isUndeclaredParameter(this.id)) {
+        //         context.throwUseBeforeDeclarationError(this.id);
+        //     }
+        // }
     }
     enforceType(type, context, returnType = "undefined") {
         if (this.type === "undefined") {
             if (context.isUndeclaredParameter(this.id)) {
+                console.log(`${this.id} was an undeclared parameter`);
                 this.type = type;
-                console.log(`Enforcing type ${type} for id ${this.id}. Set variable.`)
                 if (returnType !== "undefined") {
                     context.setVariable(this.id, {type: type, returnType: returnType});
                     this.returnType = returnType;
@@ -742,13 +737,11 @@ class IdExpressionBodyBase {
                 }
                 context.removeUndeclaredParameter(this.id);
             } else {
+                console.log(`${this.id} was not an undeclared parameter`);
                 context.throwUseBeforeDeclarationError(this.id);
             }
         }
-        console.log("enforced type: ", type);
-        console.log("get id type: ", context.get(this.id).type);
         if (!canBeA(context.get(this.id).type, type)) {
-            console.log("inside base");
             this.context.throwCantResolveTypesError(this.type, type);
         }
     }

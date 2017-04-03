@@ -1,5 +1,4 @@
 const ASTClasses = require('../ast.js');
-console.log("CONTEXT: ", ASTClasses);
 
 const semanticErrors = {
     changedImmutableType(id, expectedType, receivedType) {
