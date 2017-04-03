@@ -2,12 +2,16 @@
 
 ## Introduction
 
-Favascript is a strongly and statically typed language that compiles down to Javascript. With type inference, first class functions, and other features, Favascript's goal is to enable a programmer to sketch out ideas quickly without sacrificing focus to lower-level details. For example, the language is designed with a minimalistic approach to reduce the amount of time programmers have to spend typing a worrying about language-specific syntax. Similarly, Favascript incorporates pattern matching and the for-in loop to produce a more intuitive programming language that cuts out unnecessary in-between logic. Favascript takes much inspiration from Python for its expressiveness and high-level abstraction.
+Favascript is a small, statically typed language that compiles down to Javascript. Notably, Favascript borrows simple syntax and type inference from Python, curly braces from Javascript and simplified matching from OCaml. Favascript's goal is to enable the programmer to sketch out ideas quickly. Explicit type declaration will be left later for programs like Java or C. Favascript is a testbed for ideas. For example, the language is designed with a minimalistic approach to reduce the amount of time programmers have to spend typing a worrying about types and language-specific syntax. Similarly, Favascript incorporates simple matching and the for-in loop to produce an easier coding experience.
+
+Favascript's most notable features include type inference, first class functions and higher-order functions. Types are never declared in Favascript - the language is not only able to infer types, but able to catch errors when implied types may be incompatible with the code. The language is also able to automatically convert between integers and floats if the given operation allows it. Constants are inferred through their all-capital identifiers.
+
+Taking inspiration from Python and OCaml, first class functions and higher-order functions enable Favascript to be highly expressive. Functions may be passed as arguments and used as parameters. Optional function parameters also make Favascript's functions more useful.
 
 ## Features
 * .fav File Extension
 * Curly Braces
-* Pattern Matching
+* Simple Matching
 * Object-oriented
 * First Class Functions
 * Higher Order Functions
@@ -30,8 +34,8 @@ Favascript is a strongly and statically typed language that compiles down to Jav
 * Float: `4.0`, `3.1415926`, `0.7734`
 * Boolean: `true`, `false`
 * String: `“fava”`, `“Don’t throw favas in the lavas”`, `“The fava said, \“I am delicious.\””`
-* List (Heterogeneous allowed): `[1, 2, 3, 4, 5]`, `[“I”, 8, 50.4, “favas”]`
-* Tuple (Heterogeneous allowed): `(30, 0.5, “fava”)`
+* List: `[1, 2, 3, 4, 5]`, `["I", "like", "fava", "beans"]`
+* Tuple: `(30, 0.5, “fava”)`
 * Dictionary: `{key:“value”, bestColor:“fava”, worstLanguage: “php”}`
 * Comments: `# Single line comment`
 
@@ -42,8 +46,8 @@ __Variable Declarations__
 
 ```
 name = "fav"                               let name = “fav”
-age = 21                                    var age = 21
-female = true                               let female = true
+age = 21                                   var age = 21
+female = true                              let female = true
 ```
 
 __Constant Declarations__
@@ -79,7 +83,7 @@ match fruit with
     | pear   -> puke.exe()                 if (fruit == pear) { puke.exe(); }
     | apple  -> puke.exe()                 else if (fruit == apple) { puke.exe(); }
     | banana -> puke.exe()                 else if (fruit == banana) { puke.exe(); }
-    | fava  -> observe("delicious")       else if (fruit == fava) {
+    | fava  -> observe("delicious")        else if (fruit == fava) {
                 observe("nutritious")          observe("delicious");
     | _      -> puke.exe()                     observe("nutritious");
                                            } else { puke.exe(); }
