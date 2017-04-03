@@ -691,18 +691,15 @@ class IdExpressionBodyRecursive {
 
         if (this.appendageOp === "[]") {
             if (this.idExpBody.type == "undefined") {
-                this.idExpBody.enforceType(TYPE.LIST);
+                this.idExpBody.enforceType(TYPE.LIST, context);
             }
             context.assertIsValidListAccess(this.idExpBody.type, this.idAppendage.type);
         } else if (this.appendageOp === ".") {
             if (this.idExpBody.type == "undefined") {
-                this.idExpBody.enforceType(TYPE.DICTIONARY);
+                this.idExpBody.enforceType(TYPE.DICTIONARY, context);
             }
             context.assertIsValidListAccess(this.idExpBody.type, this.idAppendage.type);
         } else if (this.appendageOp === "()") {
-            if (this.idExpBody.type !== TYPE.FUNCTION) {
-                this.context.throwNotAFunctionError(this.idExpBody.id);
-            }
             let entry = context.get(this.idExpBody.id);
             console.log("entry: ", entry);
             if (entry.type !== TYPE.FUNCTION) {
