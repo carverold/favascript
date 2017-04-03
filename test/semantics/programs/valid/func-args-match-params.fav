@@ -1,9 +1,9 @@
 # Should pass since function call arguments match function declaration parameters
 
-# Let arr be some integer array of at least length 2 and x and y be integers
-f(arr, x, y) {
+# Let x, y and z be integers
+f(x, y, z) {
     x /= y
-    ret x / arr[1] + y
+    ret x / z + y
 }
 
-print(f([3, 4, 89], 4, 7))
+print(f(4.2, 4, 7))

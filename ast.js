@@ -567,7 +567,7 @@ class UnaryExpression extends Expression {
 
         context.assertUnaryOperandIsOneOfTypes(this.op, expectedTypes, this.operand.type);
 
-        this.type = this.operand.type;  // TODO: or should this be inferredType?
+        this.type = this.operand.returnType ? this.operand.returnType : this.operand.type;
     }
     enforceType(type, context) {
         if (this.operand.type == "undefined") {
@@ -591,7 +591,7 @@ class ParenthesisExpression extends Expression {
     }
     analyze(context) {
         this.exp.analyze(context);
-        this.type = this.exp.type;
+        this.type = this.exp.returnType ? this.exp.returnType : this.exp.type;
     }
     enforceType(type, context) {
         if (this.exp.type == "undefined") {
@@ -613,10 +613,12 @@ class Variable extends Expression {
         super();
         this.var = variable;
         this.type;
+        this.returnType;
     }
     analyze(context, beingAssignedTo = false) {
         this.var.analyze(context, beingAssignedTo);
         this.type = this.var.type;
+        this.returnType = this.var.returnType;
     }
     enforceType(type, context) {
         if (this.type == "undefined") {
@@ -626,6 +628,7 @@ class Variable extends Expression {
         if (!canBeA(this.type, type)) {
             context.throwCantResolveTypesError(this.type, type);
         }
+        this.returnType = this.var.returnType;
     }
     toString(indent = 0) {
         // Don't increase indent, we already know literals and other data types are variables
@@ -649,6 +652,7 @@ class IdExpression extends Expression {
         }
         this.id = this.idExpBody.id;
         this.type = this.idExpBody.returnType ? this.idExpBody.returnType : this.idExpBody.type;
+        this.returnType = this.idExpBody.returnType;
     }
     enforceType(type, context) {
         if (this.type == "undefined") {
@@ -703,6 +707,7 @@ class IdExpressionBodyRecursive {
                 context.throwParameterArgumentMismatchError(this.idExpBody.id, entry.parameters, this.idAppendage.signature);
             }
         }
+        this.returnType = this.idExpBody.returnType;
     }
     enforceType(type, context) {
         if (this.appendageOp === "[]") {
@@ -731,6 +736,7 @@ class IdExpressionBodyBase {
     analyze(context, beingAssignedTo = false) {
         let entry = context.get(this.id, true);
         this.type = (typeof entry !== "undefined") ? entry.type : "undefined";
+        this.returnType = (typeof entry !== "undefined") ? entry.returnType : "undefined";
         console.log(`Analyzed ${this.id}`);
         if (this.type === "undefined" && !context.isUndeclaredParameter(this.id) && !beingAssignedTo) {
             context.throwUseBeforeDeclarationError(this.id);
