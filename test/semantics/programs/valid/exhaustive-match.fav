@@ -1,4 +1,5 @@
 # Should cover all possible matches of y without using "_"
+y = false
 
 match y with
     | true  -> "This language deserves an A"

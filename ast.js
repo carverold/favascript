@@ -250,8 +250,8 @@ class MatchStatement extends Statement {
         super();
         this.matchExp = matchExp;
     }
-    analyze() {
-        // TODO
+    analyze(context) {
+        this.matchExp.analyze(context);
     }
     toString(indent = 0) {
         return `${this.matchExp.toString(indent)}`;
@@ -403,8 +403,18 @@ class MatchExpression extends Expression {
         this.matchArray = matchArray;
         this.matchFinal = matchFinal;
     }
-    analyze() {
-        // TODO
+    analyze(context) {
+        this.idExp.analyze(context);
+        for (let v in this.varArray) {
+            this.varArray[v].analyze(context);
+            context.assertIsValidMatchVariable(this.idExp.type, this.varArray[v].type);
+        }
+        for (let m in this.matchArray) {
+            this.matchArray[m].analyze(context);
+            // TODO: Find out how to check matches' types in case we want to return them
+            // console.log("MATCH THING: ", this.matchArray[m].id, this.matchArray[m].type);
+            // context.assertIsValidMatchVariable(this.idExp.type, this.matchArray[m].type);
+        }
     }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent)}(Match Expression` +
@@ -434,8 +444,8 @@ class Match {
     constructor(matchee) {
         this.matchee = matchee;
     }
-    analyze() {
-        // TODO
+    analyze(context) {
+        this.matchee.analyze(context);
     }
     toString(indent = 0) {
         return `${this.matchee.toString(indent)}`;
@@ -727,7 +737,6 @@ class IdExpressionBodyBase {
     enforceType(type, context, returnType = "undefined") {
         if (this.type === "undefined") {
             if (context.isUndeclaredParameter(this.id)) {
-                console.log(`${this.id} was an undeclared parameter`);
                 this.type = type;
                 if (returnType !== "undefined") {
                     context.setVariable(this.id, {type: type, returnType: returnType});
@@ -737,7 +746,6 @@ class IdExpressionBodyBase {
                 }
                 context.removeUndeclaredParameter(this.id);
             } else {
-                console.log(`${this.id} was not an undeclared parameter`);
                 context.throwUseBeforeDeclarationError(this.id);
             }
         }

@@ -1,0 +1,6 @@
+x = "hello"
+match x with
+1 -> " world"
+2 -> " anson"
+3 -> " toal"
+_ -> " everyone else"

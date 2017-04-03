@@ -1,5 +1,5 @@
 # Should cover all possible matches for x using "_"
-
+x = 4
 match x with
     | 1 -> print("one")
     | 2 -> print("two")

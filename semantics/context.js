@@ -48,8 +48,10 @@ const semanticErrors = {
     },
     useBeforeDeclaration(id) {
         return `useBeforeDeclaration error: tried to use ${id} before it was declared`;
+    },
+    invalidMatchType(matcherType, matchVarType) {
+        return `InvalidMatchType error: can't match ${matcherType} with ${matchVarType}`;
     }
-    // TODO: add back usedBeforeDeclared. This would happen with x in the program "y = x + 1"
 };
 
 function checkArrayinArray(arrA, arrB) {
@@ -200,6 +202,12 @@ class Context {
 
     throwUseBeforeDeclarationError(id) {
         throw new Error(semanticErrors.useBeforeDeclaration(id));
+    }
+
+    assertIsValidMatchVariable(matcherType, matchVarType) {
+        if (matcherType !== matchVarType) {
+            throw new Error(semanticErrors.invalidMatchType(matcherType, matchVarType));
+        }
     }
 
     // Use these when a Program is newly created:
