@@ -14,7 +14,7 @@ tests = function(validFiles, invalidFiles) {
         it('parser\\programs\\valid\\' + file.name + ' should analyze without any errors',
           function() {
             //console.log(util.inspect(parser(file.code), {depth: null}));
-            parser.parse(file.code).analyze();
+            parser(file.code).analyze();
             //done();
         });
       });
@@ -25,7 +25,7 @@ tests = function(validFiles, invalidFiles) {
         it('parser\\programs\\invalid\\' + file.name + ' should throw a semantic error',
           function() {
             const errorPattern = /error/;
-            assert.throws(() => parser.parse(file.code).analyze(), errorPattern);
+            assert.throws(() => parser(file.code).analyze(), errorPattern);
             //done();
         });
       });

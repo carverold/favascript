@@ -1,5 +1,4 @@
-const parser = require('../parser.js');
-console.log("AST: ", parser);
+const parser = require('../ast.js');
 
 const semanticErrors = {
     changedImmutableType(id, expectedType, receivedType) {
