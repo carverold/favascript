@@ -671,28 +671,23 @@ class IdExpressionBodyRecursive {
     }
     analyze(context) {
         this.idExpBody.analyze(context);
-        this.idAppendage.analyze(context);
         this.id = this.idExpBody.id;
         this.type = this.idExpBody.type;
 
-        if (this.appendageOp === ".") {
-
-        } else if (this.appendageOp === "[]") {
-            if (this.idExpBody == "undefined") {
-                this.idExpBody.enforceType(TYPE.LIST);
+        if (this.appendageOp === "[]") {
+            this.idAppendage.analyze(context, this.idExpBody.id);
+            if (this.idExpBody.type == "undefined") {
+                this.idExpBody.enforceType(TYPE.LIST, context);
             }
-            context.assertIsValidListAccess(this.idExpBody.id, this.idExpBody.type, this.idAppendage.type);
-        }
-
-        if (this.idExpBody.type === TYPE.DICTIONARY && this.appendageOp === ".") {
-            if (this.appendageOp === ".") {
-                context.assertUnaryOperandIsOneOfTypes(this.appendageOp, [TYPE.INTEGER], this.idAppendage.type);
-            } else if (this.appendageOp === "[]") {
-                context.assertUnaryOperandIsOneOfTypes(this.appendageOp, [TYPE.STRING], this.idAppendage.type);
+            context.assertIsValidListAccess(this.idExpBody.type, this.idAppendage.type);
+        } else if (this.appendageOp === ".") {
+            this.idAppendage.analyze(context);
+            if (this.idExpBody.type == "undefined") {
+                this.idExpBody.enforceType(TYPE.DICTIONARY, context);
             }
-        } else if (this.idExpBody.type === TYPE.LIST && this.appendageOp === "[]") {
-            context.assertUnaryOperandIsOneOfTypes(this.appendageOp, [TYPE.INTEGER], this.idAppendage.type);
-        } else if (this.idExpBody.type === TYPE.FUNCTION && this.appendageOp === "()") {
+            context.assertIsValidListAccess(this.idExpBody.type, this.idAppendage.type);
+        } else if (this.appendageOp === "()") {
+            this.idAppendage.analyze(context);
             let entry = context.get(this.idExpBody.id);
             console.log("entry: ", entry);
             if (entry.type !== TYPE.FUNCTION) {
@@ -790,12 +785,12 @@ class IdSelector {
         this.variable = variable;
         this.type;
     }
-    analyze(context) {
+    analyze(context, arrayId) {
         this.variable.analyze(context);
         if (this.type == "undefined") {
-            this.variable.enforceType(TYPE.INTEGER);
+            this.variable.enforceType(TYPE.INTEGER, context);
         }
-        this.type = this.variable.type;
+        this.type = context.get(arrayId).elementType;
     }
     getOp() {
         return "[]";
@@ -809,9 +804,12 @@ class List {
     constructor(varList) {
         this.varList = varList;
         this.type = TYPE.LIST;
+        this.elementType;
     }
-    analyze() {
-        // TODO
+    analyze(context) {
+        let self = this;
+        this.varList.analyze(context);
+        this.elementType = this.varList.elementType;
     }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent)}(List`;
@@ -829,9 +827,12 @@ class Tuple {
     constructor(elems) {
         this.elems = elems;
         this.type = TYPE.TUPLE
+        this.elementType;
     }
-    analyze() {
-        // TODO
+    analyze(context) {
+        let self = this;
+        this.elems.analyze(context);
+        this.elementType = this.elems.elementType;
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(Tuple` +
@@ -844,6 +845,7 @@ class Dictionary {
     constructor(idValuePairs) {
         this.idValuePairs = idValuePairs;
         this.type = TYPE.DICTIONARY
+        // TODO: NEED AN ELEMENT TYPE (KEY VAL PAIR)
     }
     analyze() {
         // TODO
@@ -880,6 +882,7 @@ class VarList {
         this.variables = variables;
         this.length = variables.length;
         this.signature = [];
+        this.elementType;
     }
     analyze(context) {
         let self = this;
@@ -887,6 +890,9 @@ class VarList {
             variable.analyze(context);
             self.signature.push(variable.type)
         });
+        if (this.variables[0]) {  // This is horrendous code but we're running out of time
+            this.elementType = this.variables[0].type;
+        }
     }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent++)}(VarList`;

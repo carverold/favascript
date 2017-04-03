@@ -42,8 +42,9 @@ const semanticErrors = {
     cantResolveTypes(receivedType, dominantType) {
         return `CantResolveTypes error: cannot cast a ${receivedType} to a ${dominantType}`;
     },
-    invalidAccessType(lookUpType, receivedType, expectedType) {
-        return `InvalidAccessType error: cannot use ${receivedType} to access ${lookUpType}. Expected ${expectedType}`;
+    invalidAccessType(collectionType, receivedAccessorType, expectedAccessorType) {
+        return `InvalidAccessType error: cannot use ${receivedAccessorType} to access ` +
+            `${collectionType}. Expected ${expectedAccessorType}`;
     }
     // TODO: add back usedBeforeDeclared. This would happen with x in the program "y = x + 1"
 };
@@ -167,6 +168,14 @@ class Context {
 
     throwParameterArgumentMismatchError(id, parameterTypeList, argumentTypeList) {
         throw new Error(semanticErrors.parameterArgumentMismatch(id, parameterTypeList, argumentTypeList));
+    }
+
+    assertIsValidListAccess(collectionType, accessorType) {
+        if (collectionType === "DICTIONARY" && !(accessorType === "STRING")) {
+            throw new Error(semanticErrors.invalidAccessType("DICTIONARY", accessorType, "STRING"));
+        } else if (collectionType === "LIST" && !(accessorType === "INTEGER")) {
+            throw new Error(semanticErrors.invalidAccessType("LIST", accessorType, "INTEGER"));
+        }
     }
 
     // Use these when a Program is newly created:
