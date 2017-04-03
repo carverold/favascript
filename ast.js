@@ -158,8 +158,10 @@ class FunctionDeclarationStatement extends Statement {
         // If there is a default value, instantiate the variable in the block.
         // For all vars with a default, then they must match the type.
         this.parameterArray.forEach(function(parameter) {
+            parameter.analyze(context);
             if (parameter.defaultValue !== null) {
                 blockContext.setVariable(parameter.id, {type: parameter.defaultValue.type});
+                console.log(`Set ${parameter.id} to type ${parameter.defaultValue.type}`);
             }
         });
 
@@ -215,9 +217,11 @@ class Parameter {
     constructor(id, defaultValue) {
         this.id = id;
         this.defaultValue = defaultValue;
+        this.type;
     }
-    analyze() {
-        // TODO: I'm not sure there is anything semantic-wise to check here...
+    analyze(context) {
+        this.defaultValue.analyze(context);
+        this.type = this.defaultValue.type;
     }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent)}(id ${this.id}`;
@@ -327,9 +331,12 @@ class AssignmentStatement extends Statement {
         this.exp.analyze(context);
 
         if (this.assignOp == "=") {
-            // TODO: Not sure what the input id should be. Change from sourceString when we figure it out
-            // console.log(`Set ${this.idExp.id} to ${this.exp} with type ${this.exp.type}`);
-            context.setVariable(this.idExp.id, {type: this.exp.type});
+            console.log("assign exp type: ", this.exp.type);
+            if (this.exp.id !== "undefined") {
+                context.setVariable(this.idExp.id, {type: context.get(this.exp.id)});
+            } else {
+                context.setVariable(this.idExp.id, {type: this.exp.type});
+            }
         } else {
             let expectedPairs = [
                 [TYPE.INTEGER, TYPE. INTEGER],
@@ -1071,4 +1078,3 @@ module.exports = {
     ClassId: ClassId,
     Types: TYPE
 };
-console.log("AST: ", module.exports);
