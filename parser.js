@@ -33,6 +33,19 @@ function defineTypePairs() {
 }
 defineTypePairs();
 
+function canBeA(receivedType, dominantType) {
+    const FLOAT_ACCEPT = [
+        TYPE.FLOAT,
+        TYPE.INTEGER
+    ]
+    // TODO: undefined?
+    if (dominantType === TYPE.FLOAT) {
+        return FLOAT_ACCEPT.indexOf(receivedType) > -1;
+    } else {
+        return receivedType === dominantType;
+    }
+}
+
 function unpack(elem) {
     elem = elem.ast();
     elem = Array.isArray(elem) ? elem : [elem];
@@ -378,8 +391,8 @@ class IdentifierStatement extends Statement {
         super();
         this.iDExp = iDExp;
     }
-    analyze() {
-        // TODO
+    analyze(context) {
+        this.iDExp.analyze(context);
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(Identifier Statement` +
@@ -493,12 +506,14 @@ class BinaryExpression extends Expression {
         this.left.analyze(context);
         this.right.analyze(context);
 
-        if (this.left.type == undefined) {
-            this.left.enforceType(inferredType);
+        if (this.left.type === "undefined") {
+            console.log("left:", this.left);
+            console.log("right:", this.right);
+            this.left.enforceType(inferredType, context);
         }
 
-        if (this.right.type == undefined) {
-            this.right.enforceType(inferredType);
+        if (this.right.type === "undefined") {
+            this.right.enforceType(inferredType, context);
         }
 
         // TODO: What if inferredType is undefined, like when op = "==" or "!="?
@@ -515,19 +530,19 @@ class BinaryExpression extends Expression {
         this.type = this.left.type;
 
     }
-    enforceType(type) {
+    enforceType(type, context) {
         console.log(`Enforcing type ${type} for BinaryExpression`);
         if (this.left.type == "undefined") {
-            this.left.enforceType(type);
+            this.left.enforceType(type, context);
         }
         if (!canBeA(this.left.type, type)) {
-            this.context.throwCantResolveTypesError(this.left.type, type);
+            context.throwCantResolveTypesError(this.left.type, type);
         }
         if (this.right.type == "undefined") {
-            this.right.enforceType(type);
+            this.right.enforceType(type, context);
         }
         if (!canBeA(this.right.type, type)) {
-            this.context.throwCantResolveTypesError(this.right.type, type);
+            context.throwCantResolveTypesError(this.right.type, type);
         }
     }
     toString(indent = 0) {
@@ -563,21 +578,22 @@ class UnaryExpression extends Expression {
 
         this.operand.analyze(context);
 
-        if (this.operand.type == undefined) {
-            this.operand.enforceType(inferredType);
+        if (this.operand.type == "undefined") {
+            this.operand.enforceType(inferredType, context);
         }
 
         context.assertUnaryOperandIsOneOfTypes(this.op, expectedTypes, this.operand.type);
 
         this.type = this.operand.type;  // TODO: or should this be inferredType?
     }
-    enforceType(type) {
+    enforceType(type, context) {
         console.log(`Enforcing type ${type} for UnaryExpression`);
         if (this.operand.type == "undefined") {
-            this.operand.enforceType(type);
+            this.operand.enforceType(type, context);
+            this.type = this.operand.type;
         }
         if (!canBeA(this.operand.type, type)) {
-            this.context.throwCantResolveTypesError(this.operand.type, type);
+            context.throwCantResolveTypesError(this.operand.type, type);
         }
     }
     toString(indent = 0) {
@@ -595,6 +611,16 @@ class ParenthesisExpression extends Expression {
         this.exp.analyze(context);
         this.type = this.exp.type;
     }
+    enforceType(type, context) {
+        console.log(`Enforcing type ${type} for ParenthesisExpression`);
+        if (this.exp.type == "undefined") {
+            this.exp.enforceType(type, context);
+            this.type = this.exp.type;
+        }
+        if (!canBeA(this.exp.type, type)) {
+            context.throwCantResolveTypesError(this.exp.type, type);
+        }
+    }
     toString(indent = 0) {
         // Don't increase indent, as the semantic meaning of parenthesis are already captured in the tree
         return `${this.exp.toString(indent)}`;
@@ -608,8 +634,19 @@ class Variable extends Expression {
         this.type;
     }
     analyze(context) {
+        console.log("Analyzing Variable");
         this.var.analyze(context);
         this.type = this.var.type;
+    }
+    enforceType(type, context) {
+        console.log(`Enforcing type ${type} for Variable`);
+        if (this.type == "undefined") {
+            this.var.enforceType(type, context);
+            this.type = this.var.type;
+        }
+        if (!canBeA(this.type, type)) {
+            context.throwCantResolveTypesError(this.type, type);
+        }
     }
     toString(indent = 0) {
         // Don't increase indent, we already know literals and other data types are variables
@@ -633,13 +670,11 @@ class IdExpression extends Expression {
         this.id = this.idExpBody.id;
         this.type = this.idExpBody.type;
     }
-    enforceType(type) {
+    enforceType(type, context) {
         console.log(`Enforcing type ${type} for IdExpression`);
         if (this.type == "undefined") {
-            this.idExpBody.enforceType(type);
-        }
-        if (!canBeA(this.type, type)) {
-            this.context.throwCantResolveTypesError(this.type, type);
+            this.idExpBody.enforceType(type, context);
+            this.type = this.idExpBody.type;
         }
     }
     toString(indent = 0) {
@@ -677,13 +712,11 @@ class IdExpressionBodyRecursive {
 
         }
     }
-    enforceType(type) {
+    enforceType(type, context) {
         console.log(`Enforcing type ${type} for IdExpressionBodyRecursive`);
         if (this.type == "undefined") {
-            this.idExpBody.enforceType(type);
-        }
-        if (!canBeA(this.type, type)) {
-            this.context.throwCantResolveTypesError(this.type, type);
+            this.idExpBody.enforceType(type, context);
+            this.type = this.idExpBody.type;
         }
     }
     toString(indent = 0) {
@@ -703,13 +736,16 @@ class IdExpressionBodyBase {
         let entry = context.get(this.id, true);
         this.type = (typeof entry !== "undefined") ? entry.type : "undefined";
     }
-    enforceType(type) {
-        if (this.type == "undefined") {
+    enforceType(type, context) {
+        if (this.type === "undefined") {
             this.type = type;
             console.log(`Enforcing type ${type} for id ${this.id}. Set variable.`)
             context.setVariable(this.id, {type: type});
         }
-        if (!canBeA(this.type, type)) {
+        console.log("enforced type: ", type);
+        console.log("get id type: ", context.get(this.id).type);
+        if (!canBeA(context.get(this.id).type, type)) {
+            console.log("inside base");
             this.context.throwCantResolveTypesError(this.type, type);
         }
     }
@@ -740,10 +776,8 @@ class Arguments {
     }
     analyze(context) {
         let self = this;
-        this.args.forEach(function(argument) {
-            argument.analyze(context);
-            self.signature.push(argument.type)
-        });
+        this.args.analyze(context);
+        this.signature = this.args.signature;
     }
     getOp() {
         return "()";
@@ -851,9 +885,14 @@ class VarList {
     constructor(variables) {
         this.variables = variables;
         this.length = variables.length;
+        this.signature = [];
     }
-    analyze() {
-        // TODO
+    analyze(context) {
+        let self = this;
+        this.variables.forEach(function(variable) {
+            variable.analyze(context);
+            self.signature.push(variable.type)
+        });
     }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent++)}(VarList`;

@@ -42,6 +42,7 @@ const semanticErrors = {
     cantResolveTypes(receivedType, dominantType) {
         return `CantResolveTypes error: cannot cast a ${receivedType} to a ${dominantType}`;
     }
+    // TODO: add back usedBeforeDeclared. This would happen with x in the program "y = x + 1"
 };
 
 function checkArrayinArray(arrA, arrB) {
