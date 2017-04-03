@@ -689,24 +689,20 @@ class IdExpressionBodyRecursive {
         this.id = this.idExpBody.id;
         this.type = this.idExpBody.type;
 
-        if (this.appendageOp === ".") {
-
-        } else if (this.appendageOp === "[]") {
-            if (this.idExpBody == "undefined") {
+        if (this.appendageOp === "[]") {
+            if (this.idExpBody.type == "undefined") {
                 this.idExpBody.enforceType(TYPE.LIST);
             }
-            context.assertIsValidListAccess(this.idExpBody.id, this.idExpBody.type, this.idAppendage.type);
-        }
-
-        if (this.idExpBody.type === TYPE.DICTIONARY && this.appendageOp === ".") {
-            if (this.appendageOp === ".") {
-                context.assertUnaryOperandIsOneOfTypes(this.appendageOp, [TYPE.INTEGER], this.idAppendage.type);
-            } else if (this.appendageOp === "[]") {
-                context.assertUnaryOperandIsOneOfTypes(this.appendageOp, [TYPE.STRING], this.idAppendage.type);
+            context.assertIsValidListAccess(this.idExpBody.type, this.idAppendage.type);
+        } else if (this.appendageOp === ".") {
+            if (this.idExpBody.type == "undefined") {
+                this.idExpBody.enforceType(TYPE.DICTIONARY);
             }
-        } else if (this.idExpBody.type === TYPE.LIST && this.appendageOp === "[]") {
-            context.assertUnaryOperandIsOneOfTypes(this.appendageOp, [TYPE.INTEGER], this.idAppendage.type);
-        } else if (this.idExpBody.type === TYPE.FUNCTION && this.appendageOp === "()") {
+            context.assertIsValidListAccess(this.idExpBody.type, this.idAppendage.type);
+        } else if (this.appendageOp === "()") {
+            if (this.idExpBody.type !== TYPE.FUNCTION) {
+                this.context.throwNotAFunctionError(this.idExpBody.id);
+            }
             let entry = context.get(this.idExpBody.id);
             console.log("entry: ", entry);
             if (entry.type !== TYPE.FUNCTION) {
