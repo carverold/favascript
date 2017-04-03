@@ -24,11 +24,8 @@ const semanticErrors = {
         return `ParameterArgumentMismatch error: ${id} has signature ${parameterTypeList} `
             + `but was called with signature ${argumentTypeList}`;
     },
-    incompleteMatch() {
-        return `IncompleteMatch error: match statement is non-exhaustive`;
-    },
     expressionIsNotTypeBoolean(exp, receivedType) {
-        return `ExpressionIsNotTypeBoolean error: ${exp} is type ${receivedType} but must be type boolean`;
+        return `ExpressionIsNotTypeBoolean error: ${exp} is type ${receivedType} but must be type BOOLEAN`;
     },
     unusedLocalVariable(id) {
         return `UnusedLocalVariable error: local variable ${id} is declared but never used`;
