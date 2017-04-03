@@ -266,8 +266,8 @@ class WhileStatement extends Statement {
         this.block = block;
     }
     analyze(context) {
-        exp.analyze(context);
-        context.assertIsTypeBoolean(exp.returnType? exp.returnType : exp.type);
+        this.exp.analyze(context);
+        context.assertIsTypeBoolean(this.exp.returnType? this.exp.returnType : this.exp.type);
         this.block.analyze(context.createChildContextForBlock());
     }
     toString(indent = 0) {
