@@ -2,22 +2,48 @@ const ASTClasses = require('./ast.js');
 
 // From what I can tell, this modifies the existing Program class. TODO: Read up on "prototypes"
 
+////////////////////////////////////////////////////////////////////////////////
+// NOTE: All gen() functions return a string.
+//       Only statements new-line and indent.
+////////////////////////////////////////////////////////////////////////////////
+
+let INDENT = "    ";
+
 Object.assign(ASTClasses.Program.prototype, {
     gen() {
-        //this.statements.forEach(statement => statement.gen());
-        return "This is placeholder output for the generator";
+        return this.block.gen();
     }
 });
 
 Object.assign(ASTClasses.Block.prototype, {
     gen() {
-
+        let code = ``;
+        this.body.forEach(function(statement) {
+            code += `${statement.gen()}\n`;
+        })
+        return code;
     }
 });
 
 Object.assign(ASTClasses.BranchStatement.prototype, {
     gen() {
+        let code = ``;
+        let self = this;
+        this.thenBlocks.forEach(function (i, thenBlock) {
+            if (i === 1) {
+                code += `if `;
+            } else {
+                code += `else if `;
+            }
+            code += `(${self.conditions[0].gen()}) {\n${thenBlock.gen()}\n}`;
 
+            // NOTE: Include a \n between branches since Block only newlines at the end of statements
+            code += i === self.thenBlocks.length - 1 ? `` : `\n`;
+        })
+        if (this.elseBlock !== "undefined") {
+            code += `else {\n${this.elseBlock.gen()}\n}`;
+        }
+        return code;
     }
 });
 
