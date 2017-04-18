@@ -222,9 +222,10 @@ class FunctionDeclarationStatement extends Statement {
         this.parameterArray.forEach(function(parameter) {
             parameterArrayCode.push(parameter.gen());
         });
-        code += indentLine(`let ${this.id} = function (${`, `.join(parameterArrayCode)}) {\n`);
-        code += block.gen();  // remember: indentLineList called within block
-        code += indentLine(`}`);
+        code += indentLine(`let ${this.id} = function (${parameterArrayCode.join(`, `)}) {\n`);
+        code += this.block.gen();  // remember: indentLineList called within block
+        code += indentLine(`}\n`);
+        return code;
     }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent)}(Func` +
@@ -260,7 +261,7 @@ class Parameter {
         }
     }
     gen() {
-        return `${this.id}${this.defaultValue !== `undefined` ? ` = ${this.defaultValue.gen()}` : ``}`;
+        return `${this.id}${this.defaultValue !== `undefined` && this.defaultValue !== null ? ` = ${this.defaultValue.gen()}` : ``}`;
     }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent)}(id ${this.id}`;
@@ -768,7 +769,7 @@ class IdExpression extends Expression {
         }
     }
     gen() {
-        return `${this.idExpBody.gen()}${this.idPostOp}`;
+        return `${this.idExpBody.gen()}${this.idPostOp !== null ? `this.idPostOp` : ``}`;
     }
     toString(indent = 0) {
         return  `${spacer.repeat(indent)}(IdExpression\n` +
@@ -1032,7 +1033,7 @@ class Dictionary {
         this.idValuePairs.forEach(function(pair) {
             idValuePairsCode.push(pair.gen());
         })
-        return `{${", ".join(idValuePairsCode)}}`;
+        return `{${idValuePairsCode.join(`, `)}}`;
     }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent++)}(Dictionary`
@@ -1084,9 +1085,9 @@ class VarList {
     gen() {
         let variablesCode = [];
         this.variables.forEach(function(variable) {
-            variablesCode.push(variable.gen())
+            variablesCode.push(variable.gen());
         });
-        return `${`, `.join(variablesCode)}`;
+        return `${variablesCode.join(`, `)}`;
     }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent++)}(VarList`;
