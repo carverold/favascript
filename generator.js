@@ -218,48 +218,48 @@ Object.assign(ASTClasses.IdValuePair.prototype, {
 
 Object.assign(ASTClasses.VarList.prototype, {
     gen() {
-
+        
     }
 });
 
 Object.assign(ASTClasses.BoolLit.prototype, {
     gen() {
-
+        return `${this.boolVal}`;
     }
 });
 
 Object.assign(ASTClasses.IntLit.prototype, {
     gen() {
-
+        return `${this.digits}`;
     }
 });
 
 Object.assign(ASTClasses.FloatLit.prototype, {
     gen() {
-
+        return `${this.value}`;
     }
 });
 
 Object.assign(ASTClasses.StringLit.prototype, {
     gen() {
-
+        return `${this.value}`;
     }
 });
 
 Object.assign(ASTClasses.NullLit.prototype, {
     gen() {
-
+        return `null`;
     }
 });
 
 Object.assign(ASTClasses.ConstId.prototype, {
     gen() {
-
+        return `${this.id}`;
     }
 });
 
 Object.assign(ASTClasses.ClassId.prototype, {
     gen() {
-
+        return `${this.id}`;
     }
 });
