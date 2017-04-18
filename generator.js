@@ -41,7 +41,7 @@ Object.assign(ASTClasses.BranchStatement.prototype, {
         let code = ``;
         let self = this;
         this.thenBlocks.forEach(function (i, thenBlock) {
-            code += indentLine(`${i === 0 ? `if` : `else if`} (${self.conditions[0].gen()}) {`);
+            code += indentLine(`${i === 0 ? `if` : `else if`} (${self.conditions[i].gen()}) {`);
             code += `${thenBlock.gen()}`
             code += indentLine(`}\n`);
 
