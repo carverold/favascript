@@ -47,6 +47,7 @@ Object.assign(ASTClasses.BranchStatement.prototype, {
         this.thenBlocks.forEach(function (thenBlock, i) {
             code += indentLine(`${i === 0 ? `if` : `else if`} (${self.conditions[i].generator()}) {`);
             code += `${thenBlock.generator()}`
+
             code += indentLine(`}\n`);
         });
         if (this.elseBlock !== "undefined") {
@@ -228,42 +229,42 @@ Object.assign(ASTClasses.VarList.prototype, {
 
 Object.assign(ASTClasses.BoolLit.prototype, {
     generator() {
-
+        return `${this.boolVal}`;
     }
 });
 
 Object.assign(ASTClasses.IntLit.prototype, {
     generator() {
-
+        return `${this.digits}`;
     }
 });
 
 Object.assign(ASTClasses.FloatLit.prototype, {
     generator() {
-
+        return `${this.value}`;
     }
 });
 
 Object.assign(ASTClasses.StringLit.prototype, {
     generator() {
-
+        return `${this.value}`;
     }
 });
 
 Object.assign(ASTClasses.NullLit.prototype, {
     generator() {
-
+        return `null`;
     }
 });
 
 Object.assign(ASTClasses.ConstId.prototype, {
     generator() {
-
+        return `${this.id}`;
     }
 });
 
 Object.assign(ASTClasses.ClassId.prototype, {
     generator() {
-
+        return `${this.id}`;
     }
 });
