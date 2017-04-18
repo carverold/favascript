@@ -4,10 +4,25 @@ const ASTClasses = require('./ast.js');
 
 ////////////////////////////////////////////////////////////////////////////////
 // NOTE: All gen() functions return a string.
-//       Only statements new-line and indent.
+//       Only statements new-line.
 ////////////////////////////////////////////////////////////////////////////////
 
 let INDENT = "    ";
+let indentLevel = 0;
+
+function indentLine(line) {
+    return `${INDENT.repeat(indentLevel)}${line}`;
+}
+
+function indentLineList(statementList) {
+    let code = ``;
+    indentLevel += 1;
+    statementList.forEach(function(statement) {
+        code += statement.gen();
+    });
+    indentLevel -= 1;
+    return code;
+}
 
 Object.assign(ASTClasses.Program.prototype, {
     gen() {
@@ -30,11 +45,7 @@ Object.assign(ASTClasses.BranchStatement.prototype, {
         let code = ``;
         let self = this;
         this.thenBlocks.forEach(function (i, thenBlock) {
-            if (i === 1) {
-                code += `if `;
-            } else {
-                code += `else if `;
-            }
+            code += i === 0 ? `if ` : `else if `;
             code += `(${self.conditions[0].gen()}) {\n${thenBlock.gen()}\n}`;
 
             // NOTE: Include a \n between branches since Block only newlines at the end of statements
