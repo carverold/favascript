@@ -81,7 +81,7 @@ class Program {
         this.block.analyze(context);
     }
     gen() {
-        return this.block.gen();
+        return this.block.gen().slice(0, -1);  // slice to omit the last new line
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(Program` +
@@ -96,9 +96,6 @@ class Block {
         this.returnType;
         this.numberOfReturnStatements = 0;
     }
-    gen() {
-        return indentLineList(this.body);
-    }
     analyze(context) {
         let self = this;
         this.body.forEach(function(statement) {
@@ -112,6 +109,9 @@ class Block {
                 }
             }
         });
+    }
+    gen() {
+        return indentLineList(this.body);
     }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent++)}(Block`;
@@ -145,18 +145,15 @@ class BranchStatement extends Statement {
         }
     }
     gen() {
-        console.log(`DEBUG: BranchStatement gen was called`);
-        //return `yay`;
         let code = ``;
         let self = this;
         this.thenBlocks.forEach(function (thenBlock, i) {
-            code += indentLine(`${i === 0 ? `if` : `else if`} (${self.conditions[i].gen()}) {`);
+            code += indentLine(`${i === 0 ? `if` : `else if`} (${self.conditions[i].gen()}) {\n`);
             code += `${thenBlock.gen()}`
-
             code += indentLine(`}\n`);
         });
         if (this.elseBlock !== "undefined" && this.elseBlock !== null) {
-            code += indentLine(`else {`);
+            code += indentLine(`else {\n`);
             code += `${this.elseBlock.gen()}`;
             code += indentLine(`}\n`);
         }
@@ -220,7 +217,14 @@ class FunctionDeclarationStatement extends Statement {
         context.setVariable(this.id, {type: TYPE.FUNCTION, returnType: this.block.returnType, parameters: signature});
     }
     gen() {
-        return ``;
+        let code = ``;
+        let parameterArrayCode = [];
+        this.parameterArray.forEach(function(parameter) {
+            parameterArrayCode.push(parameter.gen());
+        });
+        code += indentLine(`let ${this.id} = function (${`, `.join(parameterArrayCode)}) {\n`);
+        code += block.gen();  // remember: indentLineList called within block
+        code += indentLine(`}`);
     }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent)}(Func` +
@@ -256,7 +260,7 @@ class Parameter {
         }
     }
     gen() {
-        return ``;
+        return `${this.id}${this.defaultValue !== `undefined` ? ` = ${this.defaultValue.gen()}` : ``}`;
     }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent)}(id ${this.id}`;
@@ -285,7 +289,11 @@ class ClassDeclarationStatement extends Statement {
         }
     }
     gen() {
-        return ``;
+        let code = ``;
+        code += indentLine(`${this.id} {\n`);
+        code += this.block.gen();
+        code += indentLine(`}`);
+        return code;
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(Class` +
@@ -304,7 +312,7 @@ class MatchStatement extends Statement {
         this.matchExp.analyze(context);
     }
     gen() {
-        return ``;
+        return `TODO: MatchStatement`;
     }
     toString(indent = 0) {
         return `${this.matchExp.toString(indent)}`;
@@ -323,7 +331,11 @@ class WhileStatement extends Statement {
         this.block.analyze(context.createChildContextForBlock());
     }
     gen() {
-        return ``;
+        let code = ``;
+        code += indentLine(`while (${this.exp.gen()}) {`);
+        code += this.block.gen();
+        code += indentLine(`}`);
+        return code;
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(While` +
@@ -351,7 +363,11 @@ class ForInStatement extends Statement {
         this.block.analyze(blockContext);
     }
     gen() {
-        return ``;
+        let code = ``;
+        code += indentLine(`for (var ${this.id} in ${this.iDExp.gen()}) {`);
+        code += this.block.gen();
+        code += identLine(`}`);
+        return code;
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(For id (${this.id}) in` +
@@ -367,11 +383,10 @@ class PrintStatement extends Statement {
         this.exp = exp;
     }
     analyze(context) {
-
         this.exp.analyze(context);
     }
     gen() {
-        return ``;
+        return indentLine(`console.log(${this.exp.gen()});\n`);
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(Print` +
@@ -419,7 +434,7 @@ class AssignmentStatement extends Statement {
         }
     }
     gen() {
-        return ``;
+        return indentLine(`${this.assignOp === `=` ? `let ` : ``}${this.idExp.gen()} ${this.assignOp} ${this.exp.gen()};\n`);
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.assignOp}` +
@@ -438,7 +453,7 @@ class IdentifierStatement extends Statement {
         this.iDExp.analyze(context);
     }
     gen() {
-        return ``;
+        return indentLine(`${this.iDExp.gen()};\n`);
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(Identifier Statement` +
@@ -459,7 +474,7 @@ class ReturnStatement extends Statement {
         this.returnType = this.exp.type;
     }
     gen() {
-        return ``;
+        return indentLine(`return ${this.exp.gen()};\n`);
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(Return` +
@@ -493,7 +508,7 @@ class MatchExpression extends Expression {
         }
     }
     gen() {
-        return ``;
+        return `TODO: MatchExpression gen`;
     }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent)}(Match Expression` +
@@ -527,7 +542,7 @@ class Match {
         this.matchee.analyze(context);
     }
     gen() {
-        return ``;
+        return `TODO: Match gen`;
     }
     toString(indent = 0) {
         return `${this.matchee.toString(indent)}`;
@@ -608,7 +623,7 @@ class BinaryExpression extends Expression {
         }
     }
     gen() {
-        return ``;
+        return `${this.left.gen()} ${this.op} ${this.right.gen()}`;
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.op}` +
@@ -661,7 +676,7 @@ class UnaryExpression extends Expression {
         }
     }
     gen() {
-        return ``;
+        return `${this.op}${this.operand.gen()}`;
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.op}\n${this.operand.toString(++indent)})`;
@@ -688,7 +703,7 @@ class ParenthesisExpression extends Expression {
         }
     }
     gen() {
-        return ``;
+        return `(${this.exp.gen()})`;
     }
     toString(indent = 0) {
         // Don't increase indent, as the semantic meaning of parenthesis are already captured in the tree
@@ -719,7 +734,7 @@ class Variable extends Expression {
         this.returnType = this.var.returnType;
     }
     gen() {
-        return ``;
+        return `${this.var.gen()}`;
     }
     toString(indent = 0) {
         // Don't increase indent, we already know literals and other data types are variables
@@ -753,7 +768,7 @@ class IdExpression extends Expression {
         }
     }
     gen() {
-        return ``;
+        return `${this.idExpBody.gen()}${this.idPostOp}`;
     }
     toString(indent = 0) {
         return  `${spacer.repeat(indent)}(IdExpression\n` +
@@ -814,7 +829,16 @@ class IdExpressionBodyRecursive {
         }
     }
     gen() {
-        return ``;
+        let code = `${this.idExpBody.gen()}`;
+        let appendageCode = `${this.idAppendage.gen()}`;
+        if (this.appendageOp === "[]") {
+            code += `[${appendageCode}]`;
+        } else if (this.appendageOp === ".") {
+            code += `.${appendageCode}`;
+        } else if (this.appendageOp === "()") {
+            code += `(${appendageCode})`;
+        }
+        return code;
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.appendageOp}` +
@@ -858,7 +882,7 @@ class IdExpressionBodyBase {
         }
     }
     gen() {
-        return ``;
+        return `${this.id}`;
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.id})`;
@@ -882,7 +906,7 @@ class PeriodId {
         return ".";
     }
     gen() {
-        return ``;
+        return `${this.id}`;
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.id.toString(++indent)})`;
@@ -903,7 +927,7 @@ class Arguments {
         return "()";
     }
     gen() {
-        return ``;
+        return `${this.args.gen()}`;
     }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent)}(Arguments`;
@@ -933,7 +957,7 @@ class IdSelector {
         return "[]";
     }
     gen() {
-        return ``;
+        return `${this.variable}`;
     }
     toString(indent = 0) {
         return `${this.variable.toString(indent)}`;
@@ -952,7 +976,7 @@ class List {
         this.elementType = this.varList.elementType;
     }
     gen() {
-        return ``;
+        return `[${this.varList.gen()}]`;
     }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent)}(List`;
@@ -978,7 +1002,7 @@ class Tuple {
         this.elementType = this.elems.elementType;
     }
     gen() {
-        return ``;
+        return `(${this.elems.gen()})`;
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(Tuple` +
@@ -1004,7 +1028,11 @@ class Dictionary {
         }
     }
     gen() {
-        return ``;
+        let idValuePairsCode = [];
+        this.idValuePairs.forEach(function(pair) {
+            idValuePairsCode.push(pair.gen());
+        })
+        return `{${", ".join(idValuePairsCode)}}`;
     }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent++)}(Dictionary`
@@ -1029,7 +1057,7 @@ class IdValuePair {
         this.variable.analyze(context);
     }
     gen() {
-        return ``;
+        return `${this.id}: ${this.variable.gen()}`;
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.id} : ${this.variable.toString()})`;
@@ -1054,7 +1082,11 @@ class VarList {
         }
     }
     gen() {
-        return ``;
+        let variablesCode = [];
+        this.variables.forEach(function(variable) {
+            variablesCode.push(variable.gen())
+        });
+        return `${`, `.join(variablesCode)}`;
     }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent++)}(VarList`;
@@ -1105,7 +1137,7 @@ class StringLit {
     }
     analyze() {}
     gen() {
-        return `${this.value}`;
+        return `\`${this.value}\``;
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.value})`;
