@@ -44,9 +44,6 @@ Object.assign(ASTClasses.BranchStatement.prototype, {
             code += indentLine(`${i === 0 ? `if` : `else if`} (${self.conditions[0].gen()}) {`);
             code += `${thenBlock.gen()}`
             code += indentLine(`}\n`);
-
-            // NOTE: Include a \n between branches since Block only newlines at the end of statements
-            code += i === self.thenBlocks.length - 1 ? `` : `\n`;
         })
         if (this.elseBlock !== "undefined") {
             code += indentLine(`else {`);
