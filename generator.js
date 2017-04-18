@@ -222,7 +222,7 @@ Object.assign(ASTClasses.IdValuePair.prototype, {
 
 Object.assign(ASTClasses.VarList.prototype, {
     gen() {
-
+        return ``;
     }
 });
 

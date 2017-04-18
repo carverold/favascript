@@ -5,7 +5,7 @@ const grammar = ohm.grammar(grammarContents);
 const Context = require('./semantics/context');
 
 let INDENT = "    ";
-let indentLevel = 0;
+let indentLevel = -1;  // Initialize at -1 since Program Block will automatically increment
 
 function indentLine(line) {
     return `${INDENT.repeat(indentLevel)}${line}`;
@@ -146,7 +146,7 @@ class BranchStatement extends Statement {
     }
     gen() {
         console.log(`DEBUG: BranchStatement gen was called`);
-        return `yay`;
+        //return `yay`;
         let code = ``;
         let self = this;
         this.thenBlocks.forEach(function (thenBlock, i) {
@@ -155,7 +155,7 @@ class BranchStatement extends Statement {
 
             code += indentLine(`}\n`);
         });
-        if (this.elseBlock !== "undefined") {
+        if (this.elseBlock !== "undefined" && this.elseBlock !== null) {
             code += indentLine(`else {`);
             code += `${this.elseBlock.gen()}`;
             code += indentLine(`}\n`);
@@ -219,7 +219,9 @@ class FunctionDeclarationStatement extends Statement {
 
         context.setVariable(this.id, {type: TYPE.FUNCTION, returnType: this.block.returnType, parameters: signature});
     }
-
+    gen() {
+        return ``;
+    }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent)}(Func` +
                     `\n${spacer.repeat(++indent)}(id ${this.id})` +
@@ -253,6 +255,9 @@ class Parameter {
             this.type = "undefined";
         }
     }
+    gen() {
+        return ``;
+    }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent)}(id ${this.id}`;
         if(this.defaultValue !== null) {
@@ -279,6 +284,9 @@ class ClassDeclarationStatement extends Statement {
             context.setVariable(this.id, {type: TYPE.FUNCTION, returnType: TYPE.OBJECT, parameters: constructorFunction.parameters});
         }
     }
+    gen() {
+        return ``;
+    }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(Class` +
                `\n${spacer.repeat(++indent)}(id ${this.id})` +
@@ -295,6 +303,9 @@ class MatchStatement extends Statement {
     analyze(context) {
         this.matchExp.analyze(context);
     }
+    gen() {
+        return ``;
+    }
     toString(indent = 0) {
         return `${this.matchExp.toString(indent)}`;
     }
@@ -310,6 +321,9 @@ class WhileStatement extends Statement {
         this.exp.analyze(context);
         context.assertIsTypeBoolean(this.exp.returnType? this.exp.returnType : this.exp.type);
         this.block.analyze(context.createChildContextForBlock());
+    }
+    gen() {
+        return ``;
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(While` +
@@ -336,6 +350,9 @@ class ForInStatement extends Statement {
         blockContext.setVariable(this.id, {type: this.iDExp.returnType});
         this.block.analyze(blockContext);
     }
+    gen() {
+        return ``;
+    }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(For id (${this.id}) in` +
                `\n${this.iDExp.toString(++indent)}` +
@@ -352,6 +369,9 @@ class PrintStatement extends Statement {
     analyze(context) {
 
         this.exp.analyze(context);
+    }
+    gen() {
+        return ``;
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(Print` +
@@ -398,6 +418,9 @@ class AssignmentStatement extends Statement {
             );
         }
     }
+    gen() {
+        return ``;
+    }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.assignOp}` +
                `\n${this.idExp.toString(++indent)}` +
@@ -413,6 +436,9 @@ class IdentifierStatement extends Statement {
     }
     analyze(context) {
         this.iDExp.analyze(context);
+    }
+    gen() {
+        return ``;
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(Identifier Statement` +
@@ -431,6 +457,9 @@ class ReturnStatement extends Statement {
         context.assertReturnInFunction();
         this.exp.analyze(context);
         this.returnType = this.exp.type;
+    }
+    gen() {
+        return ``;
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(Return` +
@@ -463,6 +492,9 @@ class MatchExpression extends Expression {
             // context.assertIsValidMatchVariable(this.idExp.type, this.matchArray[m].type);
         }
     }
+    gen() {
+        return ``;
+    }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent)}(Match Expression` +
                      `\n${this.idExp.toString(++indent)}` +
@@ -493,6 +525,9 @@ class Match {
     }
     analyze(context) {
         this.matchee.analyze(context);
+    }
+    gen() {
+        return ``;
     }
     toString(indent = 0) {
         return `${this.matchee.toString(indent)}`;
@@ -572,6 +607,9 @@ class BinaryExpression extends Expression {
             context.throwCantResolveTypesError(this.right.type, type);
         }
     }
+    gen() {
+        return ``;
+    }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.op}` +
                `\n${this.left.toString(++indent)}` +
@@ -622,6 +660,9 @@ class UnaryExpression extends Expression {
             context.throwCantResolveTypesError(this.operand.type, type);
         }
     }
+    gen() {
+        return ``;
+    }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.op}\n${this.operand.toString(++indent)})`;
     }
@@ -645,6 +686,9 @@ class ParenthesisExpression extends Expression {
         if (!canBeA(this.exp.type, type)) {
             context.throwCantResolveTypesError(this.exp.type, type);
         }
+    }
+    gen() {
+        return ``;
     }
     toString(indent = 0) {
         // Don't increase indent, as the semantic meaning of parenthesis are already captured in the tree
@@ -673,6 +717,9 @@ class Variable extends Expression {
             context.throwCantResolveTypesError(this.type, type);
         }
         this.returnType = this.var.returnType;
+    }
+    gen() {
+        return ``;
     }
     toString(indent = 0) {
         // Don't increase indent, we already know literals and other data types are variables
@@ -704,6 +751,9 @@ class IdExpression extends Expression {
             this.type = this.idExpBody.type;
             this.returnType = this.returnType;
         }
+    }
+    gen() {
+        return ``;
     }
     toString(indent = 0) {
         return  `${spacer.repeat(indent)}(IdExpression\n` +
@@ -763,6 +813,9 @@ class IdExpressionBodyRecursive {
             this.returnType = this.idExpBody.returnType;
         }
     }
+    gen() {
+        return ``;
+    }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.appendageOp}` +
                `\n${this.idExpBody.toString(++indent)}` +
@@ -804,6 +857,9 @@ class IdExpressionBodyBase {
             this.context.throwCantResolveTypesError(this.type, type);
         }
     }
+    gen() {
+        return ``;
+    }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.id})`;
     }
@@ -825,6 +881,9 @@ class PeriodId {
     getOp() {
         return ".";
     }
+    gen() {
+        return ``;
+    }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.id.toString(++indent)})`;
     }
@@ -842,6 +901,9 @@ class Arguments {
     }
     getOp() {
         return "()";
+    }
+    gen() {
+        return ``;
     }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent)}(Arguments`;
@@ -870,6 +932,9 @@ class IdSelector {
     getOp() {
         return "[]";
     }
+    gen() {
+        return ``;
+    }
     toString(indent = 0) {
         return `${this.variable.toString(indent)}`;
     }
@@ -885,6 +950,9 @@ class List {
         let self = this;
         this.varList.analyze(context);
         this.elementType = this.varList.elementType;
+    }
+    gen() {
+        return ``;
     }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent)}(List`;
@@ -909,6 +977,9 @@ class Tuple {
         this.elems.analyze(context);
         this.elementType = this.elems.elementType;
     }
+    gen() {
+        return ``;
+    }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(Tuple` +
                `\n${this.elems.toString(++indent)}` +
@@ -932,6 +1003,9 @@ class Dictionary {
             context.assertTypesAreHomogeneous(this.valueType, this.idValuePairs[p].variable.type);
         }
     }
+    gen() {
+        return ``;
+    }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent++)}(Dictionary`
         if (this.idValuePairs.length !== 0) {
@@ -953,6 +1027,9 @@ class IdValuePair {
     }
     analyze(context) {
         this.variable.analyze(context);
+    }
+    gen() {
+        return ``;
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.id} : ${this.variable.toString()})`;
@@ -976,6 +1053,9 @@ class VarList {
             this.elementType = this.variables[0].type;
         }
     }
+    gen() {
+        return ``;
+    }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent++)}(VarList`;
         if (this.variables.length !== 0) {
@@ -996,6 +1076,9 @@ class IntLit {
         this.type = TYPE.INTEGER;
     }
     analyze() {}
+    gen() {
+        return `${this.digits}`;
+    }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.digits})`;
     }
@@ -1007,6 +1090,9 @@ class FloatLit {
         this.type = TYPE.FLOAT;
     }
     analyze() {}
+    gen() {
+        return `${this.value}`;
+    }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.value})`;
     }
@@ -1018,6 +1104,9 @@ class StringLit {
         this.type = TYPE.STRING;
     }
     analyze() {}
+    gen() {
+        return `${this.value}`;
+    }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.value})`;
     }
@@ -1029,6 +1118,9 @@ class BoolLit {
         this.type = TYPE.BOOLEAN;
     }
     analyze() {}
+    gen() {
+        return `${this.boolVal}`;
+    }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.boolVal})`;
     }
@@ -1039,6 +1131,9 @@ class NullLit {
         this.type = TYPE.NULL
     }
     analyze() {}
+    gen() {
+        return `null`;
+    }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(null)`;
     }
@@ -1077,6 +1172,9 @@ class ConstId {
             this.context.throwCantResolveTypesError(this.type, type);
         }
     }
+    gen() {
+        return `${this.id}`;
+    }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(\n${this.id})`;
     }
@@ -1114,6 +1212,9 @@ class ClassId {
         if (!canBeA(context.get(this.id).type, type)) {
             this.context.throwCantResolveTypesError(this.type, type);
         }
+    }
+    gen() {
+        return `${this.id}`;
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(\n${this.id})`;
