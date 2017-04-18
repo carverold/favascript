@@ -1,4 +1,4 @@
-[<img src="https://raw.githubusercontent.com/AnsonAdams/favascript/master/images/Favascript%20logo.png">](https://ansonadams.github.io/favascript/)
+[<img src="images/Favascript%20logo%202.png">](https://ansonadams.github.io/favascript/)
 
 ## Introduction
 
