@@ -4,6 +4,23 @@ const grammarContents = fs.readFileSync('favascript.ohm');
 const grammar = ohm.grammar(grammarContents);
 const Context = require('./semantics/context');
 
+let INDENT = "    ";
+let indentLevel = 0;
+
+function indentLine(line) {
+    return `${INDENT.repeat(indentLevel)}${line}`;
+}
+
+function indentLineList(statementList) {
+    let code = ``;
+    indentLevel += 1;
+    statementList.forEach(function(statement) {
+        code += `${statement.gen()}`;
+    });
+    indentLevel -= 1;
+    return code;
+}
+
 const spacer = "  ";
 
 const TYPE = {
@@ -63,6 +80,9 @@ class Program {
         // context.parent should equal null.
         this.block.analyze(context);
     }
+    gen() {
+        return this.block.gen();
+    }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(Program` +
                `\n${this.block.toString(++indent)}` +
@@ -75,6 +95,9 @@ class Block {
         this.body = body;
         this.returnType;
         this.numberOfReturnStatements = 0;
+    }
+    gen() {
+        return indentLineList(this.body);
     }
     analyze(context) {
         let self = this;
@@ -120,6 +143,24 @@ class BranchStatement extends Statement {
         if (this.elseBlock !== null) {
             this.elseBlock.analyze(context.createChildContextForBlock());
         }
+    }
+    gen() {
+        console.log(`DEBUG: BranchStatement gen was called`);
+        return `yay`;
+        let code = ``;
+        let self = this;
+        this.thenBlocks.forEach(function (thenBlock, i) {
+            code += indentLine(`${i === 0 ? `if` : `else if`} (${self.conditions[i].gen()}) {`);
+            code += `${thenBlock.gen()}`
+
+            code += indentLine(`}\n`);
+        });
+        if (this.elseBlock !== "undefined") {
+            code += indentLine(`else {`);
+            code += `${this.elseBlock.gen()}`;
+            code += indentLine(`}\n`);
+        }
+        return code;
     }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent++)}(If`;

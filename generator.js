@@ -1,10 +1,10 @@
 const ASTClasses = require('./ast.js');
 util = require('util');  // Just for debugging purposes
 
-// BUG: When the generator function is called `gen`, it is never called. ???
+// BUG: When the gen function is called `gen`, it is never called. ???
 
 ////////////////////////////////////////////////////////////////////////////////
-// NOTE: All generator() functions return a string.
+// NOTE: All gen() functions return a string.
 //       Only statements new-line.
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -18,41 +18,40 @@ function indentLine(line) {
 function indentLineList(statementList) {
     let code = ``;
     indentLevel += 1;
-    statementList
     statementList.forEach(function(statement) {
-        code += `${statement.generator()}`;
+        code += `${statement.gen()}`;
     });
     indentLevel -= 1;
     return code;
 }
 
 Object.assign(ASTClasses.Program.prototype, {
-    generator() {
-        return this.block.generator();
+    gen() {
+        return this.block.gen();
     },
 });
 
 Object.assign(ASTClasses.Block.prototype, {
-    generator() {
+    gen() {
         return indentLineList(this.body);
     },
 });
 
 Object.assign(ASTClasses.BranchStatement.prototype, {
-    generator() {
-        console.log(`DEBUG: BranchStatement generator was called`);
+    gen() {
+        console.log(`DEBUG: BranchStatement gen was called`);
         return `yay`;
         let code = ``;
         let self = this;
         this.thenBlocks.forEach(function (thenBlock, i) {
-            code += indentLine(`${i === 0 ? `if` : `else if`} (${self.conditions[i].generator()}) {`);
-            code += `${thenBlock.generator()}`
+            code += indentLine(`${i === 0 ? `if` : `else if`} (${self.conditions[i].gen()}) {`);
+            code += `${thenBlock.gen()}`
 
             code += indentLine(`}\n`);
         });
         if (this.elseBlock !== "undefined") {
             code += indentLine(`else {`);
-            code += `${this.elseBlock.generator()}`;
+            code += `${this.elseBlock.gen()}`;
             code += indentLine(`}\n`);
         }
         return code;
@@ -60,211 +59,211 @@ Object.assign(ASTClasses.BranchStatement.prototype, {
 });
 
 Object.assign(ASTClasses.FunctionDeclarationStatement.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.ClassDeclarationStatement.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.MatchStatement.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.BranchStatement.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.WhileStatement.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.ForInStatement.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.PrintStatement.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.AssignmentStatement.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.IdentifierStatement.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.ReturnStatement.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.MatchExpression.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.Match.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.Parameter.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.BinaryExpression.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.UnaryExpression.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.ParenthesisExpression.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.Variable.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.IdExpression.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.IdExpressionBodyRecursive.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.IdExpressionBodyBase.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.PeriodId.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.Arguments.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.IdSelector.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.List.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.Tuple.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.Dictionary.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.IdValuePair.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.VarList.prototype, {
-    generator() {
+    gen() {
 
     }
 });
 
 Object.assign(ASTClasses.BoolLit.prototype, {
-    generator() {
+    gen() {
         return `${this.boolVal}`;
     }
 });
 
 Object.assign(ASTClasses.IntLit.prototype, {
-    generator() {
+    gen() {
         return `${this.digits}`;
     }
 });
 
 Object.assign(ASTClasses.FloatLit.prototype, {
-    generator() {
+    gen() {
         return `${this.value}`;
     }
 });
 
 Object.assign(ASTClasses.StringLit.prototype, {
-    generator() {
+    gen() {
         return `${this.value}`;
     }
 });
 
 Object.assign(ASTClasses.NullLit.prototype, {
-    generator() {
+    gen() {
         return `null`;
     }
 });
 
 Object.assign(ASTClasses.ConstId.prototype, {
-    generator() {
+    gen() {
         return `${this.id}`;
     }
 });
 
 Object.assign(ASTClasses.ClassId.prototype, {
-    generator() {
+    gen() {
         return `${this.id}`;
     }
 });
