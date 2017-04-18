@@ -32,11 +32,7 @@ Object.assign(ASTClasses.Program.prototype, {
 
 Object.assign(ASTClasses.Block.prototype, {
     gen() {
-        let code = ``;
-        this.body.forEach(function(statement) {
-            code += `${statement.gen()}\n`;
-        })
-        return code;
+        return indentLineList(this.body);
     }
 });
 
@@ -45,14 +41,17 @@ Object.assign(ASTClasses.BranchStatement.prototype, {
         let code = ``;
         let self = this;
         this.thenBlocks.forEach(function (i, thenBlock) {
-            code += i === 0 ? `if ` : `else if `;
-            code += `(${self.conditions[0].gen()}) {\n${thenBlock.gen()}\n}`;
+            code += indentLine(`${i === 0 ? `if` : `else if`} (${self.conditions[0].gen()}) {`);
+            code += `${thenBlock.gen()}`
+            code += indentLine(`}\n`);
 
             // NOTE: Include a \n between branches since Block only newlines at the end of statements
             code += i === self.thenBlocks.length - 1 ? `` : `\n`;
         })
         if (this.elseBlock !== "undefined") {
-            code += `else {\n${this.elseBlock.gen()}\n}`;
+            code += indentLine(`else {`);
+            code += `${this.elseBlock.gen()}`;
+            code += indentLine(`}\n`);
         }
         return code;
     }
