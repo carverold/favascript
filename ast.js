@@ -81,7 +81,7 @@ class Program {
         this.block.analyze(context);
     }
     gen() {
-        return this.block.gen();
+        return this.block.gen().slice(0, -1);  // slice to omit the last new line
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(Program` +
@@ -96,9 +96,6 @@ class Block {
         this.returnType;
         this.numberOfReturnStatements = 0;
     }
-    gen() {
-        return indentLineList(this.body);
-    }
     analyze(context) {
         let self = this;
         this.body.forEach(function(statement) {
@@ -112,6 +109,9 @@ class Block {
                 }
             }
         });
+    }
+    gen() {
+        return indentLineList(this.body);
     }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent++)}(Block`;
@@ -145,14 +145,11 @@ class BranchStatement extends Statement {
         }
     }
     gen() {
-        console.log(`DEBUG: BranchStatement gen was called`);
-        //return `yay`;
         let code = ``;
         let self = this;
         this.thenBlocks.forEach(function (thenBlock, i) {
             code += indentLine(`${i === 0 ? `if` : `else if`} (${self.conditions[i].gen()}) {`);
             code += `${thenBlock.gen()}`
-
             code += indentLine(`}\n`);
         });
         if (this.elseBlock !== "undefined" && this.elseBlock !== null) {
@@ -220,7 +217,10 @@ class FunctionDeclarationStatement extends Statement {
         context.setVariable(this.id, {type: TYPE.FUNCTION, returnType: this.block.returnType, parameters: signature});
     }
     gen() {
-        return ``;
+        let code = ``;
+        code += indentLine(`let ${this.id} = function (${this.parameterArray.gen()}) {`);
+        code += block.gen();  // remember: indentLineList called within block
+        code += indentLine(`}`);
     }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent)}(Func` +
