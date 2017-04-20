@@ -81,7 +81,7 @@ Object.assign(ASTClasses.ClassDeclarationStatement.prototype, {
 
 Object.assign(ASTClasses.MatchStatement.prototype, {
     gen() {
-        return `TODO: MatchStatement`;
+        return `${this.matchExp.gen()}`;
     }
 });
 
