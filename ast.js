@@ -624,7 +624,7 @@ class BinaryExpression extends Expression {
         }
     }
     gen() {
-        return `${this.left.gen()} ${this.op} ${this.right.gen()}`;
+        return `(${this.left.gen()} ${this.op} ${this.right.gen()})`;
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.op}` +
@@ -677,7 +677,7 @@ class UnaryExpression extends Expression {
         }
     }
     gen() {
-        return `${this.op}${this.operand.gen()}`;
+        return `(${this.op}${this.operand.gen()})`;
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.op}\n${this.operand.toString(++indent)})`;
