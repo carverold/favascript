@@ -10,7 +10,7 @@ const argv = require('yargs')
 const fs = require('fs');
 const path = require('path');
 const parser = require(path.resolve('./parser.js'));
-//require(path.resolve('./generator.js'));
+const generator = require(path.resolve('./generator.js'));
 
 fs.readFile(argv._[0], 'utf-8', (err, text) => {
     let program = parser(text);
