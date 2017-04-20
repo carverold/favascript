@@ -333,9 +333,9 @@ class WhileStatement extends Statement {
     }
     gen() {
         let code = ``;
-        code += indentLine(`while (${this.exp.gen()}) {`);
+        code += indentLine(`while (${this.exp.gen()}) {\n`);
         code += this.block.gen();
-        code += indentLine(`}`);
+        code += indentLine(`}\n`);
         return code;
     }
     toString(indent = 0) {
