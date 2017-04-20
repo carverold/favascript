@@ -1,0 +1,5 @@
+- CONSTRUCTORS!
+	- If func name matches class name make it constructor
+- change arithmetic from "^" to Math.pow
+- match expression
+- default variable names

@@ -1,0 +1,38 @@
+module.exports.getJSCode = function() {
+    return `(Program
+  (Block
+    (If
+      (Case
+        (Condition
+          (==
+            (IdExpression
+              (x)
+            )
+            (2)
+          )
+        )
+        (Body
+          (Block
+            (-=
+              (IdExpression
+                (x)
+              )
+              (1)
+            )
+          )
+        )
+      )
+      (Else
+        (Block
+          (+=
+            (IdExpression
+              (x)
+            )
+            (1)
+          )
+        )
+      )
+    )
+  )
+)`;
+};
