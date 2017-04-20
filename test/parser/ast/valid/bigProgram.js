@@ -184,24 +184,8 @@ module.exports.getAst = function() {
                           (IdExpression
                             (answer)
                           )
-                          (Match Expression
-                            (IdExpression
-                              (var1)
-                            )
-                            (Matches
-                              (Match
-                                (1) ->
-                                (one)
-                              )
-                              (Match
-                                (2) ->
-                                (two)
-                              )
-                              (Match
-                                _ ->
-                                (not one or two)
-                              )
-                            )
+                          (IdExpression
+                            (var1)
                           )
                         )
                       )
