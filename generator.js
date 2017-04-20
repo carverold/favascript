@@ -52,6 +52,7 @@ Object.assign(ASTClasses.FunctionDeclarationStatement.prototype, {
     gen() {
         let code = ``;
         let parameterArrayCode = [];
+        let funcId = this.isConstructor ? "constructor" : this.id;
         this.parameterArray.forEach(function(parameter) {
             parameterArrayCode.push(parameter.gen());
         });
@@ -142,7 +143,11 @@ Object.assign(ASTClasses.Match.prototype, {
 
 Object.assign(ASTClasses.BinaryExpression.prototype, {
     gen() {
-        return `(${this.left.gen()} ${this.op} ${this.right.gen()})`;
+        if (this.op === "^") {
+            return `(Math.pow(${this.left.gen()}, ${this.right.gen()}))`;
+        } else {
+            return `(${this.left.gen()} ${this.op} ${this.right.gen()})`;
+        }
     }
 });
 

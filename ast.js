@@ -149,8 +149,16 @@ class FunctionDeclarationStatement extends Statement {
         this.id = id;
         this.parameterArray = parameterArray;
         this.block = block;
+        this.isConstructor;
     }
     analyze(context) {
+        try {
+            context.assertFunctionIsConstructor("This is not a constructor");
+            this.isConstructor = true;
+        } catch(err) {
+            this.isConstructor = false;
+        }
+        // this.isConstructor = DDDDDGSFSDAFASDFASDFASDFASDFASDFFKDSAJFLK;ASDJF;ASDJF;ASLKDFJAS;DKLFJASDKL;FJASDKLFJASD;FLKASJDF;LKSADF
         let blockContext = context.createChildContextForFunction(this.id);
         let self = this;
         this.parameterArray.forEach(function(parameter) {
@@ -228,7 +236,7 @@ class ClassDeclarationStatement extends Statement {
         this.block = block;
     }
     analyze(context) {
-        let classContext = context.createChildContextForBlock();
+        let classContext = context.createChildContextForClass(this.id);
         this.block.analyze(classContext);
         let constructorFunction = classContext.get(this.id);
         if (constructorFunction == "undefined") {

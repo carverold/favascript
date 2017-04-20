@@ -67,8 +67,9 @@ function checkArrayinArray(arrA, arrB) {
 
 class Context {
 
-    constructor(parent, currentFunction, isInLoop) {
+    constructor(parent, currentClass, currentFunction, isInLoop) {
         this.parent = parent || null;
+        this.currentClass = currentClass || null;
         this.currentFunction = currentFunction || null;
         this.isInLoop = isInLoop;
         this.undeclaredParameters = []
@@ -78,15 +79,19 @@ class Context {
     }
 
     createChildContextForBlock() {
-        return new Context(this, this.currentFunction, this.inLoop);
+        return new Context(this, this.currentClass, this.currentFunction, this.inLoop);
     }
 
     createChildContextForLoop() {
-        return new Context(this, this.currentFunction, true);
+        return new Context(this, this.currentClass, this.currentFunction, true);
     }
 
     createChildContextForFunction(currentFunction) {
-        return new Context(this, currentFunction, false);
+        return new Context(this, this.currentClass, currentFunction, false);
+    }
+
+    createChildContextForClass(currentClass) {
+        return new Context(this, currentClass, this.currentFunction, false);
     }
 
     addUndeclaredParameter(id) {
@@ -137,6 +142,12 @@ class Context {
         if (!this.currentFunction) {
 
             // Use a more specific error message:
+            throw new Error(message);
+        }
+    }
+
+    assertFunctionIsConstructor(message) {
+        if (!this.currentFunction === this.currentClass) {
             throw new Error(message);
         }
     }
