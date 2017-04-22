@@ -18,9 +18,21 @@ function indentLineList(statementList) {
     return code;
 }
 
+// Taken from Prof. Toal's Plainscript example:
+const jsName = (() => {
+  let lastId = -1;  // Make it 0-indexed
+  const map = new Map();
+  return (identifier) => {
+    if (!(map.has(identifier))) {
+      map.set(identifier, ++lastId);  // eslint-disable-line no-plusplus
+    }
+    return `v_${map.get(identifier)}`;
+  };
+})();
+
 Object.assign(ASTClasses.Program.prototype, {
     gen() {
-        return this.block.gen().slice(0, -1);  // slice to omit the last new line
+        return this.block.gen().slice(0, -1);  // slice to omit the last new line (which is empty)
     }
 });
 
@@ -52,11 +64,15 @@ Object.assign(ASTClasses.FunctionDeclarationStatement.prototype, {
     gen() {
         let code = ``;
         let parameterArrayCode = [];
-        let funcId = this.isConstructor ? "constructor" : this.id;
+        let funcId = this.isConstructor ? "constructor" : jsName(this.id);
         this.parameterArray.forEach(function(parameter) {
             parameterArrayCode.push(parameter.gen());
         });
-        code += indentLine(`let ${this.id} = function (${parameterArrayCode.join(`, `)}) {\n`);
+        if (this.ownerClass !== null) {
+            code += indentLine(`${funcId}(${parameterArrayCode.join(`, `)}) {\n`);
+        } else {
+            code += indentLine(`let ${jsName(this.id)} = function (${parameterArrayCode.join(`, `)}) {\n`);
+        }
         code += this.block.gen();  // remember: indentLineList called within block
         code += indentLine(`}\n`);
         return code;
@@ -65,16 +81,16 @@ Object.assign(ASTClasses.FunctionDeclarationStatement.prototype, {
 
 Object.assign(ASTClasses.Parameter.prototype, {
     gen() {
-        return `${this.id}${this.defaultValue !== `undefined` && this.defaultValue !== null ? ` = ${this.defaultValue.gen()}` : ``}`;
+        return `${jsName(this.id)}${this.defaultValue !== `undefined` && this.defaultValue !== null ? ` = ${this.defaultValue.gen()}` : ``}`;
     }
 });
 
 Object.assign(ASTClasses.ClassDeclarationStatement.prototype, {
     gen() {
         let code = ``;
-        code += indentLine(`${this.id} {\n`);
+        code += indentLine(`${jsName(this.id)} {\n`);
         code += this.block.gen();
-        code += indentLine(`}`);
+        code += indentLine(`}\n`);
         return code;
     }
 });
@@ -98,7 +114,7 @@ Object.assign(ASTClasses.WhileStatement.prototype, {
 Object.assign(ASTClasses.ForInStatement.prototype, {
     gen() {
         let code = ``;
-        code += indentLine(`for (var ${this.id} in ${this.iDExp.gen()}) {`);
+        code += indentLine(`for (var ${jsName(this.id)} in ${this.iDExp.gen()}) {`);
         code += this.block.gen();
         code += identLine(`}`);
         return code;
@@ -192,13 +208,13 @@ Object.assign(ASTClasses.IdExpressionBodyRecursive.prototype, {
 
 Object.assign(ASTClasses.IdExpressionBodyBase.prototype, {
     gen() {
-        return `${this.id}`;
+        return `${jsName(this.id)}`;
     }
 });
 
 Object.assign(ASTClasses.PeriodId.prototype, {
     gen() {
-        return `${this.id}`;
+        return `${jsName(this.id)}`;
     }
 });
 
@@ -238,7 +254,7 @@ Object.assign(ASTClasses.Dictionary.prototype, {
 
 Object.assign(ASTClasses.IdValuePair.prototype, {
     gen() {
-        return `${this.id}: ${this.variable.gen()}`;
+        return `${jsName(this.id)}: ${this.variable.gen()}`;
     }
 });
 
@@ -284,12 +300,12 @@ Object.assign(ASTClasses.NullLit.prototype, {
 
 Object.assign(ASTClasses.ConstId.prototype, {
     gen() {
-        return `${this.id}`;
+        return `${jsName(this.id)}`;
     }
 });
 
 Object.assign(ASTClasses.ClassId.prototype, {
     gen() {
-        return `${this.id}`;
+        return `${jsName(this.id)}`;
     }
 });
