@@ -100,7 +100,7 @@ Object.assign(ASTClasses.ForInStatement.prototype, {
         let code = ``;
         code += indentLine(`for (var ${this.id} in ${this.iDExp.gen()}) {`);
         code += this.block.gen();
-        code += identLine(`}`);
+        code += indentLine(`}`);
         return code;
     }
 });
@@ -131,13 +131,26 @@ Object.assign(ASTClasses.ReturnStatement.prototype, {
 
 Object.assign(ASTClasses.MatchExpression.prototype, {
     gen() {
-        return `TODO: MatchExpression gen`;
+        let code = ``;
+        let count = 0;
+        // Have to check if being assigned to id
+        // If yes, use ternary operator
+        // If no, use if/else
+        if (this.varArray.length > 0) {
+            code += indentLine(`if (${this.idExp.gen()} === ${this.varArray[0].gen()}) {${this.matchArray[0].gen()};}\n`);
+        }
+        for (let v = 1; v < this.varArray.length; v++) {
+            code += indentLine(`else if (${this.idExp.gen()} === ${this.varArray[v].gen()}) {${this.matchArray[v].gen()};}\n`);
+        }
+        if (this.matchFinal) {
+            code += indentLine(`else {${this.matchFinal.gen()};}\n`);
+        }
     }
 });
 
 Object.assign(ASTClasses.Match.prototype, {
     gen() {
-        return `TODO: Match gen`;
+        return intendLine(`${this.matchee.gen()};\n`);
     }
 });
 
