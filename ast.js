@@ -150,7 +150,6 @@ class FunctionDeclarationStatement extends Statement {
         this.parameterArray = parameterArray;
         this.block = block;
         this.isConstructor;
-        this.ownerClass;
     }
     analyze(context) {
         try {
@@ -186,8 +185,6 @@ class FunctionDeclarationStatement extends Statement {
         });
 
         context.setVariable(this.id, {type: TYPE.FUNCTION, returnType: this.block.returnType, parameters: signature});
-
-        this.ownerClass = context.currentClass;
     }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent)}(Func` +
