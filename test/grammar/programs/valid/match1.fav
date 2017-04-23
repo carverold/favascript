@@ -1,6 +1,6 @@
 match x with
-  2 -> ret "two"
-| 3 -> ret "three"
-| 4 -> ret "four"
-| 5 -> ret "five"
-| _ -> ret "nope"
+  2 -> print("two")
+| 3 -> print("three")
+| 4 -> print("four")
+| 5 -> print("five")
+| _ -> print("nope")
