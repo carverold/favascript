@@ -9,7 +9,7 @@ module.exports.getAst = function() {
         (Match
           (2) ->
           (Block
-            (Return
+            (Print
               (two)
             )
           )

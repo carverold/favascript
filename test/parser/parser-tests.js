@@ -86,6 +86,7 @@ asts = {
     'idExp3.fav': require(path.resolve(validProgramAsts + '/idExp3.js')).getAst(),
     'ifElse.fav': require(path.resolve(validProgramAsts + '/ifElse.js')).getAst(),
     'match1.fav': require(path.resolve(validProgramAsts + '/match1.js')).getAst(),
+    'match2.fav': require(path.resolve(validProgramAsts + '/match2.js')).getAst(),
     'print1.fav': require(path.resolve(validProgramAsts + '/print1.js')).getAst(),
     'shortMatch.fav': require(path.resolve(validProgramAsts + '/shortMatch.js')).getAst(),
     'tuple.fav': require(path.resolve(validProgramAsts + '/tuple.js')).getAst(),

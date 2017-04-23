@@ -9,7 +9,7 @@ module.exports.getAst = function() {
         (Match
           (2) ->
           (Block
-            (Return
+            (Print
               (two)
             )
           )
@@ -17,7 +17,7 @@ module.exports.getAst = function() {
         (Match
           (3) ->
           (Block
-            (Return
+            (Print
               (three)
             )
           )
@@ -25,7 +25,7 @@ module.exports.getAst = function() {
         (Match
           (4) ->
           (Block
-            (Return
+            (Print
               (four)
             )
           )
@@ -33,7 +33,7 @@ module.exports.getAst = function() {
         (Match
           (5) ->
           (Block
-            (Return
+            (Print
               (five)
             )
           )
@@ -41,7 +41,7 @@ module.exports.getAst = function() {
         (Match
           _ ->
           (Block
-            (Return
+            (Print
               (nope)
             )
           )

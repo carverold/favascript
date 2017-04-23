@@ -1,3 +1,3 @@
-y = match x with
+match x with
   true -> ret "truth"
 | _    -> ret "lies"

@@ -180,37 +180,32 @@ module.exports.getAst = function() {
                     )
                     (Body
                       (Block
-                        (=
+                        (Match Expression
                           (IdExpression
-                            (answer)
+                            (var1)
                           )
-                          (Match Expression
-                            (IdExpression
-                              (var1)
+                          (Matches
+                            (Match
+                              (1) ->
+                              (Block
+                                (Print
+                                  (one)
+                                )
+                              )
                             )
-                            (Matches
-                              (Match
-                                (1) ->
-                                (Block
-                                  (Return
-                                    (one)
-                                  )
+                            (Match
+                              (2) ->
+                              (Block
+                                (Print
+                                  (two)
                                 )
                               )
-                              (Match
-                                (2) ->
-                                (Block
-                                  (Return
-                                    (two)
-                                  )
-                                )
-                              )
-                              (Match
-                                _ ->
-                                (Block
-                                  (Return
-                                    (not one or two)
-                                  )
+                            )
+                            (Match
+                              _ ->
+                              (Block
+                                (Print
+                                  (not one or two)
                                 )
                               )
                             )
