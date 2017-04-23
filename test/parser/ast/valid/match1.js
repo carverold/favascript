@@ -8,23 +8,43 @@ module.exports.getAst = function() {
       (Matches
         (Match
           (2) ->
-          (two)
+          (Block
+            (Return
+              (two)
+            )
+          )
         )
         (Match
           (3) ->
-          (three)
+          (Block
+            (Return
+              (three)
+            )
+          )
         )
         (Match
           (4) ->
-          (four)
+          (Block
+            (Return
+              (four)
+            )
+          )
         )
         (Match
           (5) ->
-          (five)
+          (Block
+            (Return
+              (five)
+            )
+          )
         )
         (Match
           _ ->
-          (nope)
+          (Block
+            (Return
+              (nope)
+            )
+          )
         )
       )
     )
