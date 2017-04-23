@@ -13,7 +13,7 @@ module.exports.getJSCode = function() {
           (Match
             (true) ->
             (Block
-              (Return
+              (Print
                 (truth)
               )
             )
@@ -21,7 +21,7 @@ module.exports.getJSCode = function() {
           (Match
             _ ->
             (Block
-              (Return
+              (Print
                 (lies)
               )
             )

@@ -34,7 +34,6 @@ class Test {
                     1 -> answer = "one"
                     | 2 -> answer = "two"
                     | _ -> answer = "not one or two"
->>>>>>> Even less broken stuff
             }
             ret answer
         }
