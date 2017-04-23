@@ -150,7 +150,7 @@ Object.assign(ASTClasses.MatchExpression.prototype, {
 
 Object.assign(ASTClasses.Match.prototype, {
     gen() {
-        return intendLine(`${this.matchee.gen()};\n`);
+        return indentLine(`${this.matchee.gen()};\n`);
     }
 });
 
