@@ -180,12 +180,35 @@ module.exports.getAst = function() {
                     )
                     (Body
                       (Block
-                        (=
-                          (IdExpression
-                            (answer)
-                          )
+                        (Match Expression
                           (IdExpression
                             (var1)
+                          )
+                          (Matches
+                            (Match
+                              (1) ->
+                              (Block
+                                (Print
+                                  (one)
+                                )
+                              )
+                            )
+                            (Match
+                              (2) ->
+                              (Block
+                                (Print
+                                  (two)
+                                )
+                              )
+                            )
+                            (Match
+                              _ ->
+                              (Block
+                                (Print
+                                  (not one or two)
+                                )
+                              )
+                            )
                           )
                         )
                       )

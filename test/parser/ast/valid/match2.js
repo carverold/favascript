@@ -7,10 +7,18 @@ module.exports.getAst = function() {
       )
       (Matches
         (Match
-          (2) ->
+          (true) ->
           (Block
             (Print
-              (two)
+              (truth)
+            )
+          )
+        )
+        (Match
+          _ ->
+          (Block
+            (Print
+              (lies)
             )
           )
         )
