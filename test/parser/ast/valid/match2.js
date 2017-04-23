@@ -1,29 +1,24 @@
-module.exports.getJSCode = function() {
+module.exports.getAst = function() {
     return `(Program
   (Block
-    (=
+    (Match Expression
       (IdExpression
-        (y)
+        (x)
       )
-      (Match Expression
-        (IdExpression
-          (x)
-        )
-        (Matches
-          (Match
-            (true) ->
-            (Block
-              (Return
-                (truth)
-              )
+      (Matches
+        (Match
+          (true) ->
+          (Block
+            (Print
+              (truth)
             )
           )
-          (Match
-            _ ->
-            (Block
-              (Return
-                (lies)
-              )
+        )
+        (Match
+          _ ->
+          (Block
+            (Print
+              (lies)
             )
           )
         )
