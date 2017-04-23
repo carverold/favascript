@@ -30,7 +30,10 @@ class Test {
         checkVariables (var1) {
             answer
             if (var1 != null) {
-                answer = var1
+                answer = match var1 with
+                              1 -> print("one")
+                            | 2 -> print("two")
+                            | _ -> print("not one or two")
             }
             ret answer
         }
