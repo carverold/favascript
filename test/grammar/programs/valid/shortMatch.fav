@@ -1,2 +1,2 @@
 match x with
-2 -> "two"
+2 -> ret "two"

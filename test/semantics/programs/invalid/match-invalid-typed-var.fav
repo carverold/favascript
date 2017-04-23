@@ -1,6 +1,6 @@
 x = "hello"
 match x with
-1 -> " world"
-| 2 -> " anson"
-| 3 -> " toal"
-| _ -> " everyone else"
+1 -> ret " world"
+| 2 -> ret " anson"
+| 3 -> ret " toal"
+| _ -> ret " everyone else"
