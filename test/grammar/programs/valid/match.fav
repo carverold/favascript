@@ -1,4 +1,4 @@
 match x with
-  2 -> "two"
-| 3 -> "three"
-| _ -> "nope"
+  2 -> ret "two"
+| 3 -> ret "three"
+| _ -> ret "nope"
