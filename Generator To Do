@@ -1,6 +1,4 @@
-- CONSTRUCTORS!
-	- If func name matches class name make it constructor
 - match expression
-- default variable names
-
 - Fix iDExp -> idExp?
+- write test expected output
+- fix errors
