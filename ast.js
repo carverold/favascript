@@ -240,6 +240,7 @@ class ClassDeclarationStatement extends Statement {
     }
     analyze(context) {
         let classContext = context.createChildContextForClass(this.id);
+        classContext.setVariable(`this`, {type: TYPE.OBJECT});
         this.block.analyze(classContext);
         let constructorFunction = classContext.get(this.id);
         if (constructorFunction == "undefined") {
@@ -410,13 +411,15 @@ class ReturnStatement extends Statement {
 class Expression {
 }
 
+util = require('util');
+
 class MatchExpression extends Expression {
     constructor(idExp, varArray, matchArray, matchFinal) {
         super();
         this.idExp = idExp;
         this.varArray = varArray;
         this.matchArray = matchArray;
-        this.matchFinal = matchFinal;
+        this.matchFinal = matchFinal[0];
     }
     analyze(context) {
         this.idExp.analyze(context);
@@ -443,10 +446,10 @@ class MatchExpression extends Expression {
                           `\n${spacer.repeat(--indent)})`
             }
         }
-        if (this.matchFinal.length > 0) {
+        if (this.matchFinal !== "undefined" && this.matchFinal !== undefined) {
           string += `\n${spacer.repeat(indent)}(Match` +
                     `\n${spacer.repeat(++indent)}_ ->` +
-                    `\n${spacer.repeat(indent)}${this.matchFinal.toString(indent)}` +
+                    `\n${this.matchFinal.toString(indent)}` +
                     `\n${spacer.repeat(--indent)})`;
         }
         string += `\n${spacer.repeat(--indent)})` +

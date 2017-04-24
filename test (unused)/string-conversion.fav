@@ -1,4 +1,0 @@
-# Should convert everything to a string and analyze successfully
-
-name = "Bob"
-print("My name is " + name + " and I am " + 52.4 + "inches tall. That is " + true)

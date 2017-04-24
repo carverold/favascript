@@ -30,10 +30,7 @@ class Test {
         checkVariables (var1) {
             answer
             if (var1 != null) {
-                answer = match var1 with
-                              1 -> ret "one"
-                            | 2 -> ret "two"
-                            | _ -> ret "not one or two"
+                answer = var1
             }
             ret answer
         }

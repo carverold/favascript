@@ -40,7 +40,7 @@ semantics = grammar.createSemantics().addOperation('ast', {
     Statement_identifier(iDExp) {return new ASTClasses.IdentifierStatement(iDExp.ast());},
     Statement_return(ret, exp) {return new ASTClasses.ReturnStatement(exp.ast());},
     MatchExp(matchStr, idExp, wit, line1, var1, match1, lines, varArray, matchArray, lineFinal, _, matchFinal) {
-        return new ASTClasses.MatchExpression(idExp.ast(), [var1.ast()].concat(varArray.ast()), [match1.ast()].concat(matchArray.ast()), matchFinal.ast());},
+        return new ASTClasses.MatchExpression(idExp.ast(), [var1.ast()].concat(varArray.ast()), [match1.ast()].concat(matchArray.ast()), (matchFinal.ast()));},
     Match (arrow, matchee) {return new ASTClasses.Match(matchee.ast())},
     Param(id, equals, variable) {return new ASTClasses.Parameter(id.sourceString, unpack(variable))},
     Exp_reg(left, op, right) {return new ASTClasses.BinaryExpression(left.ast(), op.sourceString, right.ast());},

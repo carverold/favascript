@@ -8,7 +8,11 @@ module.exports.getAst = function() {
       (Matches
         (Match
           (2) ->
-          (two)
+          (Block
+            (Print
+              (two)
+            )
+          )
         )
       )
     )

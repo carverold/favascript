@@ -2,5 +2,5 @@
 y = false
 
 match y with
-    | true  -> ret "This language deserves an A"
-    | false -> ret "This language deserves an F"
+    | true  -> print("This language deserves an A")
+    | false -> print("This language deserves an F")
