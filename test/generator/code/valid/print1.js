@@ -1,9 +1,3 @@
 module.exports.getJSCode = function() {
-    return `(Program
-  (Block
-    (Print
-      (hello, world!)
-    )
-  )
-)`;
+    return `console.log(\`hello, world!\`);`;
 }

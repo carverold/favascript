@@ -1,51 +1,11 @@
 module.exports.getJSCode = function() {
-    return `(Program
-  (Block
-    (Class
-      (id Ball)
-      (Block
-        (Func
-          (id Ball)
-          (Parameters
-            (id radius)
-            (id weight, default (1.0))
-          )
-          (Block
-            (=
-              (IdExpression
-                (.
-                  (this)
-                  (radius)
-                )
-              )
-              (IdExpression
-                (radius)
-              )
-            )
-            (=
-              (IdExpression
-                (.
-                  (this)
-                  (weight)
-                )
-              )
-              (IdExpression
-                (weight)
-              )
-            )
-          )
-        )
-        (Func
-          (id is_round)
-          (Parameters)
-          (Block
-            (Return
-              (true)
-            )
-          )
-        )
-      )
-    )
-  )
-)`;
+    return `class v_0 {
+    v_0(v_1, v_2 = 1.0) {
+        let v_3.v_1 = v_1;
+        let v_3.v_2 = v_2;
+    }
+    v_4() {
+        return true;
+    }
+}`;
 };

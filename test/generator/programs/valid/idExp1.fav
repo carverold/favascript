@@ -1,1 +1,2 @@
-console.log(1, "hello, world!", true, 3.14)
+dict = {cat: "meow", dog: "woof"}
+print(dict["cat"])

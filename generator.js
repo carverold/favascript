@@ -18,10 +18,11 @@ function indentLineList(statementList) {
     return code;
 }
 
+let lastId = -1;  // Make it 0-indexed
+let map = new Map();
+
 // Taken from Prof. Toal's Plainscript example:
 const jsName = (() => {
-  let lastId = -1;  // Make it 0-indexed
-  const map = new Map();
   return (identifier) => {
     if (!(map.has(identifier))) {
       map.set(identifier, ++lastId);  // eslint-disable-line no-plusplus
@@ -32,6 +33,8 @@ const jsName = (() => {
 
 Object.assign(ASTClasses.Program.prototype, {
     gen() {
+        lastId = -1;
+        map = new Map();
         return this.block.gen().slice(0, -1);  // slice to omit the last new line (which is empty)
     }
 });
@@ -88,7 +91,7 @@ Object.assign(ASTClasses.Parameter.prototype, {
 Object.assign(ASTClasses.ClassDeclarationStatement.prototype, {
     gen() {
         let code = ``;
-        code += indentLine(`${jsName(this.id)} {\n`);
+        code += indentLine(`class ${jsName(this.id)} {\n`);
         code += this.block.gen();
         code += indentLine(`}\n`);
         return code;
@@ -148,19 +151,22 @@ Object.assign(ASTClasses.ReturnStatement.prototype, {
 Object.assign(ASTClasses.MatchExpression.prototype, {
     gen() {
         let code = ``;
-        let count = 0;
-        // Have to check if being assigned to id
-        // If yes, use ternary operator
-        // If no, use if/else
         if (this.varArray.length > 0) {
-            code += indentLine(`if (${this.idExp.gen()} === ${this.varArray[0].gen()}) {${this.matchArray[0].gen()};}\n`);
+            code += indentLine(`if (${this.idExp.gen()} === ${this.varArray[0].gen()}) {\n`);
+            code += (`${this.matchArray[0].gen()}`);
+            code += indentLine(`}\n`);
         }
         for (let v = 1; v < this.varArray.length; v++) {
-            code += indentLine(`else if (${this.idExp.gen()} === ${this.varArray[v].gen()}) {${this.matchArray[v].gen()};}\n`);
+            code += indentLine(`else if (${this.idExp.gen()} === ${this.varArray[v].gen()}) {\n`);
+            code += (`${this.matchArray[v].gen()}`);
+            code += indentLine(`}\n`);
         }
         if (this.matchFinal) {
-            code += indentLine(`else {${this.matchFinal.gen()};}\n`);
+            code += indentLine(`else {\n`);
+            code += (`${this.matchFinal.gen()}`);
+            code += indentLine(`}\n`);
         }
+        return code;
     }
 });
 
@@ -239,7 +245,7 @@ Object.assign(ASTClasses.Arguments.prototype, {
 
 Object.assign(ASTClasses.IdSelector.prototype, {
     gen() {
-        return `${this.variable}`;
+        return `${this.variable.gen()}`;
     }
 });
 
@@ -322,3 +328,7 @@ Object.assign(ASTClasses.ClassId.prototype, {
         return `${jsName(this.id)}`;
     }
 });
+
+module.exports = {
+    lastId: lastId
+};

@@ -18,7 +18,7 @@ tests = function(validFiles, invalidFiles) {
       validFiles.forEach(function(file) {
         it('generator\\programs\\valid\\' +file.name + ' should be accepted by the grammar',
           function() {
-            // console.log(util.inspect(parser(file.code), {depth: null}));
+            generator.lastId = -1;
             grammarResult = grammar.match(file.code);
             assert.equal(parser(file.code).gen(), jsCode[file.name], // ************************************************************************************************************************
               'Returned: ' + grammarResult);
@@ -82,16 +82,12 @@ jsCode = {
     'dict2.fav': require(path.resolve(validProgramsJSCode + '/dict2.js')).getJSCode(),
     'funcDecl1.fav': require(path.resolve(validProgramsJSCode + '/funcDecl1.js')).getJSCode(),
     'funcDecl2.fav': require(path.resolve(validProgramsJSCode + '/funcDecl2.js')).getJSCode(),
-    'funcDecl3.fav': require(path.resolve(validProgramsJSCode + '/funcDecl3.js')).getJSCode(),
     'idExp1.fav': require(path.resolve(validProgramsJSCode + '/idExp1.js')).getJSCode(),
     'idExp2.fav': require(path.resolve(validProgramsJSCode + '/idExp2.js')).getJSCode(),
-    'idExp3.fav': require(path.resolve(validProgramsJSCode + '/idExp3.js')).getJSCode(),
     'ifElse.fav': require(path.resolve(validProgramsJSCode + '/ifElse.js')).getJSCode(),
     'match1.fav': require(path.resolve(validProgramsJSCode + '/match1.js')).getJSCode(),
-    'match2.fav': require(path.resolve(validProgramsJSCode + '/match2.js')).getJSCode(),
     'print1.fav': require(path.resolve(validProgramsJSCode + '/print1.js')).getJSCode(),
     'shortMatch.fav': require(path.resolve(validProgramsJSCode + '/shortMatch.js')).getJSCode(),
     'tuple.fav': require(path.resolve(validProgramsJSCode + '/tuple.js')).getJSCode(),
-    'while1.fav': require(path.resolve(validProgramsJSCode + '/while1.js')).getJSCode(),
-    'bigProgram.fav': require(path.resolve(validProgramsJSCode + '/bigProgram.js')).getJSCode()
+    'while1.fav': require(path.resolve(validProgramsJSCode + '/while1.js')).getJSCode()
 };

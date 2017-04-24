@@ -1,18 +1,5 @@
 module.exports.getJSCode = function() {
-    return `(Program
-  (Block
-    (While
-      (Condition
-        (true)
-      )
-      (Body
-        (Block
-          (Return
-            (true)
-          )
-        )
-      )
-    )
-  )
-)`;
+    return `while (true) {
+    console.log(true);
+}`;
 }

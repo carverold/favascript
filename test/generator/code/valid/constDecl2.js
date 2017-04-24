@@ -1,12 +1,3 @@
 module.exports.getJSCode = function() {
-    return `(Program
-  (Block
-    (=
-      (IdExpression
-        (PI)
-      )
-      (3.1415926)
-    )
-  )
-)`;
+    return `const v_0 = 3.1415926;`;
 }

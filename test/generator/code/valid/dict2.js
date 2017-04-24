@@ -1,12 +1,3 @@
 module.exports.getJSCode = function() {
-    return `(Program
-  (Block
-    (=
-      (IdExpression
-        (dict)
-      )
-      (Dictionary)
-    )
-  )
-)`;
+    return `let v_0 = {};`;
 }

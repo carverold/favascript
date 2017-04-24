@@ -429,9 +429,6 @@ class MatchExpression extends Expression {
         }
         for (let m in this.matchArray) {
             this.matchArray[m].analyze(context);
-            // TODO: Find out how to check matches' types in case we want to return them
-            // console.log("MATCH THING: ", this.matchArray[m].id, this.matchArray[m].type);
-            // context.assertIsValidMatchVariable(this.idExp.type, this.matchArray[m].type);
         }
     }
     toString(indent = 0) {
@@ -898,9 +895,11 @@ class Dictionary {
         for (let p in this.idValuePairs) {
             this.idValuePairs[p].analyze(context);
         }
-        this.valueType = this.idValuePairs[0].variable.type;
-        for (let p in this.idValuePairs) {
-            context.assertTypesAreHomogeneous(this.valueType, this.idValuePairs[p].variable.type);
+        if (this.idValuePairs.length >= 1) {
+            this.valueType = this.idValuePairs[0].variable.type;
+            for (let p in this.idValuePairs) {
+                context.assertTypesAreHomogeneous(this.valueType, this.idValuePairs[p].variable.type);
+            }
         }
     }
     toString(indent = 0) {

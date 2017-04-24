@@ -1,1 +1,1 @@
-dict = {x:5, y:"Hello", z:true}
+dict = {x:5, y:4, z:2}

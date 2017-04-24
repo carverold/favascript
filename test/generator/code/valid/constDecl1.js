@@ -1,12 +1,3 @@
 module.exports.getJSCode = function() {
-    return `(Program
-  (Block
-    (=
-      (IdExpression
-        (FEET_IN_METER)
-      )
-      (3.28084)
-    )
-  )
-)`;
+    return `const v_0 = 3.28084`;
 };

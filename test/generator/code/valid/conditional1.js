@@ -1,38 +1,9 @@
 module.exports.getJSCode = function() {
-    return `(Program
-  (Block
-    (If
-      (Case
-        (Condition
-          (==
-            (IdExpression
-              (x)
-            )
-            (2)
-          )
-        )
-        (Body
-          (Block
-            (-=
-              (IdExpression
-                (x)
-              )
-              (1)
-            )
-          )
-        )
-      )
-      (Else
-        (Block
-          (+=
-            (IdExpression
-              (x)
-            )
-            (1)
-          )
-        )
-      )
-    )
-  )
-)`;
+    return `let v_0 = 2;
+if ((v_0 >= 2)) {
+    v_0 -= 1;
+}
+else {
+    v_0 += 1;
+}`;
 };

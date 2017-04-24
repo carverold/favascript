@@ -1,12 +1,3 @@
 module.exports.getJSCode = function() {
-    return `(Program
-  (Block
-    (=
-      (IdExpression
-        (name)
-      )
-      (guav1231\\\")
-    )
-  )
-)`;
+    return `let v_0 = \`guav1231\\\"\`;`;
 }

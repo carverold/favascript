@@ -1,17 +1,6 @@
 module.exports.getJSCode = function() {
-    return `(Program
-  (Block
-    (Match Expression
-      (IdExpression
-        (x)
-      )
-      (Matches
-        (Match
-          (2) ->
-          (two)
-        )
-      )
-    )
-  )
-)`;
+    return `let v_0 = 2;
+if (v_0 === 2) {
+    console.log(\`two\`);
+}`;
 }

@@ -1,12 +1,3 @@
 module.exports.getJSCode = function() {
-    return `(Program
-  (Block
-    (=
-      (IdExpression
-        (age)
-      )
-      (21)
-    )
-  )
-)`;
+    return `let v_0 = 21;`;
 }

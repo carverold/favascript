@@ -1,12 +1,3 @@
 module.exports.getJSCode = function() {
-    return `(Program
-  (Block
-    (=
-      (IdExpression
-        (female)
-      )
-      (true)
-    )
-  )
-)`;
+    return `let v_0 = true;`;
 }

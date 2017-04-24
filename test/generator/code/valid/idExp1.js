@@ -1,24 +1,4 @@
 module.exports.getJSCode = function() {
-    return `(Program
-  (Block
-    (Identifier Statement
-      (IdExpression
-        (()
-          (.
-            (console)
-            (log)
-          )
-          (Arguments
-            (VarList
-              (1)
-              (hello, world!)
-              (true)
-              (3.14)
-            )
-          )
-        )
-      )
-    )
-  )
-)`;
+    return `let v_0 = {v_1: \`meow\`, v_2: \`woof\`};
+console.log(v_0[\`cat\`]);`;
 }
