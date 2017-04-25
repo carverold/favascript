@@ -11,5 +11,8 @@ else if (v_0 === 4) {
 }
 else if (v_0 === 5) {
     console.log(\`five\`);
+}
+else {
+    console.log(\`nope\`);
 }`;
 }

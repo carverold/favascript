@@ -12,7 +12,7 @@ Favascript {
                 | "while" Exp "{" Block "}"                             -- while
                 | "for" id "in" IdExp "{" Block "}"                     -- forIn
                 | "print" "(" Exp ")"                                   -- print
-                | IdExp assignOp (Exp | MatchExp)                                    -- assign
+                | IdExp assignOp Exp                                    -- assign
                 | IdExp                                                 -- identifier
                 | "ret" Exp                                             -- return
     Param       = id ("=" Var)?

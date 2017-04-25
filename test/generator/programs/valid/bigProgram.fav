@@ -31,9 +31,9 @@ class Test {
             answer
             if (var1 != null) {
                 match var1 with
-                    1 -> answer = "one"
-                    | 2 -> answer = "two"
-                    | _ -> answer = "not one or two"
+                      1 -> print("one")
+                    | 2 -> print("two")
+                    | _ -> print("not one or two")
             }
             ret answer
         }

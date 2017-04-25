@@ -176,7 +176,8 @@ Object.assign(ASTClasses.MatchExpression.prototype, {
 
 Object.assign(ASTClasses.Match.prototype, {
     gen() {
-        return `${this.matchee.gen()}`;
+        // return `${this.matchee.gen()}`;
+        return indentLine(`${this.matchee.gen()}`);
     }
 });
 
