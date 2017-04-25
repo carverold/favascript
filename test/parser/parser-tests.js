@@ -15,7 +15,7 @@ tests = function(validFiles, invalidFiles) {
   describe('Parser tests', function() {
     describe('Test valid example programs', function() {
       validFiles.forEach(function(file) {
-        it('parser\\programs\\valid\\' +file.name + ' should be accepted by the grammar',
+        it('parser\\programs\\valid\\' +file.name + ' should parse into the correct AST',
           function() {
             // console.log(util.inspect(parser(file.code), {depth: null}));
             assert.equal(parser(file.code).toString(), asts[file.name],
