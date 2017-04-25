@@ -1,3 +1,5 @@
+x = false
+
 match x with
   true -> print("truth")
 | _    -> print("lies")

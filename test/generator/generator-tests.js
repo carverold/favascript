@@ -86,6 +86,7 @@ jsCode = {
     'idExp2.fav': require(path.resolve(validProgramsJSCode + '/idExp2.js')).getJSCode(),
     'ifElse.fav': require(path.resolve(validProgramsJSCode + '/ifElse.js')).getJSCode(),
     'match1.fav': require(path.resolve(validProgramsJSCode + '/match1.js')).getJSCode(),
+    'match2.fav': require(path.resolve(validProgramsJSCode + '/match2.js')).getJSCode(),
     'print1.fav': require(path.resolve(validProgramsJSCode + '/print1.js')).getJSCode(),
     'shortMatch.fav': require(path.resolve(validProgramsJSCode + '/shortMatch.js')).getJSCode(),
     'tuple.fav': require(path.resolve(validProgramsJSCode + '/tuple.js')).getJSCode(),
