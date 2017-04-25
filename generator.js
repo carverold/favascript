@@ -132,7 +132,11 @@ Object.assign(ASTClasses.PrintStatement.prototype, {
 
 Object.assign(ASTClasses.AssignmentStatement.prototype, {
     gen() {
-        return indentLine(`${this.assignOp === `=` ? `let ` : ``}${this.idExp.gen()} ${this.assignOp} ${this.exp.gen()};\n`);
+        if (this.isConstant) {
+            return indentLine(`${this.assignOp === `=` ? `const ` : ``}${this.idExp.gen()} ${this.assignOp} ${this.exp.gen()};\n`);
+        } else {
+            return indentLine(`${this.assignOp === `=` ? `let ` : ``}${this.idExp.gen()} ${this.assignOp} ${this.exp.gen()};\n`);
+        }
     }
 });
 

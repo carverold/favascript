@@ -70,10 +70,10 @@ Favascript {
 
     keyword     = ("class" | "true" | "false" | "match" | "with" | "if"
                 | "else" | "while" | "for" | "in" | "this" | "print" | "ret" | "null") ~idrest
-    id          = ~keyword letter idrest*                               -- variable
-                | constId                                               -- constant
+    id          = constId                                               -- constant
+                | ~keyword letter idrest*                               -- variable
     idrest      = "_" | alnum
-    constId     = ~keyword upper ("_" | upper)*
+    constId     = ~keyword upper ("_" | upper | digit)* end
     classId     = upper idrest*
 
     space      += comment

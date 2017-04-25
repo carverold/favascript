@@ -335,11 +335,20 @@ class AssignmentStatement extends Statement {
         this.idExp = idExp;
         this.assignOp = assignOp;
         this.exp = exp;
+        this.isConstant;
     }
     analyze(context) {
 
         this.idExp.analyze(context, true);  // Will have id and type
         this.exp.analyze(context);
+
+        try {
+            // console.log(this.idExp);
+            context.assertIsConstant(this);
+            this.isConstant = true;
+        } catch(err) {
+            this.isConstant = false;
+        }
 
         if (this.assignOp == "=") {
             context.setVariable(this.idExp.id, {type: this.exp.type});
@@ -1015,12 +1024,13 @@ class NullLit {
 }
 
 class ConstId {
-    constructor(firstWord, rest) {
-        this.id = firstWord + [rest];
+    constructor(firstLetters, restLetters, numbers) {
+        this.id = firstLetters + [restLetters] + [numbers];
         this.type;
         this.returnType;
     }
     analyze(context, beingAssignedTo = false) {
+        console.log("const");
         let entry = context.get(this.id, true);
         this.type = (typeof entry !== "undefined") ? entry.type : "undefined";
         this.returnType = (typeof entry !== "undefined") ? entry.returnType : "undefined";

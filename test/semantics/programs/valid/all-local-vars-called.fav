@@ -3,8 +3,9 @@
 x = 2
 y = 5
 z = 1
+C = 3
 
-print(x + y + z)
+print(x + y + z + C)
 
 f(n, m) {
     ret n + m

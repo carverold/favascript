@@ -53,7 +53,10 @@ const semanticErrors = {
         return `InvalidMatchType error: can't match ${matcherType} with ${matchVarType}`;
     },
     nonHomogenousTypes(expectedType, receivedType) {
-        return `NonHomogenousTypes error: expected element of type ${receivedType} to be of type ${expectedType})`;
+        return `NonHomogenousTypes error: expected element of type ${receivedType} to be of type ${expectedType}`;
+    },
+    notConstant(id) {
+        return `NotConstant: ${id} is not a constant`;
     }
 };
 
@@ -228,6 +231,15 @@ class Context {
         if (expectedType !== receivedType) {
             throw new Error(semanticErrors.nonHomogenousTypes(expectedType, receivedType));
         }
+    }
+
+    assertIsConstant(id) {
+        // console.log("here");
+        if (!(id instanceof ASTClasses.ConstId)) {
+            console.log("here1");
+            throw new Error(semanticErrors.notConstant(id));
+        }
+        console.log("there");
     }
 
 

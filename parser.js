@@ -91,7 +91,7 @@ semantics = grammar.createSemantics().addOperation('ast', {
     id_variable(firstChar, rest) {return new ASTClasses.IdVariable(this.sourceString);},
     // id_constant(constId) {return new ASTClasses.constId(this.sourceString)},                  //TODO: fix constID
     idrest(character) {return character},
-    constId(underscores, words) {return new ASTClasses.ConstId(words)},
+    constId(underscores, letters, digits) {return new ASTClasses.ConstId(letters, digits)},
     classId(upper, idrests) {return new ASTClasses.ClassId(idrests.ast())}
 });
 
