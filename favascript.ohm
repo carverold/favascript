@@ -70,7 +70,6 @@ Favascript {
 
     keyword     = ("class" | "true" | "false" | "match" | "with" | "if"
                 | "else" | "while" | "for" | "in" | "this" | "print" | "ret" | "null") ~idrest
-    // id          = ~keyword letter idrest*                               -- variable
     id          = ~keyword lower idrest*                                -- variable
                 | constId                                               -- constant
     idrest      = "_" | alnum
