@@ -36,7 +36,7 @@ semantics = grammar.createSemantics().addOperation('ast', {
       return new ASTClasses.ForInStatement(id.sourceString, iDExp.ast(), block.ast());},
     Statement_print(print, lCurly, exp, rCurly) {return new ASTClasses.PrintStatement(exp.ast());},
     Statement_assign(idExp, assignOp, exp) {
-        console.log(exp.ast());
+        // console.log(exp.ast());
       return new ASTClasses.AssignmentStatement(idExp.ast(), assignOp.sourceString, exp.ast());},
     Statement_identifier(iDExp) {return new ASTClasses.IdentifierStatement(iDExp.ast());},
     Statement_return(ret, exp) {return new ASTClasses.ReturnStatement(exp.ast());},
@@ -74,7 +74,7 @@ semantics = grammar.createSemantics().addOperation('ast', {
     },
     periodId(period, id) {return new ASTClasses.PeriodId(id.sourceString);},
     Arguments(lParen, args, rParen) {return new ASTClasses.Arguments(args.ast());},
-    IdSelector(lBracket, variable, rBracket) {console.log("IN PARSER: ", variable.ast()); return new ASTClasses.IdSelector(variable.ast());},
+    IdSelector(lBracket, variable, rBracket) {return new ASTClasses.IdSelector(variable.ast());},
     idPostOp(op) {return op},
     List(lBracket, list, rBracket) {return new ASTClasses.List(list.ast());},
     Tuple(lParen, tuple, rParen) {return new ASTClasses.Tuple(tuple.ast());},
