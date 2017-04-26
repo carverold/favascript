@@ -341,8 +341,10 @@ class AssignmentStatement extends Statement {
         this.exp.analyze(context);
 
         try {
-            // console.log(this.idExp);
-            context.assertIsConstant(this);
+            console.log(this.idExp + "\n\n\n");
+            console.log(this.assignOp + "\n\n\n");
+            console.log(this.exp + "\n\n\n");
+            context.assertIsConstant(this.idExp);
             this.isConstant = true;
         } catch(err) {
             this.isConstant = false;
@@ -670,7 +672,6 @@ class IdExpression extends Expression {
             context.assertUnaryOperandIsOneOfTypes(this.idPostOp, [TYPE.INTEGER], this.idExpBody.type)
         }
         this.id = this.idExpBody.id;
-        console.log("idExp", this.id);
         this.type = this.idExpBody.returnType ? this.idExpBody.returnType : this.idExpBody.type;
         this.returnType = this.idExpBody.returnType;
     }
@@ -760,6 +761,7 @@ class IdExpressionBodyBase {
         if (this.type === "undefined" && !context.isUndeclaredParameter(this.id) && !beingAssignedTo) {
             context.throwUseBeforeDeclarationError(this.id);
         }
+        // console.log("idExp", this.id, this.returnType);
     }
     enforceType(type, context, returnType = "undefined") {
         if (this.type === "undefined") {
@@ -1056,7 +1058,7 @@ class ConstId {
         }
     }
     toString(indent = 0) {
-        return `${spacer.repeat(indent)}(\n${this.id})`;
+        return `${spacer.repeat(indent)}(\nCONSTANT ${this.id})`;
     }
 }
 

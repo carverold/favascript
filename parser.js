@@ -3,6 +3,7 @@ const ohm = require('ohm-js');
 const grammarContents = fs.readFileSync('favascript.ohm');
 const grammar = ohm.grammar(grammarContents);
 const ASTClasses = require('./ast.js');
+util = require('util');
 
 function unpack(elem) {
     elem = elem.ast();
@@ -61,7 +62,7 @@ semantics = grammar.createSemantics().addOperation('ast', {
     ParenExp_pass(variable) {return new ASTClasses.Variable(variable.ast());},
     Var(input) {return new ASTClasses.Variable(input.ast());},
 
-    IdExp(idExpBody, idPostOp) {return new ASTClasses.IdExpression(idExpBody.ast(), unpack(idPostOp));},
+    IdExp(idExpBody, idPostOp) {console.log(idExpBody.ast()); return new ASTClasses.IdExpression(idExpBody.ast(), unpack(idPostOp));},
     IdExpBody_recursive(idExpBody, selector) {return new ASTClasses.IdExpressionBodyRecursive(idExpBody.ast(), selector.ast());},
     IdExpBody_base(id) {return new ASTClasses.IdExpressionBodyBase(id.sourceString);},
     periodId(period, id) {return new ASTClasses.PeriodId(id.sourceString);},
@@ -89,7 +90,7 @@ semantics = grammar.createSemantics().addOperation('ast', {
     nullLit(nul) {return new ASTClasses.NullLit()},
     keyword(word) {return word;},
     idrest(character) {return character},
-    constId(underscores, words) {console.log("sup"); return new ASTClasses.ConstId(words)},
+    constId(underscores, words) {console.log(util.inspect(this, {depth: null}));; return new ASTClasses.ConstId(words)},
     classId(upper, idrests) {return new ASTClasses.ClassId(idrests.ast())}
 });
 
