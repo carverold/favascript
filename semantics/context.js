@@ -72,7 +72,7 @@ class Context {
 
     constructor(parent, currentClass, currentFunction, isInLoop) {
         this.parent = parent || null;
-        this.currentClass = currentClass || null;
+        this.currentClass = currentClass;
         this.currentFunction = currentFunction || null;
         this.isInLoop = isInLoop;
         this.undeclaredParameters = []

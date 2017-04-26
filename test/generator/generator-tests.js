@@ -20,7 +20,9 @@ tests = function(validFiles, invalidFiles) {
           function() {
             generator.lastId = -1;
             grammarResult = grammar.match(file.code);
-            assert.equal(parser(file.code).gen(), jsCode[file.name], // ************************************************************************************************************************
+            let program = parser(file.code);
+            program.analyze();
+            assert.equal(program.gen(), jsCode[file.name], // ************************************************************************************************************************
               'Returned: ' + grammarResult);
         });
       });
