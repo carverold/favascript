@@ -9,8 +9,8 @@ module.exports.getAst = function() {
           (Parameters
             (id param1, default (1))
             (id param2, default (2))
-            (id param3, default (false))
-            (id param4, default (0))
+            (id param3, default (3))
+            (id param4, default (4))
           )
           (Block
             (=
