@@ -41,7 +41,7 @@ Favascript {
 
     IdExp       = IdExpBody idPostOp?
     IdExpBody   = IdExpBody (periodId | Arguments | IdSelector)        -- recursive
-                | (classId | id | "this")                              -- base
+                | (id | classId | "this")                              -- base
     periodId    = "." id
     Arguments   = "(" VarList ")"
     IdSelector  = "[" Var "]"
@@ -73,7 +73,7 @@ Favascript {
     id          = ~keyword lower idrest*                                -- variable
                 | constId                                               -- constant
     idrest      = "_" | alnum
-    constId     = ~keyword upper ("_" | upper | digit)*
+    constId     = ~keyword upper ("_" | upper | digit)* ~alnum
     classId     = upper idrest*
 
     space      += comment
