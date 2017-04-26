@@ -89,7 +89,7 @@ semantics = grammar.createSemantics().addOperation('ast', {
     nullLit(nul) {return new ASTClasses.NullLit()},
     keyword(word) {return word;},
     idrest(character) {return character},
-    constId(underscores, words) {return new ASTClasses.ConstId(words)},
+    constId(underscores, words) {console.log("sup"); return new ASTClasses.ConstId(words)},
     classId(upper, idrests) {return new ASTClasses.ClassId(idrests.ast())}
 });
 

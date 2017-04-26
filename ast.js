@@ -667,12 +667,12 @@ class IdExpression extends Expression {
         this.returnType;
     }
     analyze(context, beingAssignedTo = false) {
-        console.log("idExp");
         this.idExpBody.analyze(context, beingAssignedTo);
         if (this.idPostOp == "++" || this.idPostOp == "--") {
             context.assertUnaryOperandIsOneOfTypes(this.idPostOp, [TYPE.INTEGER], this.idExpBody.type)
         }
         this.id = this.idExpBody.id;
+        console.log("idExp", this.id);
         this.type = this.idExpBody.returnType ? this.idExpBody.returnType : this.idExpBody.type;
         this.returnType = this.idExpBody.returnType;
     }
