@@ -3,7 +3,6 @@ const ohm = require('ohm-js');
 const grammarContents = fs.readFileSync('favascript.ohm');
 const grammar = ohm.grammar(grammarContents);
 const ASTClasses = require('./ast.js');
-util = require('util');
 
 function unpack(elem) {
     elem = elem.ast();
@@ -90,7 +89,7 @@ semantics = grammar.createSemantics().addOperation('ast', {
     nullLit(nul) {return new ASTClasses.NullLit()},
     keyword(word) {return word;},
     idrest(character) {return character},
-    constId(underscores, words) {console.log(util.inspect(this, {depth: null}));; return new ASTClasses.ConstId(words)},
+    constId(underscores, words) {console.log("here"); return new ASTClasses.ConstId(words)},
     classId(upper, idrests) {return new ASTClasses.ClassId(idrests.ast())}
 });
 
