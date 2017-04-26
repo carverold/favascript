@@ -2,7 +2,7 @@ Favascript {
     Program     = Block
     Block       = Statement+
     Statement   = Exp "?" Block ":" Block                               -- conditional
-                | id "(" (Param ("," Param)*)? ")"
+                | (classId | id) "(" (Param ("," Param)*)? ")"
                   "{" Block "}"                                         -- funcDecl
                 | "class" classId "{" Block "}"                         -- classDecl
                 | MatchExp                                              -- match
@@ -41,7 +41,7 @@ Favascript {
 
     IdExp       = IdExpBody idPostOp?
     IdExpBody   = IdExpBody (periodId | Arguments | IdSelector)        -- recursive
-                | (id | "this")                                        -- base
+                | (classId | id | "this")                              -- base
     periodId    = "." id
     Arguments   = "(" VarList ")"
     IdSelector  = "[" Var "]"
@@ -70,10 +70,11 @@ Favascript {
 
     keyword     = ("class" | "true" | "false" | "match" | "with" | "if"
                 | "else" | "while" | "for" | "in" | "this" | "print" | "ret" | "null") ~idrest
-    id          = ~keyword letter idrest*                               -- variable
+    // id          = ~keyword letter idrest*                               -- variable
+    id          = ~keyword lower idrest*                                -- variable
                 | constId                                               -- constant
     idrest      = "_" | alnum
-    constId     = ~keyword upper ("_" | upper | digit)* end
+    constId     = ~keyword upper ("_" | upper | digit)*
     classId     = upper idrest*
 
     space      += comment

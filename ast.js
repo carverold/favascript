@@ -1100,8 +1100,13 @@ class IdConstant {
 }
 
 class ConstId {
-    constructor(firstLetters, restLetters, numbers) {
-        this.id = firstLetters + [restLetters] + [numbers];
+    // constructor(firstLetters, restLetters, numbers) {
+    //     this.id = firstLetters + [restLetters] + [numbers];
+    //     this.type;
+    //     this.returnType;
+    // }
+    constructor(firstWord, rest) {
+        this.id = firstWord + [rest];
         this.type;
         this.returnType;
     }
