@@ -3,7 +3,9 @@ module.exports.getAst = function() {
   (Block
     (=
       (IdExpression
-        (tuple)
+        (IdVariable
+          (tuple)
+        )
       )
       (Tuple
         (VarList

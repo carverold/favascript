@@ -6,7 +6,9 @@ module.exports.getAst = function() {
         (Condition
           (==
             (IdExpression
-              (x)
+              (IdVariable
+                (x)
+              )
             )
             (true)
           )

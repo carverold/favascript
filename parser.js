@@ -36,6 +36,7 @@ semantics = grammar.createSemantics().addOperation('ast', {
       return new ASTClasses.ForInStatement(id.sourceString, iDExp.ast(), block.ast());},
     Statement_print(print, lCurly, exp, rCurly) {return new ASTClasses.PrintStatement(exp.ast());},
     Statement_assign(idExp, assignOp, exp) {
+        console.log(exp.ast());
       return new ASTClasses.AssignmentStatement(idExp.ast(), assignOp.sourceString, exp.ast());},
     Statement_identifier(iDExp) {return new ASTClasses.IdentifierStatement(iDExp.ast());},
     Statement_return(ret, exp) {return new ASTClasses.ReturnStatement(exp.ast());},
@@ -63,10 +64,17 @@ semantics = grammar.createSemantics().addOperation('ast', {
 
     IdExp(idExpBody, idPostOp) {return new ASTClasses.IdExpression(idExpBody.ast(), unpack(idPostOp));},
     IdExpBody_recursive(idExpBody, selector) {return new ASTClasses.IdExpressionBodyRecursive(idExpBody.ast(), selector.ast());},
-    IdExpBody_base(id) {return new ASTClasses.IdExpressionBodyBase(id.sourceString);},
+    IdExpBody_base(id) {
+        if (id.sourceString === "this") {
+            return new ASTClasses.IdExpressionBodyBase(id.sourceString);
+        } else {
+            return new ASTClasses.IdExpressionBodyBase(id.ast());
+        }
+        // return new ASTClasses.IdExpressionBodyBase(id.ast());
+    },
     periodId(period, id) {return new ASTClasses.PeriodId(id.sourceString);},
     Arguments(lParen, args, rParen) {return new ASTClasses.Arguments(args.ast());},
-    IdSelector(lBracket, variable, rBracket) {return new ASTClasses.IdSelector(variable.ast());},
+    IdSelector(lBracket, variable, rBracket) {console.log("IN PARSER: ", variable.ast()); return new ASTClasses.IdSelector(variable.ast());},
     idPostOp(op) {return op},
     List(lBracket, list, rBracket) {return new ASTClasses.List(list.ast());},
     Tuple(lParen, tuple, rParen) {return new ASTClasses.Tuple(tuple.ast());},
@@ -88,8 +96,9 @@ semantics = grammar.createSemantics().addOperation('ast', {
     stringLit(lQuote, content, rQuote) {return new ASTClasses.StringLit(this.sourceString)},
     nullLit(nul) {return new ASTClasses.NullLit()},
     keyword(word) {return word;},
+    id_variable(firstChars, rest) {return new ASTClasses.IdVariable(firstChars.sourceString, rest.sourceString);},
     idrest(character) {return character},
-    constId(underscores, words) {return new ASTClasses.ConstId(words)},
+    constId(underscores, words) {return new ASTClasses.ConstId(underscores.sourceString + words.sourceString)},
     classId(upper, idrests) {return new ASTClasses.ClassId(idrests.ast())}
 });
 

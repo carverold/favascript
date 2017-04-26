@@ -5,7 +5,9 @@ module.exports.getAst = function() {
       (IdExpression
         (()
           (.
-            (console)
+            (IdVariable
+              (console)
+            )
             (log)
           )
           (Arguments

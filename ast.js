@@ -340,16 +340,6 @@ class AssignmentStatement extends Statement {
         this.idExp.analyze(context, true);  // Will have id and type
         this.exp.analyze(context);
 
-        try {
-            //console.log(this.idExp + "\n\n\n");
-            //console.log(this.assignOp + "\n\n\n");
-            //console.log(this.exp + "\n\n\n");
-            context.assertIsConstant(this.idExp);
-            this.isConstant = true;
-        } catch(err) {
-            this.isConstant = false;
-        }
-
         if (this.assignOp == "=") {
             context.setVariable(this.idExp.id, {type: this.exp.type});
         } else {
@@ -483,6 +473,7 @@ class BinaryExpression extends Expression {
         this.op = op;
         this.right = right;
         this.type;
+        console.log("hello");
     }
     analyze(context) {
 
@@ -751,6 +742,7 @@ class IdExpressionBodyRecursive {
 class IdExpressionBodyBase {
     constructor(id) {
         this.id = id;
+        console.log("ID: ", this.id);
         this.type;
         this.returnType;
     }
@@ -761,7 +753,6 @@ class IdExpressionBodyBase {
         if (this.type === "undefined" && !context.isUndeclaredParameter(this.id) && !beingAssignedTo) {
             context.throwUseBeforeDeclarationError(this.id);
         }
-        // //console.log("idExp", this.id, this.returnType);
     }
     enforceType(type, context, returnType = "undefined") {
         if (this.type === "undefined") {
@@ -783,7 +774,9 @@ class IdExpressionBodyBase {
         }
     }
     toString(indent = 0) {
-        return `${spacer.repeat(indent)}(${this.id})`;
+        // console.log("ID: ", this.id);
+        return this.id === "this" ? `${spacer.repeat(indent)}${this.id}` : `${spacer.repeat(indent)}${this.id.toString(indent)}`;
+        // return `${spacer.repeat(indent)}${this.id.toString(indent)}`;
     }
 }
 
@@ -837,6 +830,7 @@ class IdSelector {
     constructor(variable) {
         this.variable = variable;
         this.type;
+        console.log("VARIABLE: ", this.variable.toString());
     }
     analyze(context) {
         this.variable.analyze(context);
@@ -1024,6 +1018,46 @@ class NullLit {
     }
 }
 
+class IdVariable {
+    constructor(firstLetter, restLetters) {
+        this.id = firstLetter + [restLetters];
+        this.type;
+        this.returnType;
+    }
+    analyze(context, beingAssignedTo = false) {
+        let entry = context.get(this.id, true);
+        this.type = (typeof entry !== "undefined") ? entry.type : "undefined";
+        this.returnType = (typeof entry !== "undefined") ? entry.returnType : "undefined";
+        if (this.type === "undefined" && !context.isUndeclaredParameter(this.id) && !beingAssignedTo) {
+            context.throwUseBeforeDeclarationError(this.id);
+        }
+    }
+    enforceType(type, context, returnType = "undefined") {
+        if (this.type === "undefined") {
+            if (context.isUndeclaredParameter(this.id)) {
+                this.type = type;
+                if (returnType !== "undefined") {
+                    context.setVariable(this.id, {type: type, returnType: returnType});
+                    this.returnType = returnType;
+                } else {
+                    context.setVariable(this.id, {type: type});
+                }
+                context.removeUndeclaredParameter(this.id);
+            } else {
+                context.throwUseBeforeDeclarationError(this.id);
+            }
+        }
+        if (!canBeA(context.get(this.id).type, type)) {
+            this.context.throwCantResolveTypesError(this.type, type);
+        }
+    }
+    toString(indent = 0) {
+        return `(IdVariable` +
+                `\n${spacer.repeat(++indent)}(${this.id})` +
+                `\n${spacer.repeat(--indent)})`;
+    }
+}
+
 class ConstId {
     constructor(firstWord, rest) {
         this.id = firstWord + [rest];
@@ -1058,7 +1092,9 @@ class ConstId {
         }
     }
     toString(indent = 0) {
-        return `${spacer.repeat(indent)}(\nCONSTANT ${this.id})`;
+        return `(ConstId` +
+                `\n${spacer.repeat(++indent)}(${this.id})` +
+                `\n${spacer.repeat(--indent)})`;
     }
 }
 
@@ -1096,7 +1132,9 @@ class ClassId {
         }
     }
     toString(indent = 0) {
-        return `${spacer.repeat(indent)}(\n${this.id})`;
+        return `(ClassId` +
+                `\n${spacer.repeat(++indent)}(${this.id})` +
+                `\n${spacer.repeat(--indent)})`;
     }
 }
 
@@ -1137,6 +1175,7 @@ module.exports = {
     FloatLit: FloatLit,
     StringLit: StringLit,
     NullLit: NullLit,
+    IdVariable: IdVariable,
     ConstId: ConstId,
     ClassId: ClassId,
     Types: TYPE

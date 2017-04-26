@@ -3,7 +3,9 @@ module.exports.getAst = function() {
   (Block
     (=
       (IdExpression
-        (z)
+        (IdVariable
+          (z)
+        )
       )
       (0)
     )
@@ -16,14 +18,20 @@ module.exports.getAst = function() {
       (Block
         (=
           (IdExpression
-            (z)
+            (IdVariable
+              (z)
+            )
           )
           (+
             (IdExpression
-              (x)
+              (IdVariable
+                (x)
+              )
             )
             (IdExpression
-              (y)
+              (IdVariable
+                (y)
+              )
             )
           )
         )

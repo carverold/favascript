@@ -12,10 +12,14 @@ module.exports.getAst = function() {
         (Return
           (*
             (IdExpression
-              (x)
+              (IdVariable
+                (x)
+              )
             )
             (IdExpression
-              (y)
+              (IdVariable
+                (y)
+              )
             )
           )
         )

@@ -3,7 +3,9 @@ module.exports.getAst = function() {
   (Block
     (=
       (IdExpression
-        (PI)
+        (ConstId
+          (PI)
+        )
       )
       (3.1415926)
     )

@@ -3,9 +3,11 @@ module.exports.getAst = function() {
   (Block
     (=
       (IdExpression
-        (name)
+        (IdVariable
+          (name)
+        )
       )
-      (guav1231\\\")
+      (guav1231\")
     )
   )
 )`;

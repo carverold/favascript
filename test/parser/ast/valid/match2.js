@@ -3,13 +3,17 @@ module.exports.getAst = function() {
   (Block
     (=
       (IdExpression
-        (x)
+        (IdVariable
+          (x)
+        )
       )
       (false)
     )
     (Match Expression
       (IdExpression
-        (x)
+        (IdVariable
+          (x)
+        )
       )
       (Matches
         (Match
