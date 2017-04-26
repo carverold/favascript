@@ -3,7 +3,9 @@ module.exports.getAst = function() {
   (Block
     (=
       (IdExpression
-        (numbers)
+        (IdVariable
+          (numbers)
+        )
       )
       (List
         (VarList
@@ -18,7 +20,9 @@ module.exports.getAst = function() {
     )
     (=
       (IdExpression
-        (list)
+        (IdVariable
+          (lumb)
+        )
       )
       (List)
     )
@@ -28,13 +32,17 @@ module.exports.getAst = function() {
       (Block
         (=
           (IdExpression
-            (result)
+            (IdVariable
+              (rumber)
+            )
           )
           (0)
         )
         (For id (i) in
           (IdExpression
-            (numbers)
+            (IdVariable
+              (numbers)
+            )
           )
           (Block
             (If
@@ -43,7 +51,9 @@ module.exports.getAst = function() {
                   (==
                     (%
                       (IdExpression
-                        (i)
+                        (IdVariable
+                          (i)
+                        )
                       )
                       (2)
                     )
@@ -54,10 +64,14 @@ module.exports.getAst = function() {
                   (Block
                     (+=
                       (IdExpression
-                        (result)
+                        (IdVariable
+                          (rumber)
+                        )
                       )
                       (IdExpression
-                        (i)
+                        (IdVariable
+                          (i)
+                        )
                       )
                     )
                   )
@@ -68,7 +82,9 @@ module.exports.getAst = function() {
         )
         (Return
           (IdExpression
-            (result)
+            (IdVariable
+              (rumber)
+            )
           )
         )
       )

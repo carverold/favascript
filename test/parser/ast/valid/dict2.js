@@ -3,7 +3,9 @@ module.exports.getAst = function() {
   (Block
     (=
       (IdExpression
-        (dict)
+        (IdVariable
+          (dict)
+        )
       )
       (Dictionary)
     )

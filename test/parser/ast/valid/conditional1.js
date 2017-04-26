@@ -6,7 +6,9 @@ module.exports.getAst = function() {
         (Condition
           (==
             (IdExpression
-              (x)
+              (IdVariable
+                (x)
+              )
             )
             (2)
           )
@@ -15,7 +17,9 @@ module.exports.getAst = function() {
           (Block
             (-=
               (IdExpression
-                (x)
+                (IdVariable
+                  (x)
+                )
               )
               (1)
             )
@@ -26,7 +30,9 @@ module.exports.getAst = function() {
         (Block
           (+=
             (IdExpression
-              (x)
+              (IdVariable
+                (x)
+              )
             )
             (1)
           )
