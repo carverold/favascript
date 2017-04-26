@@ -153,13 +153,13 @@ class FunctionDeclarationStatement extends Statement {
         this.ownerClass;
     }
     analyze(context) {
+        this.ownerClass = context.currentClass;
         try {
             context.assertFunctionIsConstructor("This is not a constructor");
             this.isConstructor = true;
         } catch(err) {
             this.isConstructor = false;
         }
-        // this.isConstructor = DDDDDGSFSDAFASDFASDFASDFASDFASDFFKDSAJFLK;ASDJF;ASDJF;ASLKDFJAS;DKLFJASDKL;FJASDKLFJASD;FLKASJDF;LKSADF
         let blockContext = context.createChildContextForFunction(this.id);
         let self = this;
         this.parameterArray.forEach(function(parameter) {
@@ -186,8 +186,6 @@ class FunctionDeclarationStatement extends Statement {
         });
 
         context.setVariable(this.id, {type: TYPE.FUNCTION, returnType: this.block.returnType, parameters: signature});
-
-        this.ownerClass = context.currentClass;
     }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent)}(Func` +
@@ -667,7 +665,6 @@ class IdExpression extends Expression {
         this.returnType;
     }
     analyze(context, beingAssignedTo = false) {
-        console.log("idExp");
         this.idExpBody.analyze(context, beingAssignedTo);
         if (this.idPostOp == "++" || this.idPostOp == "--") {
             context.assertUnaryOperandIsOneOfTypes(this.idPostOp, [TYPE.INTEGER], this.idExpBody.type)
@@ -1031,7 +1028,6 @@ class ConstId {
         this.returnType;
     }
     analyze(context, beingAssignedTo = false) {
-        console.log("const");
         let entry = context.get(this.id, true);
         this.type = (typeof entry !== "undefined") ? entry.type : "undefined";
         this.returnType = (typeof entry !== "undefined") ? entry.returnType : "undefined";

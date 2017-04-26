@@ -1,4 +1,4 @@
-x = 1
+x = true
 
 match x with
   true -> print("truth")

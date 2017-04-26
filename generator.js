@@ -63,6 +63,16 @@ Object.assign(ASTClasses.BranchStatement.prototype, {
     }
 });
 
+Object.assign(ASTClasses.ClassDeclarationStatement.prototype, {
+    gen() {
+        let code = ``;
+        code += indentLine(`class ${jsName(this.id)} {\n`);
+        code += this.block.gen();
+        code += indentLine(`}\n`);
+        return code;
+    }
+});
+
 Object.assign(ASTClasses.FunctionDeclarationStatement.prototype, {
     gen() {
         let code = ``;
@@ -71,7 +81,7 @@ Object.assign(ASTClasses.FunctionDeclarationStatement.prototype, {
         this.parameterArray.forEach(function(parameter) {
             parameterArrayCode.push(parameter.gen());
         });
-        if (this.ownerClass !== null) {
+        if (this.ownerClass !== null && this.ownerClass !== undefined && this.ownerClass !== "undefined") {
             code += indentLine(`${funcId}(${parameterArrayCode.join(`, `)}) {\n`);
         } else {
             code += indentLine(`let ${jsName(this.id)} = function (${parameterArrayCode.join(`, `)}) {\n`);
@@ -85,16 +95,6 @@ Object.assign(ASTClasses.FunctionDeclarationStatement.prototype, {
 Object.assign(ASTClasses.Parameter.prototype, {
     gen() {
         return `${jsName(this.id)}${this.defaultValue !== `undefined` && this.defaultValue !== null ? ` = ${this.defaultValue.gen()}` : ``}`;
-    }
-});
-
-Object.assign(ASTClasses.ClassDeclarationStatement.prototype, {
-    gen() {
-        let code = ``;
-        code += indentLine(`class ${jsName(this.id)} {\n`);
-        code += this.block.gen();
-        code += indentLine(`}\n`);
-        return code;
     }
 });
 

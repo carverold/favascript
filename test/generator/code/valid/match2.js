@@ -1,5 +1,5 @@
 module.exports.getJSCode = function() {
-    return `let v_0 = 1;
+    return `let v_0 = true;
 if (v_0 === true) {
     console.log(\`truth\`);
 }
