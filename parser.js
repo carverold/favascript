@@ -74,7 +74,9 @@ semantics = grammar.createSemantics().addOperation('ast', {
     },
     periodId(period, id) {return new ASTClasses.PeriodId(id.sourceString);},
     Arguments(lParen, args, rParen) {return new ASTClasses.Arguments(args.ast());},
-    IdSelector(lBracket, variable, rBracket) {return new ASTClasses.IdSelector(variable.ast());},
+    IdSelector(lBracket, variable, rBracket) {
+        // console.log("IN PARSER: ", variable.ast());
+        return new ASTClasses.IdSelector(variable.ast());},
     idPostOp(op) {return op},
     List(lBracket, list, rBracket) {return new ASTClasses.List(list.ast());},
     Tuple(lParen, tuple, rParen) {return new ASTClasses.Tuple(tuple.ast());},
