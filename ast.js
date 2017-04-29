@@ -213,10 +213,14 @@ class Parameter {
         this.type;
     }
     analyze(context) {
+        console.log("Param: ", this.id);
+        // this.id.analyze(context);
         if (this.defaultValue) {
             this.defaultValue.analyze(context);
+            let entry = context.get(this.defaultValue, true);
             this.type = this.defaultValue.type;
         } else {
+            let entry = context.get(this.id, true);
             this.type = "undefined";
         }
     }
@@ -740,17 +744,21 @@ class IdExpressionBodyRecursive {
 
 class IdExpressionBodyBase {
     constructor(id) {
-        this.id = id;
-        // console.log("ID: ", this.id);
+        this.id;
+        this.idExpBase = id;
         this.type;
         this.returnType;
     }
     analyze(context, beingAssignedTo = false) {
-        console.log("what up exp");
+        console.log("what up exp idExpBase: ", this.idExpBase);
+        // this.idExpBase.analyze(context, beingAssignedTo);
+        this.id = this.idExpBase.id;
         let entry = context.get(this.id, true);
+        console.log("what up exp id: ", this.id);
         this.type = (typeof entry !== "undefined") ? entry.type : "undefined";
         this.returnType = (typeof entry !== "undefined") ? entry.returnType : "undefined";
         if (this.type === "undefined" && !context.isUndeclaredParameter(this.id) && !beingAssignedTo) {
+            console.log("UNDECLARED");
             context.throwUseBeforeDeclarationError(this.id);
         }
     }
@@ -1024,11 +1032,13 @@ class IdVariable {
         this.returnType;
     }
     analyze(context, beingAssignedTo = false) {
-        console.log("what up var");
+        console.log("\nwhat up var id: ", this.id);
         let entry = context.get(this.id, true);
+        console.log("what up var type: ", entry, "\n");
         this.type = (typeof entry !== "undefined") ? entry.type : "undefined";
         this.returnType = (typeof entry !== "undefined") ? entry.returnType : "undefined";
         if (this.type === "undefined" && !context.isUndeclaredParameter(this.id) && !beingAssignedTo) {
+            console.log("UNDECLARED");
             context.throwUseBeforeDeclarationError(this.id);
         }
     }

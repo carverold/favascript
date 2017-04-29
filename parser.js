@@ -36,7 +36,6 @@ semantics = grammar.createSemantics().addOperation('ast', {
       return new ASTClasses.ForInStatement(id.sourceString, iDExp.ast(), block.ast());},
     Statement_print(print, lCurly, exp, rCurly) {return new ASTClasses.PrintStatement(exp.ast());},
     Statement_assign(idExp, assignOp, exp) {
-        // console.log(exp.ast());
       return new ASTClasses.AssignmentStatement(idExp.ast(), assignOp.sourceString, exp.ast());},
     Statement_identifier(iDExp) {return new ASTClasses.IdentifierStatement(iDExp.ast());},
     Statement_return(ret, exp) {return new ASTClasses.ReturnStatement(exp.ast());},
