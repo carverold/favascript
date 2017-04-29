@@ -106,7 +106,6 @@ class Context {
     }
 
     isUndeclaredParameter(id) {
-        console.log(this.undeclaredParameters);
         return this.undeclaredParameters.indexOf(id) > -1;
     }
 

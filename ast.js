@@ -114,6 +114,7 @@ class BranchStatement extends Statement {
     analyze(context) {
         this.conditions.forEach(function(condition) {
             condition.analyze(context);
+            console.log("CONDITION: ", condition);
             context.assertIsTypeBoolean(condition.returnType? condition.returnType : condition.type);
         });
         this.thenBlocks.forEach(block => block.analyze(context.createChildContextForBlock()));
@@ -213,7 +214,7 @@ class Parameter {
         this.type;
     }
     analyze(context) {
-        console.log("Param: ", this.id);
+        // console.log("Param: ", this.id);
         // this.id.analyze(context);
         if (this.defaultValue) {
             this.defaultValue.analyze(context);
@@ -750,17 +751,19 @@ class IdExpressionBodyBase {
         this.returnType;
     }
     analyze(context, beingAssignedTo = false) {
-        console.log("what up exp idExpBase: ", this.idExpBase);
-        // this.idExpBase.analyze(context, beingAssignedTo);
+        // console.log("what up exp idExpBase: ", this.idExpBase);
+        this.idExpBase.analyze(context, beingAssignedTo);
         this.id = this.idExpBase.id;
-        let entry = context.get(this.id, true);
-        console.log("what up exp id: ", this.id);
-        this.type = (typeof entry !== "undefined") ? entry.type : "undefined";
-        this.returnType = (typeof entry !== "undefined") ? entry.returnType : "undefined";
-        if (this.type === "undefined" && !context.isUndeclaredParameter(this.id) && !beingAssignedTo) {
-            console.log("UNDECLARED");
-            context.throwUseBeforeDeclarationError(this.id);
-        }
+        this.type = this.idExpBase.type;
+        // let entry = context.get(this.id, true);
+        // console.log("what up exp id: ", this.id);
+        // console.log("what up exp type: ", this.type);
+        // this.type = (typeof entry !== "undefined") ? entry.type : "undefined";
+        // this.returnType = (typeof entry !== "undefined") ? entry.returnType : "undefined";
+        // if (this.type === "undefined" && !context.isUndeclaredParameter(this.id) && !beingAssignedTo) {
+        //     console.log("UNDECLARED");
+        //     context.throwUseBeforeDeclarationError(this.id);
+        // }
     }
     enforceType(type, context, returnType = "undefined") {
         if (this.type === "undefined") {
@@ -782,8 +785,7 @@ class IdExpressionBodyBase {
         }
     }
     toString(indent = 0) {
-        // console.log("ID: ", this.id);
-        return this.id === "this" ? `${spacer.repeat(indent)}(${this.id})` : `${spacer.repeat(indent)}${this.id.toString(indent)}`;
+        return this.idExpBase === "this" ? `${spacer.repeat(indent)}(${this.idExpBase})` : `${spacer.repeat(indent)}${this.idExpBase.toString(indent)}`;
         // return `${spacer.repeat(indent)}${this.id.toString(indent)}`;
     }
 }
@@ -1032,13 +1034,12 @@ class IdVariable {
         this.returnType;
     }
     analyze(context, beingAssignedTo = false) {
-        console.log("\nwhat up var id: ", this.id);
+        // console.log("\nwhat up var id: ", this.id);
         let entry = context.get(this.id, true);
-        console.log("what up var type: ", entry, "\n");
+        // console.log("what up var type: ", entry, "\n");
         this.type = (typeof entry !== "undefined") ? entry.type : "undefined";
         this.returnType = (typeof entry !== "undefined") ? entry.returnType : "undefined";
         if (this.type === "undefined" && !context.isUndeclaredParameter(this.id) && !beingAssignedTo) {
-            console.log("UNDECLARED");
             context.throwUseBeforeDeclarationError(this.id);
         }
     }
