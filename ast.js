@@ -746,6 +746,7 @@ class IdExpressionBodyBase {
         this.returnType;
     }
     analyze(context, beingAssignedTo = false) {
+        console.log("what up exp");
         let entry = context.get(this.id, true);
         this.type = (typeof entry !== "undefined") ? entry.type : "undefined";
         this.returnType = (typeof entry !== "undefined") ? entry.returnType : "undefined";
@@ -1023,6 +1024,7 @@ class IdVariable {
         this.returnType;
     }
     analyze(context, beingAssignedTo = false) {
+        console.log("what up var");
         let entry = context.get(this.id, true);
         this.type = (typeof entry !== "undefined") ? entry.type : "undefined";
         this.returnType = (typeof entry !== "undefined") ? entry.returnType : "undefined";
