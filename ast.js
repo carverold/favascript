@@ -115,7 +115,8 @@ class BranchStatement extends Statement {
         this.conditions.forEach(function(condition) {
             condition.analyze(context);
             console.log("CONDITION: ", condition);
-            context.assertIsTypeBoolean(condition.returnType? condition.returnType : condition.type);
+            // console.log("CONDITION: ", condition.returnType);
+            context.assertIsTypeBoolean(condition.returnType ? condition.returnType : condition.type);
         });
         this.thenBlocks.forEach(block => block.analyze(context.createChildContextForBlock()));
         if (this.elseBlock !== null) {
@@ -607,6 +608,7 @@ class ParenthesisExpression extends Expression {
     }
     analyze(context) {
         this.exp.analyze(context);
+        console.log("PARANTHESIS: ", this);
         this.type = this.exp.returnType ? this.exp.returnType : this.exp.type;
     }
     enforceType(type, context) {
@@ -633,6 +635,7 @@ class Variable extends Expression {
     }
     analyze(context, beingAssignedTo = false) {
         this.var.analyze(context, beingAssignedTo);
+        if (this.var.id === "isPositive") console.log("VARIABLE: ", this);
         this.type = this.var.type;
         this.returnType = this.var.returnType;
     }
@@ -669,6 +672,7 @@ class IdExpression extends Expression {
         this.id = this.idExpBody.id;
         this.type = this.idExpBody.returnType ? this.idExpBody.returnType : this.idExpBody.type;
         this.returnType = this.idExpBody.returnType;
+        if (this.id === "isPositive") console.log("ID EXPRESSION: ", this);
     }
     enforceType(type, context) {
         if (this.type == "undefined") {
@@ -724,6 +728,7 @@ class IdExpressionBodyRecursive {
             }
         }
         this.returnType = this.idExpBody.returnType;
+        if (this.id === "isPositive") console.log("ID RECURSIVE: ", this);
     }
     enforceType(type, context) {
         if (this.appendageOp === "[]") {
@@ -755,6 +760,8 @@ class IdExpressionBodyBase {
         this.idExpBase.analyze(context, beingAssignedTo);
         this.id = this.idExpBase.id;
         this.type = this.idExpBase.type;
+        this.returnType = this.idExpBase.returnType;
+        if (this.id === "isPositive") console.log("EXP BASE: ", this);
         // let entry = context.get(this.id, true);
         // console.log("what up exp id: ", this.id);
         // console.log("what up exp type: ", this.type);
