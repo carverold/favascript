@@ -1018,8 +1018,8 @@ class NullLit {
 }
 
 class IdVariable {
-    constructor(firstLetter, restLetters) {
-        this.id = firstLetter + [restLetters];
+    constructor(letters) {
+        this.id = letters;
         this.type;
         this.returnType;
     }
