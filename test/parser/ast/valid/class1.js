@@ -19,7 +19,9 @@ module.exports.getAst = function() {
                 )
               )
               (IdExpression
-                (radius)
+                (IdVariable
+                  (radius)
+                )
               )
             )
             (=
@@ -30,7 +32,9 @@ module.exports.getAst = function() {
                 )
               )
               (IdExpression
-                (weight)
+                (IdVariable
+                  (weight)
+                )
               )
             )
           )

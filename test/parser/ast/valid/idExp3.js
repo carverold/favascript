@@ -9,12 +9,16 @@ module.exports.getAst = function() {
             (dict)
           )
           (IdExpression
-            (id)
+            (IdVariable
+              (id)
+            )
           )
         )
       )
       (IdExpression
-        (value)
+        (IdVariable
+          (value)
+        )
       )
     )
   )

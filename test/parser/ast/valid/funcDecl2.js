@@ -21,7 +21,7 @@ module.exports.getAst = function() {
     (=
       (IdExpression
         (IdVariable
-          (lumb)
+          (list)
         )
       )
       (List)
@@ -33,7 +33,7 @@ module.exports.getAst = function() {
         (=
           (IdExpression
             (IdVariable
-              (rumber)
+              (result)
             )
           )
           (0)
@@ -65,7 +65,7 @@ module.exports.getAst = function() {
                     (+=
                       (IdExpression
                         (IdVariable
-                          (rumber)
+                          (result)
                         )
                       )
                       (IdExpression
@@ -83,7 +83,7 @@ module.exports.getAst = function() {
         (Return
           (IdExpression
             (IdVariable
-              (rumber)
+              (result)
             )
           )
         )

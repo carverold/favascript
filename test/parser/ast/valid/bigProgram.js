@@ -21,7 +21,9 @@ module.exports.getAst = function() {
                 )
               )
               (IdExpression
-                (param1)
+                (IdVariable
+                  (param1)
+                )
               )
             )
             (=
@@ -32,7 +34,9 @@ module.exports.getAst = function() {
                 )
               )
               (IdExpression
-                (param2)
+                (IdVariable
+                  (param2)
+                )
               )
             )
             (=
@@ -43,7 +47,9 @@ module.exports.getAst = function() {
                 )
               )
               (IdExpression
-                (param3)
+                (IdVariable
+                  (param3)
+                )
               )
             )
             (=
@@ -54,7 +60,9 @@ module.exports.getAst = function() {
                 )
               )
               (IdExpression
-                (param4)
+                (IdVariable
+                  (param4)
+                )
               )
             )
           )
@@ -87,7 +95,9 @@ module.exports.getAst = function() {
                 )
               )
               (IdExpression
-                (newParam)
+                (IdVariable
+                  (newParam)
+                )
               )
             )
           )
@@ -102,10 +112,14 @@ module.exports.getAst = function() {
             (Return
               (==
                 (IdExpression
-                  (paramX)
+                  (IdVariable
+                    (paramX)
+                  )
                 )
                 (IdExpression
-                  (paramY)
+                  (IdVariable
+                    (paramY)
+                  )
                 )
               )
             )
@@ -130,7 +144,9 @@ module.exports.getAst = function() {
                     )
                   )
                   (IdExpression
-                    (x)
+                    (IdVariable
+                      (x)
+                    )
                   )
                 )
                 (=
@@ -141,7 +157,9 @@ module.exports.getAst = function() {
                     )
                   )
                   (IdExpression
-                    (y)
+                    (IdVariable
+                      (y)
+                    )
                   )
                 )
                 (=
@@ -152,7 +170,9 @@ module.exports.getAst = function() {
                     )
                   )
                   (IdExpression
-                    (z)
+                    (IdVariable
+                      (z)
+                    )
                   )
                 )
               )
@@ -165,7 +185,9 @@ module.exports.getAst = function() {
               (Block
                 (Identifier Statement
                   (IdExpression
-                    (answer)
+                    (IdVariable
+                      (answer)
+                    )
                   )
                 )
                 (If
@@ -173,7 +195,9 @@ module.exports.getAst = function() {
                     (Condition
                       (!=
                         (IdExpression
-                          (var1)
+                          (IdVariable
+                            (var1)
+                          )
                         )
                         (null)
                       )
@@ -182,7 +206,9 @@ module.exports.getAst = function() {
                       (Block
                         (Match Expression
                           (IdExpression
-                            (var1)
+                            (IdVariable
+                              (var1)
+                            )
                           )
                           (Matches
                             (Match
@@ -190,7 +216,9 @@ module.exports.getAst = function() {
                               (Block
                                 (=
                                   (IdExpression
-                                    (answer)
+                                    (IdVariable
+                                      (answer)
+                                    )
                                   )
                                   (one)
                                 )
@@ -201,7 +229,9 @@ module.exports.getAst = function() {
                               (Block
                                 (=
                                   (IdExpression
-                                    (answer)
+                                    (IdVariable
+                                      (answer)
+                                    )
                                   )
                                   (two)
                                 )
@@ -212,7 +242,9 @@ module.exports.getAst = function() {
                               (Block
                                 (=
                                   (IdExpression
-                                    (answer)
+                                    (IdVariable
+                                      (answer)
+                                    )
                                   )
                                   (not one or two)
                                 )
@@ -226,7 +258,9 @@ module.exports.getAst = function() {
                 )
                 (Return
                   (IdExpression
-                    (answer)
+                    (IdVariable
+                      (answer)
+                    )
                   )
                 )
               )
@@ -252,7 +286,9 @@ module.exports.getAst = function() {
                     )
                   )
                   (IdExpression
-                    (dict)
+                    (IdVariable
+                      (dict)
+                    )
                   )
                 )
                 (=
@@ -263,7 +299,9 @@ module.exports.getAst = function() {
                     )
                   )
                   (IdExpression
-                    (list)
+                    (IdVariable
+                      (list)
+                    )
                   )
                 )
                 (=
@@ -274,7 +312,9 @@ module.exports.getAst = function() {
                     )
                   )
                   (IdExpression
-                    (tup)
+                    (IdVariable
+                      (tup)
+                    )
                   )
                 )
               )
@@ -294,12 +334,16 @@ module.exports.getAst = function() {
                         (dict)
                       )
                       (IdExpression
-                        (id)
+                        (IdVariable
+                          (id)
+                        )
                       )
                     )
                   )
                   (IdExpression
-                    (value)
+                    (IdVariable
+                      (value)
+                    )
                   )
                 )
               )
@@ -318,7 +362,9 @@ module.exports.getAst = function() {
                         (dict)
                       )
                       (IdExpression
-                        (id)
+                        (IdVariable
+                          (id)
+                        )
                       )
                     )
                   )

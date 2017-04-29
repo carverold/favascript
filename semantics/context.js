@@ -236,10 +236,8 @@ class Context {
     assertIsConstant(id) {
         // console.log("here");
         if (!(id instanceof ASTClasses.ConstId)) {
-            console.log("here1");
             throw new Error(semanticErrors.notConstant(id));
         }
-        console.log("there");
     }
 
 

@@ -829,7 +829,6 @@ class IdSelector {
     constructor(variable) {
         this.variable = variable;
         this.type;
-        console.log(this.variable.toString());
     }
     analyze(context) {
         this.variable.analyze(context);
