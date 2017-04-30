@@ -154,13 +154,13 @@ class FunctionDeclarationStatement extends Statement {
     }
     analyze(context) {
         this.ownerClass = context.currentClass;
+        let blockContext = context.createChildContextForFunction(this.id, this.isConstructor);
         try {
-            context.assertFunctionIsConstructor("This is not a constructor");
+            blockContext.assertFunctionIsConstructor("This is not a constructor");
             this.isConstructor = true;
         } catch(err) {
             this.isConstructor = false;
         }
-        let blockContext = context.createChildContextForFunction(this.id, this.isConstructor);
         let self = this;
         this.parameterArray.forEach(function(parameter) {
             parameter.analyze(context);
@@ -171,6 +171,7 @@ class FunctionDeclarationStatement extends Statement {
             }
         });
         this.block.analyze(blockContext);
+        console.log(blockContext.undeclaredParameters);
         let signature = [];
         this.parameterArray.forEach(function(parameter) {
             let entry = blockContext.get(
@@ -342,6 +343,8 @@ class AssignmentStatement extends Statement {
         this.idExp.analyze(context, true);  // Will have id and type
         this.exp.analyze(context);
 
+        this.isConstant = this.idExp.idExpBody.idExpBase instanceof ConstId ? true : false;
+
         if (this.assignOp == "=") {
             if (this.idExp.id !== "this") {
                 context.setVariable(this.idExp.id, {type: this.exp.type});
@@ -402,6 +405,11 @@ class ReturnStatement extends Statement {
     analyze(context) {
         context.assertReturnInFunction();
         this.exp.analyze(context);
+        let id = this.exp.var.var.idExpBody.idExpBase.id
+        if (context.isUndeclaredParameter(id)) {
+            context.removeUndeclaredParameter(id);
+            context.setVariable(id, TYPE.NULL);
+        }
         this.returnType = this.exp.type;
     }
     toString(indent = 0) {

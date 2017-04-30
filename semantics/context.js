@@ -1,5 +1,3 @@
-const ASTClasses = require('../ast.js');
-
 const semanticErrors = {
     changedImmutableType(id, expectedType, receivedType) {
         return `ChangedImmutableType error: tried to change ${id} `
@@ -155,7 +153,7 @@ class Context {
     }
 
     assertFunctionIsConstructor(message) {
-        if (!this.currentFunction === this.currentClass) {
+        if (this.currentFunction !== this.currentClass) {
             throw new Error(message);
         }
     }
@@ -239,7 +237,7 @@ class Context {
     }
 
     assertIsConstant(id) {
-        // console.log("here");
+        var fact = id instanceof String;
         if (!(id instanceof ASTClasses.ConstId)) {
             throw new Error(semanticErrors.notConstant(id));
         }
