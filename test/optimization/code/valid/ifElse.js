@@ -1,4 +1,4 @@
-module.exports.getJSCode = function() {
+module.exports.getOptimized = function() {
     return `let v_0 = true;
 if (((v_0 == true))) {
     console.log(true);

@@ -5,12 +5,12 @@ assert = require('assert');
 util = require('util');
 grammarContents = fs.readFileSync('favascript.ohm');
 grammar = ohm.grammar(grammarContents);
-ast = require(path.resolve('./ast.js'));
+parser = require(path.resolve('./ast.js'));
 generator = require(path.resolve('./generator.js'));
 validPrograms = path.resolve('./test/generator/programs/valid');
 invalidPrograms = path.resolve('./test/generator/programs/invalid');
 validProgramsJSCode = path.resolve('./test/generator/code/valid');
-// invalidProgramAsts = path.resolve('./test/ast/ast/invalid');
+// invalidProgramAsts = path.resolve('./test/parser/ast/invalid');
 
 tests = function(validFiles, invalidFiles) {
   describe('Generator tests', function() {
@@ -30,7 +30,7 @@ tests = function(validFiles, invalidFiles) {
 
     // describe('Test invalid example programs', function() {
     //   invalidFiles.forEach(function(file) {
-    //     it('ast\\programs\\invalid\\' + file.name + ' should be rejected by the grammar',
+    //     it('parser\\programs\\invalid\\' + file.name + ' should be rejected by the grammar',
     //       function() {
     //         grammarResult = grammar.match(file.code);
     //         assert.equal(grammarResult.succeeded(), false,

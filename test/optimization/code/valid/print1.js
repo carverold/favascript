@@ -1,3 +1,3 @@
-module.exports.getJSCode = function() {
+module.exports.getOptimized = function() {
     return `console.log(\`hello, world!\`);`;
 }

@@ -1,4 +1,4 @@
-module.exports.getJSCode = function() {
+module.exports.getOptimized = function() {
     return `(Program
   (Block
     (=
