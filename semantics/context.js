@@ -161,7 +161,7 @@ class Context {
         }
     }
 
-    assertIsFunction(value) {  // eslint-disable-line class-methods-use-this
+    assertIsFunction(value) {
         if (value.constructor !== ASTClasses.FunctionDeclarationStatement) {
             throw new Error(semanticErrors.isNotAFunction(value.id));
         }

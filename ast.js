@@ -68,6 +68,10 @@ class Program {
                `\n${this.block.toString(++indent)}` +
                `\n${spacer.repeat(--indent)})`;
     }
+    optimize() {
+        this.block = this.block.optimize();
+        return this;
+    }
 }
 
 class Block {
@@ -97,6 +101,10 @@ class Block {
         }
         string += `\n${spacer.repeat(--indent)})`;
         return string;
+    }
+    optimize() {
+        this.body.map(s => s.optimize()).filter(s => s !== null);
+        return this;
     }
 }
 
@@ -140,6 +148,14 @@ class BranchStatement extends Statement {
         }
         string += `\n${spacer.repeat(--indent)})`;
         return string;
+    }
+    optimize() {
+        this.conditions.forEach(c => c.optimize());
+        this.conditions.filter(c => c !== null);
+        this.thenBlocks.forEach(t => t.optimize());
+        this.thenBlocks.filter(t => t !== null);
+        this.elseBlock = this.elseBlock.optimize();
+        return this;
     }
 }
 
@@ -207,6 +223,12 @@ class FunctionDeclarationStatement extends Statement {
                   `\n${spacer.repeat(--indent)})`;
         return string;
     }
+    optimize() {
+        this.id = this.id.optimize();
+        this.parameterArray.forEach(p => p.optimize());
+        this.parameterArray.filter(p => p !== null);
+        return this;
+    }
 }
 
 class Parameter {
@@ -233,6 +255,11 @@ class Parameter {
         string += `)`
         return string
     }
+    optimize() {
+        this.id = this.id.optimize();
+        this.defaultValue = this.defaultValue.optimize();
+        return this;
+    }
 }
 
 class ClassDeclarationStatement extends Statement {
@@ -258,6 +285,11 @@ class ClassDeclarationStatement extends Statement {
                `\n${this.block.toString(indent)}` +
                `\n${spacer.repeat(--indent)})`;
     }
+    optimize() {
+        this.id = this.id.optimize();
+        this.block = this.block.optimize();
+        return this;
+    }
 }
 
 class MatchStatement extends Statement {
@@ -270,6 +302,10 @@ class MatchStatement extends Statement {
     }
     toString(indent = 0) {
         return `${this.matchExp.toString(indent)}`;
+    }
+    optimize() {
+        this.matchExp = this.matchExp.optimize();
+        return this;
     }
 }
 
@@ -294,26 +330,37 @@ class WhileStatement extends Statement {
                `\n${spacer.repeat(--indent)})` +
                `\n${spacer.repeat(--indent)})`;
     }
+    optimize() {
+        this.exp = this.exp.optimize();
+        this.block = this.block.optimize();
+        return this;
+    }
 }
 
 class ForInStatement extends Statement {
-    constructor(id, iDExp, block) {
+    constructor(id, idExp, block) {
         super();
         this.id = id;
-        this.iDExp = iDExp;
+        this.idExp = idExp;
         this.block = block;
     }
     analyze(context) {
-        this.iDExp.analyze(context);
+        this.idExp.analyze(context);
         let blockContext = context.createChildContextForBlock();
-        blockContext.setVariable(this.id, {type: this.iDExp.returnType});
+        blockContext.setVariable(this.id, {type: this.idExp.returnType});
         this.block.analyze(blockContext);
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(For id (${this.id}) in` +
-               `\n${this.iDExp.toString(++indent)}` +
+               `\n${this.idExp.toString(++indent)}` +
                `\n${this.block.toString(indent)}` +
                `\n${spacer.repeat(--indent)})`;
+    }
+    optimize() {
+        this.id = this.id.optimize();
+        this.idExp = this.idExp.optimize();
+        this.block = this.block.optimize();
+        return this;
     }
 }
 
@@ -329,6 +376,10 @@ class PrintStatement extends Statement {
         return `${spacer.repeat(indent)}(Print` +
                `\n${this.exp.toString(++indent)}` +
                `\n${spacer.repeat(--indent)})`;
+    }
+    optimize() {
+        this.exp = this.exp.optimize();
+        return this;
     }
 }
 
@@ -385,20 +436,29 @@ class AssignmentStatement extends Statement {
                `\n${this.exp.toString(indent)}` +
                `\n${spacer.repeat(--indent)})`;
     }
+    optimize() {
+        this.idExp = this.idExp.optimize();
+        this.exp = this.exp.optimize();
+        return this;
+    }
 }
 
 class IdentifierStatement extends Statement {
-    constructor(iDExp) {
+    constructor(idExp) {
         super();
-        this.iDExp = iDExp;
+        this.idExp = idExp;
     }
     analyze(context) {
-        this.iDExp.analyze(context);
+        this.idExp.analyze(context);
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(Identifier Statement` +
-              `\n${this.iDExp.toString(++indent)}` +
+              `\n${this.idExp.toString(++indent)}` +
               `\n${spacer.repeat(--indent)})`;
+    }
+    optimize() {
+        this.idExp = this.idExp.optimize();
+        return this;
     }
 }
 
@@ -424,6 +484,10 @@ class ReturnStatement extends Statement {
         return `${spacer.repeat(indent)}(Return` +
                `\n${this.exp.toString(++indent)}` +
                `\n${spacer.repeat(--indent)})`;
+    }
+    optimize() {
+        this.exp = this.exp.optimize();
+        return this;
     }
 }
 
@@ -472,6 +536,15 @@ class MatchExpression extends Expression {
                   `\n${spacer.repeat(--indent)})`;
         return string;
     }
+    optimize() {
+        this.idExp = this.idExp.optimize();
+        this.varArray.forEach(v => v.optimize());
+        this.varArray.filter(v => v !== null);
+        this.matchArray.forEach(m => m.optimize());
+        this.matchArray.filter(m => m !== null);
+        this.matchFinal = this.matchFinal.optimize();
+        return this;
+    }
 }
 
 class Match {
@@ -483,6 +556,10 @@ class Match {
     }
     toString(indent = 0) {
         return `${this.matchee.toString(indent)}`;
+    }
+    optimize() {
+        this.matchee = this.matchee.optimize();
+        return this;
     }
 }
 
@@ -565,6 +642,11 @@ class BinaryExpression extends Expression {
                `\n${this.right.toString(indent)}` +
                `\n${spacer.repeat(--indent)})`;
     }
+    optimize() {
+        this.left = this.left.optimize();
+        this.right = this.right.optimize();
+        return this;
+    }
 }
 
 class UnaryExpression extends Expression {
@@ -612,6 +694,10 @@ class UnaryExpression extends Expression {
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.op}\n${this.operand.toString(++indent)})`;
     }
+    optimize() {
+        this.operand = this.operand.optimize();
+        return this;
+    }
 }
 
 class ParenthesisExpression extends Expression {
@@ -636,6 +722,10 @@ class ParenthesisExpression extends Expression {
     toString(indent = 0) {
         // Don't increase indent, as the semantic meaning of parenthesis are already captured in the tree
         return `${this.exp.toString(indent)}`;
+    }
+    optimize() {
+        this.exp = this.exp.optimize();
+        return this;
     }
 }
 
@@ -666,6 +756,11 @@ class Variable extends Expression {
     toString(indent = 0) {
         // Don't increase indent, we already know literals and other data types are variables
         return `${this.var.toString(indent)}`;
+    }
+    optimize() {
+        this.var = this.var.optimize();
+        this.id = this.id.optimize();
+        return this;
     }
 }
 
@@ -699,6 +794,12 @@ class IdExpression extends Expression {
                 `${this.idExpBody.toString(++indent)}` +
                 `${(!this.idPostOp) ? "" : `\n${spacer.repeat(++indent)}${this.idPostOp}`}` +
                 `\n${spacer.repeat(--indent)})`;
+    }
+    optimize() {
+        this.idExpBody = this.idExpBody.optimize();
+        this.idPostOp = this.idPostOp.optimize();
+        this.id = this.id.optimize();
+        return this;
     }
 }
 
@@ -757,6 +858,13 @@ class IdExpressionBodyRecursive {
                `\n${this.idAppendage.toString(indent)}` +
                `\n${spacer.repeat(--indent)})`;
     }
+    optimize() {
+        this.idExpBody = this.idExpBody.optimize();
+        this.idAppendage = this.idAppendage.optimize();
+        this.appendageOp = this.appendageOp.optimize();
+        this.id = this.id.optimize();
+        return this;
+    }
 }
 
 class IdExpressionBodyBase {
@@ -794,6 +902,11 @@ class IdExpressionBodyBase {
     toString(indent = 0) {
         return this.idExpBase === "this" ? `${spacer.repeat(indent)}(${this.idExpBase})` : `${spacer.repeat(indent)}${this.idExpBase.toString(indent)}`;
     }
+    optimize() {
+        this.id = this.id.optimize();
+        this.idExpBase = this.idExpBase.optimize();
+        return this;
+    }
 }
 
 class PeriodId {
@@ -814,6 +927,10 @@ class PeriodId {
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}${this.id.toString(++indent)}`;
+    }
+    optimize() {
+        this.id = this.id.optimize();
+        return this;
     }
 }
 
@@ -840,6 +957,11 @@ class Arguments {
         }
         return string;
     }
+    optimize() {
+        this.args.forEach(a => a.optimize());
+        this.args.filter(a => a !== null);
+        return this;
+    }
 }
 
 class IdSelector {
@@ -859,6 +981,10 @@ class IdSelector {
     }
     toString(indent = 0) {
         return `${this.variable.toString(indent)}`;
+    }
+    optimize() {
+        this.variable = this.variable.optimize();
+        return this;
     }
 }
 
@@ -883,6 +1009,10 @@ class List {
         }
         return string;
     }
+    optimize() {
+        this.varList.foreach(v => v.optimize());
+        this.varList.filter(v => v !== null);
+    }
 }
 
 class Tuple {
@@ -900,6 +1030,11 @@ class Tuple {
         return `${spacer.repeat(indent)}(Tuple` +
                `\n${this.elems.toString(++indent)}` +
                `\n${spacer.repeat(--indent)})`;
+    }
+    optimize() {
+        this.elems.forEach(e => e.optimize());
+        this.elems.filter(e => e !== null);
+        return this;
     }
 }
 
@@ -933,6 +1068,11 @@ class Dictionary {
         }
         return string;
     }
+    optimize() {
+        this.idValuePairs.forEach(p => p.optimize());
+        this.idValuePairs.filter(p => p !== null);
+        return this;
+    }
 }
 
 class IdValuePair {
@@ -945,6 +1085,11 @@ class IdValuePair {
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.id} : ${this.variable.toString()})`;
+    }
+    optimize() {
+        this.id = this.id.optimize();
+        this.variable = this.variable.optimize();
+        return this;
     }
 }
 
@@ -977,6 +1122,11 @@ class VarList {
         }
         return string;
     }
+    optimize() {
+        this.variables.forEach(v => v.optimize());
+        this.variables.filter(v => v !== null);
+        return this;
+    }
 }
 
 class IntLit {
@@ -987,6 +1137,9 @@ class IntLit {
     analyze() {}
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.digits})`;
+    }
+    optimize() {
+        return this;
     }
 }
 
@@ -999,6 +1152,9 @@ class FloatLit {
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.value})`;
     }
+    optimize() {
+        return this;
+    }
 }
 
 class StringLit {
@@ -1009,6 +1165,9 @@ class StringLit {
     analyze() {}
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.value})`;
+    }
+    optimize() {
+        return this;
     }
 }
 
@@ -1021,6 +1180,9 @@ class BoolLit {
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.boolVal})`;
     }
+    optimize() {
+        return this;
+    }
 }
 
 class NullLit {
@@ -1030,6 +1192,9 @@ class NullLit {
     analyze() {}
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(null)`;
+    }
+    optimize() {
+        return this;
     }
 }
 
@@ -1071,6 +1236,9 @@ class IdVariable {
                 `\n${spacer.repeat(++indent)}(${this.id})` +
                 `\n${spacer.repeat(--indent)})`;
     }
+    optimize() {
+        return this;
+    }
 }
 
 class ConstId {
@@ -1111,6 +1279,9 @@ class ConstId {
                 `\n${spacer.repeat(++indent)}(${this.id})` +
                 `\n${spacer.repeat(--indent)})`;
     }
+    optimize() {
+        return this;
+    }
 }
 
 class ClassId {
@@ -1150,6 +1321,9 @@ class ClassId {
         return `(ClassId` +
                 `\n${spacer.repeat(++indent)}(${this.id})` +
                 `\n${spacer.repeat(--indent)})`;
+    }
+    optimize() {
+        return this;
     }
 }
 
