@@ -171,7 +171,6 @@ class FunctionDeclarationStatement extends Statement {
             }
         });
         this.block.analyze(blockContext);
-        console.log(blockContext.undeclaredParameters);
         let signature = [];
         this.parameterArray.forEach(function(parameter) {
             let entry = blockContext.get(
@@ -179,9 +178,12 @@ class FunctionDeclarationStatement extends Statement {
                 true,  // silent = true
                 true  // onlyThisContext = true
             );
-            if (!entry) {
+            if (!entry && !blockContext.isParameterUsedInBody(parameter.id)) {
                 context.declareUnusedLocalVariable(parameter.id);
-            } else {
+            } else if (entry && blockContext.isParameterUsedInBody(parameter.id)) {
+                blockContext.removeParameterUsedInBody(parameter.id);
+                signature.push(blockContext.get(parameter.id).type);
+            } else if (!blockContext.isParameterUsedInBody(parameter.id)) {
                 signature.push(blockContext.get(parameter.id).type);
             }
         });
@@ -342,8 +344,12 @@ class AssignmentStatement extends Statement {
 
         this.idExp.analyze(context, true);  // Will have id and type
         this.exp.analyze(context);
-
+        let entry = context.get(this.exp.id);
+        if (!entry) {
+            context.addParameterUsedInBody(this.exp.id);
+        }
         this.isConstant = this.idExp.idExpBody.idExpBase instanceof ConstId ? true : false;
+
 
         if (this.assignOp == "=") {
             if (this.idExp.id !== "this") {
@@ -637,11 +643,13 @@ class Variable extends Expression {
     constructor(variable) {
         super();
         this.var = variable;
+        this.id;
         this.type;
         this.returnType;
     }
     analyze(context, beingAssignedTo = false) {
         this.var.analyze(context, beingAssignedTo);
+        this.id = this.var.id
         this.type = this.var.type;
         this.returnType = this.var.returnType;
     }

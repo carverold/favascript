@@ -52,9 +52,6 @@ const semanticErrors = {
     },
     nonHomogenousTypes(expectedType, receivedType) {
         return `NonHomogenousTypes error: expected element of type ${receivedType} to be of type ${expectedType}`;
-    },
-    notConstant(id) {
-        return `NotConstant: ${id} is not a constant`;
     }
 };
 
@@ -74,7 +71,8 @@ class Context {
         this.currentFunction = currentFunction || null;
         this.isInLoop = isInLoop;
         this.symbolTable = symbolTable || {};
-        this.undeclaredParameters = []
+        this.undeclaredParameters = [];
+        this.parametersUsedInBody = [];
 
         // Need Object.create(null) so things like toString are not in this.symbolTable
     }
@@ -126,7 +124,6 @@ class Context {
             // Case 2- either creating a new variable or shadowing an old one:
             this.symbolTable[id] = signature;
         }
-        // console.log("SYMBOL TABLE: ", this.symbolTable);
     }
 
     get(id, silent = false, onlyThisContext = false) {
@@ -236,11 +233,16 @@ class Context {
         }
     }
 
-    assertIsConstant(id) {
-        var fact = id instanceof String;
-        if (!(id instanceof ASTClasses.ConstId)) {
-            throw new Error(semanticErrors.notConstant(id));
-        }
+    addParameterUsedInBody(id) {
+        this.parametersUsedInBody.push(id);
+    }
+
+    isParameterUsedInBody(id) {
+        return this.parametersUsedInBody.indexOf(id) > -1;
+    }
+
+    removeParameterUsedInBody(id) {
+        this.parametersUsedInBody.splice(this.parametersUsedInBody.indexOf(id), 1);
     }
 
 

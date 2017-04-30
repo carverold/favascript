@@ -242,7 +242,7 @@ Object.assign(ASTClasses.IdExpressionBodyBase.prototype, {
 
 Object.assign(ASTClasses.PeriodId.prototype, {
     gen() {
-        return `${jsName(this.id)}`;
+        return `${this.id.gen()}`;
     }
 });
 
@@ -323,6 +323,12 @@ Object.assign(ASTClasses.StringLit.prototype, {
 Object.assign(ASTClasses.NullLit.prototype, {
     gen() {
         return `null`;
+    }
+});
+
+Object.assign(ASTClasses.IdVariable.prototype, {
+    gen() {
+        return `${jsName(this.id)}`;
     }
 });
 
