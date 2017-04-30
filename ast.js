@@ -405,11 +405,13 @@ class ReturnStatement extends Statement {
     analyze(context) {
         context.assertReturnInFunction();
         this.exp.analyze(context);
-        let id = this.exp.var.var.idExpBody.idExpBase.id
-        if (context.isUndeclaredParameter(id)) {
-            context.removeUndeclaredParameter(id);
-            context.setVariable(id, TYPE.NULL);
-        }
+        try {
+            let id = this.exp.var.var.idExpBody.idExpBase.id
+            if (context.isUndeclaredParameter(id)) {
+                context.removeUndeclaredParameter(id);
+                context.setVariable(id, TYPE.NULL);
+            }
+        } catch(err) {}
         this.returnType = this.exp.type;
     }
     toString(indent = 0) {
