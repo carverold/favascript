@@ -53,6 +53,23 @@ function canArgumentsFitParameters(args, params) {
     });
 }
 
+function getValue(obj) {
+    // if (obj.hasOwnProperty("exp")) {
+    //     if (obj.exp.value === "5") {
+    //         console.log("here************************************************************");
+    //     }
+    // }
+    if (obj.hasOwnProperty("value") && (typeof obj["value"] !== "undefined")) {
+        return obj.value;
+    } else {
+        for (var prop in obj) {
+            if (obj.hasOwnProperty(prop)) {
+                getValue(obj["prop"]);
+            }
+        }
+    }
+}
+
 class Program {
     constructor(block) {
         this.block = block;
@@ -651,8 +668,13 @@ class BinaryExpression extends Expression {
                `\n${spacer.repeat(--indent)})`;
     }
     optimize() {
-        let leftFloat = parseFloat(this.left.value);
-        let rightFloat = parseFloat(this.right.value);
+        this.left = this.left.optimize();
+        this.right = this.right.optimize();
+        this.left.analyze(this.context);
+        this.right.analyze(this.context);
+        let leftFloat = parseFloat(getValue(this.left));
+        let rightFloat = parseFloat(getValue(this.right));
+
         if (this.op == "||") {
             if (this.left.value == "true") {
                 return new BoolLit("true");
@@ -689,9 +711,8 @@ class BinaryExpression extends Expression {
             let answer = Math.pow(leftFloat, rightFloat);
             return new FloatLit(answer.toString());
         } else if (this.op == "//") {
-            //TODO: INSERT CODE HERE
-            // let answer = leftFloat + rightFloat;
-            // return new FloatLit(answer.toString());
+            let answer = leftFloat + rightFloat;
+            return new FloatLit(answer.toString());
         } else if (this.op == "%") {
             let answer = leftFloat % rightFloat;
             return new FloatLit(answer.toString());
@@ -821,7 +842,6 @@ class Variable extends Expression {
     }
     optimize() {
         this.var = this.var.optimize();
-        this.id = this.id.optimize();
         return this;
     }
 }
