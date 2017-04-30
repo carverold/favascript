@@ -1,3 +1,9 @@
 module.exports.getOptimized = function() {
-    return `console.log(\`hello, world!\`);`;
+    return `(Program
+  (Block
+    (Print
+      (hello, world!)
+    )
+  )
+)`;
 }

@@ -1,9 +1,36 @@
+// Still needs redoing
 module.exports.getOptimized = function() {
-    return `let v_0 = true;
-if (((v_0 == true))) {
-    console.log(true);
-}
-else {
-    console.log(false);
-}`;
+    return `(Program
+  (Block
+    (=
+      (IdExpression
+        (IdVariable
+          (x)
+        )
+      )
+      (true)
+    )
+    (If
+      (Case
+        (Condition
+          (true)
+        )
+        (Body
+          (Block
+            (Print
+              (true)
+            )
+          )
+        )
+      )
+      (Else
+        (Block
+          (Print
+            (false)
+          )
+        )
+      )
+    )
+  )
+)`;
 }

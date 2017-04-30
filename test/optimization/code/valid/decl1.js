@@ -1,3 +1,14 @@
 module.exports.getOptimized = function() {
-    return `let v_0 = \`guav1231\\\"\`;`;
+    return `(Program
+  (Block
+    (=
+      (IdExpression
+        (IdVariable
+          (name)
+        )
+      )
+      (guav1231\")
+    )
+  )
+)`;
 }

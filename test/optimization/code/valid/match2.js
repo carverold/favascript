@@ -1,9 +1,39 @@
 module.exports.getOptimized = function() {
-    return `let v_0 = true;
-if (v_0 === true) {
-    console.log(\`truth\`);
-}
-else {
-    console.log(\`lies\`);
-}`;
+    return `(Program
+  (Block
+    (=
+      (IdExpression
+        (IdVariable
+          (x)
+        )
+      )
+      (true)
+    )
+    (Match Expression
+      (IdExpression
+        (IdVariable
+          (x)
+        )
+      )
+      (Matches
+        (Match
+          (true) ->
+          (Block
+            (Print
+              (truth)
+            )
+          )
+        )
+        (Match
+          _ ->
+          (Block
+            (Print
+              (lies)
+            )
+          )
+        )
+      )
+    )
+  )
+)`;
 }

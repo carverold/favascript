@@ -583,7 +583,9 @@ class MatchExpression extends Expression {
         this.varArray.filter(v => v !== null);
         this.matchArray.forEach(m => m.optimize());
         this.matchArray.filter(m => m !== null);
-        this.matchFinal = this.matchFinal.optimize();
+        if (typeof this.matchFinal !== "undefined") {
+            this.matchFinal = this.matchFinal.optimize();
+        }
         return this;
     }
 }

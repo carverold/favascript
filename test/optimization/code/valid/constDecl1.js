@@ -1,3 +1,14 @@
 module.exports.getOptimized = function() {
-    return `const v_0 = 3.28084;`;
+    return `(Program
+  (Block
+    (=
+      (IdExpression
+        (ConstId
+          (FEET_IN_METER)
+        )
+      )
+      (3.28084)
+    )
+  )
+)`;
 };

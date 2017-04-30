@@ -1,3 +1,14 @@
 module.exports.getOptimized = function() {
-    return `let v_0 = 21;`;
+    return `(Program
+  (Block
+    (=
+      (IdExpression
+        (IdVariable
+          (age)
+        )
+      )
+      (21)
+    )
+  )
+)`;
 }

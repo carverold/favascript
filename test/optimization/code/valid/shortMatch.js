@@ -1,6 +1,31 @@
 module.exports.getOptimized = function() {
-    return `let v_0 = 2;
-if (v_0 === 2) {
-    console.log(\`two\`);
-}`;
+    return `(Program
+  (Block
+    (=
+      (IdExpression
+        (IdVariable
+          (x)
+        )
+      )
+      (2)
+    )
+    (Match Expression
+      (IdExpression
+        (IdVariable
+          (x)
+        )
+      )
+      (Matches
+        (Match
+          (2) ->
+          (Block
+            (Print
+              (two)
+            )
+          )
+        )
+      )
+    )
+  )
+)`;
 }

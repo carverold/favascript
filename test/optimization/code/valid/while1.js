@@ -1,5 +1,18 @@
 module.exports.getOptimized = function() {
-    return `while (true) {
-    console.log(true);
-}`;
+    return `(Program
+  (Block
+    (While
+      (Condition
+        (true)
+      )
+      (Body
+        (Block
+          (Print
+            (true)
+          )
+        )
+      )
+    )
+  )
+)`;
 }
