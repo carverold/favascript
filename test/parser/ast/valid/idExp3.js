@@ -5,8 +5,12 @@ module.exports.getAst = function() {
       (IdExpression
         ([]
           (.
-            (this)
-            (dict)
+            (IdVariable
+              (this)
+            )
+            (IdVariable
+                (dict)
+              )
           )
           (IdExpression
             (IdVariable

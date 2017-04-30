@@ -114,8 +114,6 @@ class BranchStatement extends Statement {
     analyze(context) {
         this.conditions.forEach(function(condition) {
             condition.analyze(context);
-            console.log("CONDITION: ", condition);
-            // console.log("CONDITION: ", condition.returnType);
             context.assertIsTypeBoolean(condition.returnType ? condition.returnType : condition.type);
         });
         this.thenBlocks.forEach(block => block.analyze(context.createChildContextForBlock()));
@@ -162,7 +160,7 @@ class FunctionDeclarationStatement extends Statement {
         } catch(err) {
             this.isConstructor = false;
         }
-        let blockContext = context.createChildContextForFunction(this.id);
+        let blockContext = context.createChildContextForFunction(this.id, this.isConstructor);
         let self = this;
         this.parameterArray.forEach(function(parameter) {
             parameter.analyze(context);
@@ -215,8 +213,6 @@ class Parameter {
         this.type;
     }
     analyze(context) {
-        // console.log("Param: ", this.id);
-        // this.id.analyze(context);
         if (this.defaultValue) {
             this.defaultValue.analyze(context);
             let entry = context.get(this.defaultValue, true);
@@ -244,7 +240,7 @@ class ClassDeclarationStatement extends Statement {
     }
     analyze(context) {
         let classContext = context.createChildContextForClass(this.id);
-        classContext.setVariable(`this`, {type: TYPE.OBJECT});
+        classContext.setVariable("this", {type: TYPE.OBJECT});
         this.block.analyze(classContext);
         let constructorFunction = classContext.get(this.id);
         if (constructorFunction == "undefined") {
@@ -347,7 +343,9 @@ class AssignmentStatement extends Statement {
         this.exp.analyze(context);
 
         if (this.assignOp == "=") {
-            context.setVariable(this.idExp.id, {type: this.exp.type});
+            if (this.idExp.id !== "this") {
+                context.setVariable(this.idExp.id, {type: this.exp.type});
+            }
         } else {
             let expectedPairs = [
                 [TYPE.INTEGER, TYPE. INTEGER],
@@ -608,7 +606,6 @@ class ParenthesisExpression extends Expression {
     }
     analyze(context) {
         this.exp.analyze(context);
-        console.log("PARANTHESIS: ", this);
         this.type = this.exp.returnType ? this.exp.returnType : this.exp.type;
     }
     enforceType(type, context) {
@@ -635,7 +632,6 @@ class Variable extends Expression {
     }
     analyze(context, beingAssignedTo = false) {
         this.var.analyze(context, beingAssignedTo);
-        if (this.var.id === "isPositive") console.log("VARIABLE: ", this);
         this.type = this.var.type;
         this.returnType = this.var.returnType;
     }
@@ -672,7 +668,6 @@ class IdExpression extends Expression {
         this.id = this.idExpBody.id;
         this.type = this.idExpBody.returnType ? this.idExpBody.returnType : this.idExpBody.type;
         this.returnType = this.idExpBody.returnType;
-        if (this.id === "isPositive") console.log("ID EXPRESSION: ", this);
     }
     enforceType(type, context) {
         if (this.type == "undefined") {
@@ -701,7 +696,6 @@ class IdExpressionBodyRecursive {
     analyze(context, beingAssignedTo = false) {
         this.idExpBody.analyze(context, beingAssignedTo);
         this.id = this.idExpBody.id;
-        // this.type = this.idExpBody.type; NO- NEED TO BE MORE SPECIFIC
 
         if (this.appendageOp === "[]") {
             this.idAppendage.analyze(context);
@@ -728,7 +722,6 @@ class IdExpressionBodyRecursive {
             }
         }
         this.returnType = this.idExpBody.returnType;
-        if (this.id === "isPositive") console.log("ID RECURSIVE: ", this);
     }
     enforceType(type, context) {
         if (this.appendageOp === "[]") {
@@ -756,21 +749,10 @@ class IdExpressionBodyBase {
         this.returnType;
     }
     analyze(context, beingAssignedTo = false) {
-        // console.log("what up exp idExpBase: ", this.idExpBase);
         this.idExpBase.analyze(context, beingAssignedTo);
         this.id = this.idExpBase.id;
         this.type = this.idExpBase.type;
         this.returnType = this.idExpBase.returnType;
-        if (this.id === "isPositive") console.log("EXP BASE: ", this);
-        // let entry = context.get(this.id, true);
-        // console.log("what up exp id: ", this.id);
-        // console.log("what up exp type: ", this.type);
-        // this.type = (typeof entry !== "undefined") ? entry.type : "undefined";
-        // this.returnType = (typeof entry !== "undefined") ? entry.returnType : "undefined";
-        // if (this.type === "undefined" && !context.isUndeclaredParameter(this.id) && !beingAssignedTo) {
-        //     console.log("UNDECLARED");
-        //     context.throwUseBeforeDeclarationError(this.id);
-        // }
     }
     enforceType(type, context, returnType = "undefined") {
         if (this.type === "undefined") {
@@ -793,7 +775,6 @@ class IdExpressionBodyBase {
     }
     toString(indent = 0) {
         return this.idExpBase === "this" ? `${spacer.repeat(indent)}(${this.idExpBase})` : `${spacer.repeat(indent)}${this.idExpBase.toString(indent)}`;
-        // return `${spacer.repeat(indent)}${this.id.toString(indent)}`;
     }
 }
 
@@ -814,7 +795,7 @@ class PeriodId {
         return ".";
     }
     toString(indent = 0) {
-        return `${spacer.repeat(indent)}(${this.id.toString(++indent)})`;
+        return `${spacer.repeat(indent)}${this.id.toString(++indent)}`;
     }
 }
 
@@ -1041,9 +1022,7 @@ class IdVariable {
         this.returnType;
     }
     analyze(context, beingAssignedTo = false) {
-        // console.log("\nwhat up var id: ", this.id);
         let entry = context.get(this.id, true);
-        // console.log("what up var type: ", entry, "\n");
         this.type = (typeof entry !== "undefined") ? entry.type : "undefined";
         this.returnType = (typeof entry !== "undefined") ? entry.returnType : "undefined";
         if (this.type === "undefined" && !context.isUndeclaredParameter(this.id) && !beingAssignedTo) {
@@ -1077,8 +1056,8 @@ class IdVariable {
 }
 
 class ConstId {
-    constructor(firstWord, rest) {
-        this.id = firstWord + [rest];
+    constructor(letters) {
+        this.id = letters;
         this.type;
         this.returnType;
     }
@@ -1117,8 +1096,8 @@ class ConstId {
 }
 
 class ClassId {
-    constructor(className, rest) {
-        this.id = className + [rest];
+    constructor(className) {
+        this.id = className;
         this.type;
         this.returnType;
     }

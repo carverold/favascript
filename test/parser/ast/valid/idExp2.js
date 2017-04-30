@@ -8,7 +8,9 @@ module.exports.getAst = function() {
             (IdVariable
               (console)
             )
-            (log)
+            (IdVariable
+                (log)
+              )
           )
           (Arguments
             (VarList

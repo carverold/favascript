@@ -65,16 +65,14 @@ semantics = grammar.createSemantics().addOperation('ast', {
     IdExpBody_recursive(idExpBody, selector) {return new ASTClasses.IdExpressionBodyRecursive(idExpBody.ast(), selector.ast());},
     IdExpBody_base(id) {
         if (id.sourceString === "this") {
-            return new ASTClasses.IdExpressionBodyBase(id.sourceString);
+            return new ASTClasses.IdExpressionBodyBase(new ASTClasses.IdVariable(id.sourceString));
         } else {
             return new ASTClasses.IdExpressionBodyBase(id.ast());
         }
-        // return new ASTClasses.IdExpressionBodyBase(id.ast());
     },
-    periodId(period, id) {return new ASTClasses.PeriodId(id.sourceString);},
+    periodId(period, id) {return new ASTClasses.PeriodId(id.ast());},
     Arguments(lParen, args, rParen) {return new ASTClasses.Arguments(args.ast());},
     IdSelector(lBracket, variable, rBracket) {
-        // console.log("IN PARSER: ", variable.ast());
         return new ASTClasses.IdSelector(variable.ast());},
     idPostOp(op) {return op},
     List(lBracket, list, rBracket) {return new ASTClasses.List(list.ast());},
@@ -99,8 +97,8 @@ semantics = grammar.createSemantics().addOperation('ast', {
     keyword(word) {return word;},
     id_variable(firstChars, rest) {return new ASTClasses.IdVariable(this.sourceString);},
     idrest(character) {return character},
-    constId(underscores, words) {return new ASTClasses.ConstId(underscores.sourceString + words.sourceString)},
-    classId(upper, idrests) {return new ASTClasses.ClassId(idrests.ast())}
+    constId(underscores, words) {return new ASTClasses.ConstId(this.sourceString)},
+    classId(upper, idrests) {return new ASTClasses.ClassId(this.sourceString)}
 });
 
 module.exports = (program) => {

@@ -70,15 +70,15 @@ function checkArrayinArray(arrA, arrB) {
 
 class Context {
 
-    constructor(parent, currentClass, currentFunction, isInLoop) {
+    constructor(parent, currentClass, currentFunction, isInLoop, symbolTable) {
         this.parent = parent || null;
         this.currentClass = currentClass;
         this.currentFunction = currentFunction || null;
         this.isInLoop = isInLoop;
+        this.symbolTable = symbolTable || {};
         this.undeclaredParameters = []
 
         // Need Object.create(null) so things like toString are not in this.symbolTable
-        this.symbolTable = {};
     }
 
     createChildContextForBlock() {
@@ -89,8 +89,12 @@ class Context {
         return new Context(this, this.currentClass, this.currentFunction, true);
     }
 
-    createChildContextForFunction(currentFunction) {
-        return new Context(this, this.currentClass, currentFunction, false);
+    createChildContextForFunction(currentFunction, isConstructor) {
+        if (isConstructor) {
+            return new Context(this, this.currentClass, currentFunction, false, this.symbolTable);
+        } else {
+            return new Context(this, this.currentClass, currentFunction, false);
+        }
     }
 
     createChildContextForClass(currentClass) {
@@ -124,6 +128,7 @@ class Context {
             // Case 2- either creating a new variable or shadowing an old one:
             this.symbolTable[id] = signature;
         }
+        // console.log("SYMBOL TABLE: ", this.symbolTable);
     }
 
     get(id, silent = false, onlyThisContext = false) {
