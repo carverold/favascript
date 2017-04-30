@@ -54,13 +54,24 @@ function canArgumentsFitParameters(args, params) {
 }
 
 function getValue(obj) {
-    // if (obj.hasOwnProperty("exp")) {
-    //     if (obj.exp.value === "5") {
-    //         console.log("here************************************************************");
-    //     }
-    // }
-    if (obj.hasOwnProperty("value") && (typeof obj["value"] !== "undefined")) {
+    if (typeof obj === "undefined") {
+        return "undefined";
+    } else if (obj.hasOwnProperty("value") && (typeof obj["value"] !== "undefined")) {
         return obj.value;
+    } else {
+        for (var prop in obj) {
+            if (obj.hasOwnProperty(prop)) {
+                getValue(obj["prop"]);
+            }
+        }
+    }
+}
+
+function getType(obj) {
+    if (typeof obj === "undefined") {
+        return "undefined";
+    } else if (obj.hasOwnProperty("type") && (typeof obj["type"] !== "undefined")) {
+        return obj.type;
     } else {
         for (var prop in obj) {
             if (obj.hasOwnProperty(prop)) {
@@ -407,6 +418,7 @@ class AssignmentStatement extends Statement {
         this.assignOp = assignOp;
         this.exp = exp;
         this.isConstant;
+        this.context;
     }
     analyze(context) {
 
@@ -448,6 +460,7 @@ class AssignmentStatement extends Statement {
                 [this.idExp.type, this.exp.type]
             );
         }
+        this.context = context;
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.assignOp}` +
@@ -456,8 +469,17 @@ class AssignmentStatement extends Statement {
                `\n${spacer.repeat(--indent)})`;
     }
     optimize() {
+        let resetVariable = (variable, value) => {
+            let entry = this.context.get(variable);
+            entry["value"] = value;
+            this.context.setVariable(variable, entry);
+            this.idExp.idExpBody.idExpBase.value = value;
+        }
         this.idExp = this.idExp.optimize();
         this.exp = this.exp.optimize();
+        this.analyze(this.context);
+        resetVariable(this.idExp.id, this.exp.value);
+        this.analyze(this.context);
         return this;
     }
 }
@@ -620,11 +642,6 @@ class BinaryExpression extends Expression {
         this.left.analyze(context);
         this.right.analyze(context);
 
-        // console.log("\n\n\n\n", this);
-        // console.log("************************", context.get(this.left.id).value, context.get(this.left.id).value == "true");
-        // // console.log(this.left.var.var);
-        // console.log(context.symbolTable);
-
         if (this.left.type === "undefined") {
             this.left.enforceType(inferredType, context);
         }
@@ -670,31 +687,51 @@ class BinaryExpression extends Expression {
     optimize() {
         this.left = this.left.optimize();
         this.right = this.right.optimize();
-        this.left.analyze(this.context);
-        this.right.analyze(this.context);
+        // this.left.analyze(this.context);
+        // this.right.analyze(this.context);
         let leftFloat = parseFloat(getValue(this.left));
         let rightFloat = parseFloat(getValue(this.right));
 
+        let resetVariable = (variable, value) => {
+            let entry = this.context.get(variable);
+            entry["value"] = value;
+            this.context.setVariable(variable, entry);
+        }
+
+        let returnNumber = (type, value) => {
+            if (type == TYPE.INTEGER) {
+                return new IntLit(value);
+            } else if (type == TYPE.FLOAT) {
+                return new FloatLit(value);
+            }
+        }
+
+
+        // Constant Folding
         if (this.op == "||") {
-            if (this.left.value == "true") {
+            if (getValue(this.left) == "true") {
                 return new BoolLit("true");
+            } else {
+                return new BoolLit(getValue(this.right))
             }
         } else if (this.op == "&&") {
-            if (this.left.value == "false") {
+            if (getValue(this.left) == "false") {
                 return new BoolLit("false");
+            } else {
+                return new BoolLit(getValue(this.right))
             }
         } else if (this.op == "+") {
             let answer = leftFloat + rightFloat;
-            return new FloatLit(answer.toString());
+            return returnNumber(this.type, answer.toString());
         } else if (this.op == "-") {
             let answer = leftFloat - rightFloat;
-            return new FloatLit(answer.toString());
+            return returnNumber(this.type, answer.toString());
         } else if (this.op == "/") {
             let answer = leftFloat / rightFloat;
-            return new FloatLit(answer.toString());
+            return returnNumber(this.type, answer.toString());
         } else if (this.op == "*") {
             let answer = leftFloat * rightFloat;
-            return new FloatLit(answer.toString());
+            return returnNumber(this.type, answer.toString());
         } else if (this.op == "<=") {
             let answer = leftFloat <= rightFloat;
             return new BoolLit(answer.toString());
@@ -709,18 +746,18 @@ class BinaryExpression extends Expression {
             return new BoolLit(answer.toString());
         } else if (this.op == "^") {
             let answer = Math.pow(leftFloat, rightFloat);
-            return new FloatLit(answer.toString());
+            return returnNumber(this.type, answer.toString());
         } else if (this.op == "//") {
-            let answer = leftFloat + rightFloat;
-            return new FloatLit(answer.toString());
+            let answer = Math.floor(leftFloat / rightFloat);
+            return returnNumber(this.type, answer.toString());
         } else if (this.op == "%") {
             let answer = leftFloat % rightFloat;
-            return new FloatLit(answer.toString());
+            return returnNumber(this.type, answer.toString());
         } else if (this.op == "==") {
-            let answer = this.left.value == this.right.value;
+            let answer = getValue(this.left) == getValue(this.right);
             return new BoolLit(answer.toString());
         } else if (this.op == "!=") {
-            let answer = this.left.value != this.right.value;
+            let answer = getValue(this.left) != getValue(this.right);
             return new BoolLit(answer.toString());
         }
         return this;
@@ -817,14 +854,15 @@ class Variable extends Expression {
         this.value;
         this.type;
         this.returnType;
+        this.context;
     }
     analyze(context, beingAssignedTo = false) {
         this.var.analyze(context, beingAssignedTo);
-        this.value = this.var.value;
+        this.value = getValue(this.var) || context.get(this.var.id).value;
         this.id = this.var.id ? this.var.id : this.value;
         this.type = this.var.type;
         this.returnType = this.var.returnType;
-        // console.log("\n\n\n\nVAR: ", this);
+        this.context = context;
     }
     enforceType(type, context) {
         if (this.type == "undefined") {
@@ -842,6 +880,7 @@ class Variable extends Expression {
     }
     optimize() {
         this.var = this.var.optimize();
+        this.analyze(this.context);
         return this;
     }
 }
@@ -1283,7 +1322,6 @@ class NullLit {
 class IdVariable {
     constructor(letters) {
         this.id = letters;
-        this.value = this.id;
         this.type;
         this.returnType;
     }

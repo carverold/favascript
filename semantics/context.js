@@ -109,7 +109,7 @@ class Context {
         return this.undeclaredParameters.indexOf(id) > -1;
     }
 
-    setVariable(id, signature, value) {
+    setVariable(id, signature) {
 
         // Case 1- updating the value of a variable within the current scope:
         if (this.symbolTable.hasOwnProperty(id)) {
