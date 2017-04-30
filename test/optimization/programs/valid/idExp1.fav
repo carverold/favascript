@@ -1,0 +1,2 @@
+dict = {cat: "meow", dog: "woof"}
+print(dict["cat"])

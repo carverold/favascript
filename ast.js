@@ -603,7 +603,8 @@ class BinaryExpression extends Expression {
         this.right.analyze(context);
 
         // console.log("\n\n\n\n", this);
-        // console.log(this.left.var.var);
+        // console.log("************************", context.get(this.left.id).value, context.get(this.left.id).value == "true");
+        // // console.log(this.left.var.var);
         // console.log(context.symbolTable);
 
         if (this.left.type === "undefined") {
@@ -649,14 +650,54 @@ class BinaryExpression extends Expression {
     }
     optimize() {
         if (this.op == "||") {
-            if (context.get(this.left.id) == true) {
+            if (context.get(this.left.id).value == "true") {
                 return new BoolLit("true");
-            } else {
-
             }
+        } else if (this.op == "&&") {
+            if (context.get(this.left.id).value == "false") {
+                return new BoolLit("false");
+            }
+        } else if (this.op == "+") {
+            let answer = context.get(this.left.id).value + context.get(this.right.id).value;
+            return new FloatLit(answer.toString());
+        } else if (this.op == "-") {
+            let answer = context.get(this.left.id).value - context.get(this.right.id).value;
+            return new FloatLit(answer.toString());
+        } else if (this.op == "/") {
+            let answer = context.get(this.left.id).value / context.get(this.right.id).value;
+            return new FloatLit(answer.toString());
+        } else if (this.op == "*") {
+            let answer = context.get(this.left.id).value * context.get(this.right.id).value;
+            return new FloatLit(answer.toString());
+        } else if (this.op == "<=") {
+            let answer = context.get(this.left.id).value <= context.get(this.right.id).value;
+            return new BoolLit(answer.toString());
+        } else if (this.op == "<") {
+            let answer = context.get(this.left.id).value < context.get(this.right.id).value;
+            return new BoolLit(answer.toString());
+        } else if (this.op == ">=") {
+            let answer = context.get(this.left.id).value >= context.get(this.right.id).value;
+            return new BoolLit(answer.toString());
+        } else if (this.op == ">") {
+            let answer = context.get(this.left.id).value > context.get(this.right.id).value;
+            return new BoolLit(answer.toString());
+        } else if (this.op == "^") {
+            let answer = Math.pow(context.get(this.left.id).value, context.get(this.right.id).value);
+            return new FloatLit(answer.toString());
+        } else if (this.op == "//") {
+            //TODO: INSERT CODE HERE
+            // let answer = context.get(this.left.id).value + context.get(this.right.id).value;
+            // return new FloatLit(answer.toString());
+        } else if (this.op == "%") {
+            let answer = context.get(this.left.id).value % context.get(this.right.id).value;
+            return new FloatLit(answer.toString());
+        } else if (this.op == "==") {
+            let answer = context.get(this.left.id).value == context.get(this.right.id).value;
+            return new BoolLit(answer.toString());
+        } else if (this.op == "!=") {
+            let answer = context.get(this.left.id).value != context.get(this.right.id).value;
+            return new BoolLit(answer.toString());
         }
-        this.left = this.left.optimize();
-        this.right = this.right.optimize();
         return this;
     }
 }

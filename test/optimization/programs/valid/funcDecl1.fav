@@ -1,0 +1,3 @@
+multiply (x, y = 2, z = 4) {
+   ret x * y
+}

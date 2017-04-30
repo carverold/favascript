@@ -6,23 +6,20 @@ util = require('util');
 grammarContents = fs.readFileSync('favascript.ohm');
 grammar = ohm.grammar(grammarContents);
 ast = require(path.resolve('./ast.js'));
-generator = require(path.resolve('./generator.js'));
-validPrograms = path.resolve('./test/generator/programs/valid');
-invalidPrograms = path.resolve('./test/generator/programs/invalid');
-validProgramsJSCode = path.resolve('./test/generator/code/valid');
+validPrograms = path.resolve('./test/optimization/programs/valid');
+invalidPrograms = path.resolve('./test/optimization/programs/invalid');
+validProgramsJSCode = path.resolve('./test/optimization/code/valid');
 // invalidProgramAsts = path.resolve('./test/ast/ast/invalid');
 
 tests = function(validFiles, invalidFiles) {
-  describe('Generator tests', function() {
+  describe('Optimization tests', function() {
     describe('Test valid example programs', function() {
       validFiles.forEach(function(file) {
-        it('generator\\programs\\valid\\' +file.name + ' should be accepted by the grammar',
+        it('optimization\\programs\\valid\\' +file.name + ' should optimize without error',
           function() {
-            generator.lastId = -1;
-            grammarResult = grammar.match(file.code);
             let program = parser(file.code);
             program.analyze();
-            assert.equal(program.gen(), jsCode[file.name], // ************************************************************************************************************************
+            assert.equal(program.optimize(), jsCode[file.name], // ************************************************************************************************************************
               'Returned: ' + grammarResult);
         });
       });
