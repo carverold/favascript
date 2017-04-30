@@ -687,8 +687,8 @@ class BinaryExpression extends Expression {
     optimize() {
         this.left = this.left.optimize();
         this.right = this.right.optimize();
-        // this.left.analyze(this.context);
-        // this.right.analyze(this.context);
+        this.left.analyze(this.context);
+        this.right.analyze(this.context);
         let leftFloat = parseFloat(getValue(this.left));
         let rightFloat = parseFloat(getValue(this.right));
 

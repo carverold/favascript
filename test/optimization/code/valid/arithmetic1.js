@@ -1,3 +1,14 @@
 module.exports.getJSCode = function() {
-    return `let v_0 = (((((2 + 3)) * (Math.pow(((6 - 1)), 2)))) / 4);`;
+    return `(Program
+  (Block
+    (=
+      (IdExpression
+        (IdVariable
+          (x)
+        )
+      )
+      (31.25)
+    )
+  )
+)`;
 };

@@ -1,6 +1,54 @@
 module.exports.getJSCode = function() {
-    return `let v_0 = true;
-let v_1 = false;
-let v_2 = (v_0 || v_1);
-let v_3 = (v_0 && v_1);`;
+    return `(Program
+  (Block
+    (=
+      (IdExpression
+        (IdVariable
+          (n)
+        )
+      )
+      (8)
+    )
+    (=
+      (IdExpression
+        (IdVariable
+          (m)
+        )
+      )
+      (16)
+    )
+    (=
+      (IdExpression
+        (IdVariable
+          (t)
+        )
+      )
+      (true)
+    )
+    (=
+      (IdExpression
+        (IdVariable
+          (f)
+        )
+      )
+      (false)
+    )
+    (=
+      (IdExpression
+        (IdVariable
+          (or)
+        )
+      )
+      (true)
+    )
+    (=
+      (IdExpression
+        (IdVariable
+          (and)
+        )
+      )
+      (false)
+    )
+  )
+)`;
 };
