@@ -72,6 +72,7 @@ tests = function(validFiles, invalidFiles) {
 jsCode = {
     'arithmetic1.fav': require(path.resolve(validProgramsJSCode + '/arithmetic1.js')).getJSCode(),
     'arithmetic2.fav': require(path.resolve(validProgramsJSCode + '/arithmetic2.js')).getJSCode(),
+    'binaryExpression.fav': require(path.resolve(validProgramsJSCode + '/binaryExpression.js')).getJSCode(),
     'class1.fav': require(path.resolve(validProgramsJSCode + '/class1.js')).getJSCode(),
     'conditional1.fav': require(path.resolve(validProgramsJSCode + '/conditional1.js')).getJSCode(),
     'constDecl1.fav': require(path.resolve(validProgramsJSCode + '/constDecl1.js')).getJSCode(),

@@ -298,13 +298,13 @@ Object.assign(ASTClasses.VarList.prototype, {
 
 Object.assign(ASTClasses.BoolLit.prototype, {
     gen() {
-        return `${this.boolVal}`;
+        return `${this.value}`;
     }
 });
 
 Object.assign(ASTClasses.IntLit.prototype, {
     gen() {
-        return `${this.digits}`;
+        return `${this.value}`;
     }
 });
 

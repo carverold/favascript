@@ -395,6 +395,8 @@ class AssignmentStatement extends Statement {
 
         this.idExp.analyze(context, true);  // Will have id and type
         this.exp.analyze(context);
+
+
         let entry = context.get(this.exp.id);
         if (!entry) {
             context.addParameterUsedInBody(this.exp.id);
@@ -404,7 +406,7 @@ class AssignmentStatement extends Statement {
 
         if (this.assignOp == "=") {
             if (this.idExp.id !== "this") {
-                context.setVariable(this.idExp.id, {type: this.exp.type});
+                context.setVariable(this.idExp.id, {type: this.exp.type, value: this.exp.value});
             }
         } else {
             let expectedPairs = [
@@ -600,6 +602,10 @@ class BinaryExpression extends Expression {
         this.left.analyze(context);
         this.right.analyze(context);
 
+        // console.log("\n\n\n\n", this);
+        // console.log(this.left.var.var);
+        // console.log(context.symbolTable);
+
         if (this.left.type === "undefined") {
             this.left.enforceType(inferredType, context);
         }
@@ -620,7 +626,6 @@ class BinaryExpression extends Expression {
 
         // Should we be taking this.left.type or inferredType?
         this.type = ["<=", "<", ">=", ">"].indexOf(this.op) > -1 ? TYPE.BOOLEAN : this.left.type;
-
     }
     enforceType(type, context) {
         if (this.left.type == "undefined") {
@@ -643,6 +648,13 @@ class BinaryExpression extends Expression {
                `\n${spacer.repeat(--indent)})`;
     }
     optimize() {
+        if (this.op == "||") {
+            if (context.get(this.left.id) == true) {
+                return new BoolLit("true");
+            } else {
+
+            }
+        }
         this.left = this.left.optimize();
         this.right = this.right.optimize();
         return this;
@@ -734,14 +746,17 @@ class Variable extends Expression {
         super();
         this.var = variable;
         this.id;
+        this.value;
         this.type;
         this.returnType;
     }
     analyze(context, beingAssignedTo = false) {
         this.var.analyze(context, beingAssignedTo);
         this.id = this.var.id
+        this.value = this.var.value;
         this.type = this.var.type;
         this.returnType = this.var.returnType;
+        // console.log("\n\n\n\nVAR: ", this);
     }
     enforceType(type, context) {
         if (this.type == "undefined") {
@@ -871,12 +886,14 @@ class IdExpressionBodyBase {
     constructor(id) {
         this.id;
         this.idExpBase = id;
+        this.value;
         this.type;
         this.returnType;
     }
     analyze(context, beingAssignedTo = false) {
         this.idExpBase.analyze(context, beingAssignedTo);
         this.id = this.idExpBase.id;
+        this.value = this.idExpBase.value;
         this.type = this.idExpBase.type;
         this.returnType = this.idExpBase.returnType;
     }
@@ -885,10 +902,10 @@ class IdExpressionBodyBase {
             if (context.isUndeclaredParameter(this.id)) {
                 this.type = type;
                 if (returnType !== "undefined") {
-                    context.setVariable(this.id, {type: type, returnType: returnType});
+                    context.setVariable(this.id, {type: type, returnType: returnType, value: this.value});
                     this.returnType = returnType;
                 } else {
-                    context.setVariable(this.id, {type: type});
+                    context.setVariable(this.id, {type: type, value: this.value});
                 }
                 context.removeUndeclaredParameter(this.id);
             } else {
@@ -1131,12 +1148,12 @@ class VarList {
 
 class IntLit {
     constructor(digits) {
-        this.digits = digits;
+        this.value = digits;
         this.type = TYPE.INTEGER;
     }
     analyze() {}
     toString(indent = 0) {
-        return `${spacer.repeat(indent)}(${this.digits})`;
+        return `${spacer.repeat(indent)}(${this.value})`;
     }
     optimize() {
         return this;
@@ -1173,12 +1190,12 @@ class StringLit {
 
 class BoolLit {
     constructor(boolVal) {
-        this.boolVal = boolVal;
+        this.value = boolVal;
         this.type = TYPE.BOOLEAN;
     }
     analyze() {}
     toString(indent = 0) {
-        return `${spacer.repeat(indent)}(${this.boolVal})`;
+        return `${spacer.repeat(indent)}(${this.value})`;
     }
     optimize() {
         return this;
@@ -1187,11 +1204,12 @@ class BoolLit {
 
 class NullLit {
     constructor() {
+        this.value = "null"
         this.type = TYPE.NULL
     }
     analyze() {}
     toString(indent = 0) {
-        return `${spacer.repeat(indent)}(null)`;
+        return `${spacer.repeat(indent)}(${this.value})`;
     }
     optimize() {
         return this;
@@ -1201,6 +1219,7 @@ class NullLit {
 class IdVariable {
     constructor(letters) {
         this.id = letters;
+        this.value = this.id;
         this.type;
         this.returnType;
     }
@@ -1217,10 +1236,10 @@ class IdVariable {
             if (context.isUndeclaredParameter(this.id)) {
                 this.type = type;
                 if (returnType !== "undefined") {
-                    context.setVariable(this.id, {type: type, returnType: returnType});
+                    context.setVariable(this.id, {type: type, returnType: returnType, value: this.value});
                     this.returnType = returnType;
                 } else {
-                    context.setVariable(this.id, {type: type});
+                    context.setVariable(this.id, {type: type, value: this.value});
                 }
                 context.removeUndeclaredParameter(this.id);
             } else {
@@ -1244,6 +1263,7 @@ class IdVariable {
 class ConstId {
     constructor(letters) {
         this.id = letters;
+        this.value = this.id;
         this.type;
         this.returnType;
     }
@@ -1260,10 +1280,10 @@ class ConstId {
             if (context.isUndeclaredParameter(this.id)) {
                 this.type = type;
                 if (returnType !== "undefined") {
-                    context.setVariable(this.id, {type: type, returnType: returnType});
+                    context.setVariable(this.id, {type: type, returnType: returnType, value: this.value});
                     this.returnType = returnType;
                 } else {
-                    context.setVariable(this.id, {type: type});
+                    context.setVariable(this.id, {type: type, value: this.value});
                 }
                 context.removeUndeclaredParameter(this.id);
             } else {
@@ -1287,6 +1307,7 @@ class ConstId {
 class ClassId {
     constructor(className) {
         this.id = className;
+        this.value = this.id;
         this.type;
         this.returnType;
     }
@@ -1303,10 +1324,10 @@ class ClassId {
             if (context.isUndeclaredParameter(this.id)) {
                 this.type = type;
                 if (returnType !== "undefined") {
-                    context.setVariable(this.id, {type: type, returnType: returnType});
+                    context.setVariable(this.id, {type: type, returnType: returnType, value: this.value});
                     this.returnType = returnType;
                 } else {
-                    context.setVariable(this.id, {type: type});
+                    context.setVariable(this.id, {type: type, value: this.value});
                 }
                 context.removeUndeclaredParameter(this.id);
             } else {
