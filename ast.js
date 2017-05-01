@@ -858,7 +858,6 @@ class Variable extends Expression {
     }
     analyze(context, beingAssignedTo = false) {
         this.var.analyze(context, beingAssignedTo);
-        console.log("VAR: ", this.var);
         try {
             this.value = getValue(this.var) || context.get(this.var.id).value;
         } catch(err) {
