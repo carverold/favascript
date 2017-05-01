@@ -1,0 +1,6 @@
+n = 3 + 5
+m = n + n
+t = true
+f = false
+or = t || f
+and = t && f

@@ -53,6 +53,34 @@ function canArgumentsFitParameters(args, params) {
     });
 }
 
+function getValue(obj) {
+    if (typeof obj === "undefined") {
+        return "undefined";
+    } else if (obj.hasOwnProperty("value") && (typeof obj["value"] !== "undefined")) {
+        return obj.value;
+    } else {
+        for (var prop in obj) {
+            if (obj.hasOwnProperty(prop)) {
+                getValue(obj["prop"]);
+            }
+        }
+    }
+}
+
+function getType(obj) {
+    if (typeof obj === "undefined") {
+        return "undefined";
+    } else if (obj.hasOwnProperty("type") && (typeof obj["type"] !== "undefined")) {
+        return obj.type;
+    } else {
+        for (var prop in obj) {
+            if (obj.hasOwnProperty(prop)) {
+                getValue(obj["prop"]);
+            }
+        }
+    }
+}
+
 class Program {
     constructor(block) {
         this.block = block;
@@ -67,6 +95,10 @@ class Program {
         return `${spacer.repeat(indent)}(Program` +
                `\n${this.block.toString(++indent)}` +
                `\n${spacer.repeat(--indent)})`;
+    }
+    optimize() {
+        this.block = this.block.optimize();
+        return this.toString();
     }
 }
 
@@ -97,6 +129,10 @@ class Block {
         }
         string += `\n${spacer.repeat(--indent)})`;
         return string;
+    }
+    optimize() {
+        this.body.map(s => s.optimize()).filter(s => s !== null);
+        return this;
     }
 }
 
@@ -140,6 +176,14 @@ class BranchStatement extends Statement {
         }
         string += `\n${spacer.repeat(--indent)})`;
         return string;
+    }
+    optimize() {
+        this.conditions.forEach(c => c.optimize());
+        this.conditions.filter(c => c !== null);
+        this.thenBlocks.forEach(t => t.optimize());
+        this.thenBlocks.filter(t => t !== null);
+        this.elseBlock = this.elseBlock.optimize();
+        return this;
     }
 }
 
@@ -207,6 +251,11 @@ class FunctionDeclarationStatement extends Statement {
                   `\n${spacer.repeat(--indent)})`;
         return string;
     }
+    optimize() {
+        this.parameterArray.forEach(p => p.optimize());
+        this.parameterArray.filter(p => p !== null);
+        return this;
+    }
 }
 
 class Parameter {
@@ -233,6 +282,12 @@ class Parameter {
         string += `)`
         return string
     }
+    optimize() {
+        if (this.defaultValue !== null) {
+            this.defaultValue = this.defaultValue.optimize();
+        }
+        return this;
+    }
 }
 
 class ClassDeclarationStatement extends Statement {
@@ -258,6 +313,10 @@ class ClassDeclarationStatement extends Statement {
                `\n${this.block.toString(indent)}` +
                `\n${spacer.repeat(--indent)})`;
     }
+    optimize() {
+        this.block = this.block.optimize();
+        return this;
+    }
 }
 
 class MatchStatement extends Statement {
@@ -270,6 +329,10 @@ class MatchStatement extends Statement {
     }
     toString(indent = 0) {
         return `${this.matchExp.toString(indent)}`;
+    }
+    optimize() {
+        this.matchExp = this.matchExp.optimize();
+        return this;
     }
 }
 
@@ -294,26 +357,36 @@ class WhileStatement extends Statement {
                `\n${spacer.repeat(--indent)})` +
                `\n${spacer.repeat(--indent)})`;
     }
+    optimize() {
+        this.exp = this.exp.optimize();
+        this.block = this.block.optimize();
+        return this;
+    }
 }
 
 class ForInStatement extends Statement {
-    constructor(id, iDExp, block) {
+    constructor(id, idExp, block) {
         super();
         this.id = id;
-        this.iDExp = iDExp;
+        this.idExp = idExp;
         this.block = block;
     }
     analyze(context) {
-        this.iDExp.analyze(context);
+        this.idExp.analyze(context);
         let blockContext = context.createChildContextForBlock();
-        blockContext.setVariable(this.id, {type: this.iDExp.returnType});
+        blockContext.setVariable(this.id, {type: this.idExp.returnType});
         this.block.analyze(blockContext);
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(For id (${this.id}) in` +
-               `\n${this.iDExp.toString(++indent)}` +
+               `\n${this.idExp.toString(++indent)}` +
                `\n${this.block.toString(indent)}` +
                `\n${spacer.repeat(--indent)})`;
+    }
+    optimize() {
+        this.idExp = this.idExp.optimize();
+        this.block = this.block.optimize();
+        return this;
     }
 }
 
@@ -330,6 +403,10 @@ class PrintStatement extends Statement {
                `\n${this.exp.toString(++indent)}` +
                `\n${spacer.repeat(--indent)})`;
     }
+    optimize() {
+        this.exp = this.exp.optimize();
+        return this;
+    }
 }
 
 class AssignmentStatement extends Statement {
@@ -339,11 +416,14 @@ class AssignmentStatement extends Statement {
         this.assignOp = assignOp;
         this.exp = exp;
         this.isConstant;
+        this.context;
     }
     analyze(context) {
 
         this.idExp.analyze(context, true);  // Will have id and type
         this.exp.analyze(context);
+
+
         let entry = context.get(this.exp.id);
         if (!entry) {
             context.addParameterUsedInBody(this.exp.id);
@@ -353,7 +433,7 @@ class AssignmentStatement extends Statement {
 
         if (this.assignOp == "=") {
             if (this.idExp.id !== "this") {
-                context.setVariable(this.idExp.id, {type: this.exp.type});
+                context.setVariable(this.idExp.id, {type: this.exp.type, value: this.exp.value});
             }
         } else {
             let expectedPairs = [
@@ -378,6 +458,7 @@ class AssignmentStatement extends Statement {
                 [this.idExp.type, this.exp.type]
             );
         }
+        this.context = context;
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.assignOp}` +
@@ -385,20 +466,38 @@ class AssignmentStatement extends Statement {
                `\n${this.exp.toString(indent)}` +
                `\n${spacer.repeat(--indent)})`;
     }
+    optimize() {
+        let resetVariable = (variable, value) => {
+            let entry = this.context.get(variable);
+            entry["value"] = value;
+            this.context.setVariable(variable, entry);
+            this.idExp.idExpBody.idExpBase.value = value;
+        }
+        this.idExp = this.idExp.optimize();
+        this.exp = this.exp.optimize();
+        this.analyze(this.context);
+        resetVariable(this.idExp.id, this.exp.value);
+        this.analyze(this.context);
+        return this;
+    }
 }
 
 class IdentifierStatement extends Statement {
-    constructor(iDExp) {
+    constructor(idExp) {
         super();
-        this.iDExp = iDExp;
+        this.idExp = idExp;
     }
     analyze(context) {
-        this.iDExp.analyze(context);
+        this.idExp.analyze(context);
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(Identifier Statement` +
-              `\n${this.iDExp.toString(++indent)}` +
+              `\n${this.idExp.toString(++indent)}` +
               `\n${spacer.repeat(--indent)})`;
+    }
+    optimize() {
+        this.idExp = this.idExp.optimize();
+        return this;
     }
 }
 
@@ -424,6 +523,10 @@ class ReturnStatement extends Statement {
         return `${spacer.repeat(indent)}(Return` +
                `\n${this.exp.toString(++indent)}` +
                `\n${spacer.repeat(--indent)})`;
+    }
+    optimize() {
+        this.exp = this.exp.optimize();
+        return this;
     }
 }
 
@@ -472,6 +575,17 @@ class MatchExpression extends Expression {
                   `\n${spacer.repeat(--indent)})`;
         return string;
     }
+    optimize() {
+        this.idExp = this.idExp.optimize();
+        this.varArray.forEach(v => v.optimize());
+        this.varArray.filter(v => v !== null);
+        this.matchArray.forEach(m => m.optimize());
+        this.matchArray.filter(m => m !== null);
+        if (typeof this.matchFinal !== "undefined") {
+            this.matchFinal = this.matchFinal.optimize();
+        }
+        return this;
+    }
 }
 
 class Match {
@@ -484,6 +598,10 @@ class Match {
     toString(indent = 0) {
         return `${this.matchee.toString(indent)}`;
     }
+    optimize() {
+        this.matchee = this.matchee.optimize();
+        return this;
+    }
 }
 
 class BinaryExpression extends Expression {
@@ -493,6 +611,7 @@ class BinaryExpression extends Expression {
         this.op = op;
         this.right = right;
         this.type;
+        this.context; // IS THIS OK TOAL?
     }
     analyze(context) {
 
@@ -543,7 +662,7 @@ class BinaryExpression extends Expression {
 
         // Should we be taking this.left.type or inferredType?
         this.type = ["<=", "<", ">=", ">"].indexOf(this.op) > -1 ? TYPE.BOOLEAN : this.left.type;
-
+        this.context = context;
     }
     enforceType(type, context) {
         if (this.left.type == "undefined") {
@@ -564,6 +683,84 @@ class BinaryExpression extends Expression {
                `\n${this.left.toString(++indent)}` +
                `\n${this.right.toString(indent)}` +
                `\n${spacer.repeat(--indent)})`;
+    }
+    optimize() {
+        this.left = this.left.optimize();
+        this.right = this.right.optimize();
+        this.left.analyze(this.context);
+        this.right.analyze(this.context);
+        let leftFloat = parseFloat(getValue(this.left));
+        let rightFloat = parseFloat(getValue(this.right));
+
+        let resetVariable = (variable, value) => {
+            let entry = this.context.get(variable);
+            entry["value"] = value;
+            this.context.setVariable(variable, entry);
+        }
+
+        let returnNumber = (type, value) => {
+            if (type == TYPE.INTEGER) {
+                return new IntLit(value);
+            } else if (type == TYPE.FLOAT) {
+                return new FloatLit(value);
+            }
+        }
+
+
+        // Constant Folding
+        if (this.op == "||") {
+            if (getValue(this.left) == "true") {
+                return new BoolLit("true");
+            } else {
+                return new BoolLit(getValue(this.right))
+            }
+        } else if (this.op == "&&") {
+            if (getValue(this.left) == "false") {
+                return new BoolLit("false");
+            } else {
+                return new BoolLit(getValue(this.right))
+            }
+        } else if (this.op == "+") {
+            let answer = leftFloat + rightFloat;
+            return returnNumber(this.type, answer.toString());
+        } else if (this.op == "-") {
+            let answer = leftFloat - rightFloat;
+            return returnNumber(this.type, answer.toString());
+        } else if (this.op == "/") {
+            let answer = leftFloat / rightFloat;
+            return returnNumber(this.type, answer.toString());
+        } else if (this.op == "*") {
+            let answer = leftFloat * rightFloat;
+            return returnNumber(this.type, answer.toString());
+        } else if (this.op == "<=") {
+            let answer = leftFloat <= rightFloat;
+            return new BoolLit(answer.toString());
+        } else if (this.op == "<") {
+            let answer = leftFloat < rightFloat;
+            return new BoolLit(answer.toString());
+        } else if (this.op == ">=") {
+            let answer = leftFloat >= rightFloat;
+            return new BoolLit(answer.toString());
+        } else if (this.op == ">") {
+            let answer = leftFloat > rightFloat;
+            return new BoolLit(answer.toString());
+        } else if (this.op == "^") {
+            let answer = Math.pow(leftFloat, rightFloat);
+            return returnNumber(this.type, answer.toString());
+        } else if (this.op == "//") {
+            let answer = Math.floor(leftFloat / rightFloat);
+            return returnNumber(this.type, answer.toString());
+        } else if (this.op == "%") {
+            let answer = leftFloat % rightFloat;
+            return returnNumber(this.type, answer.toString());
+        } else if (this.op == "==") {
+            let answer = getValue(this.left) == getValue(this.right);
+            return new BoolLit(answer.toString());
+        } else if (this.op == "!=") {
+            let answer = getValue(this.left) != getValue(this.right);
+            return new BoolLit(answer.toString());
+        }
+        return this;
     }
 }
 
@@ -612,16 +809,22 @@ class UnaryExpression extends Expression {
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.op}\n${this.operand.toString(++indent)})`;
     }
+    optimize() {
+        this.operand = this.operand.optimize();
+        return this;
+    }
 }
 
 class ParenthesisExpression extends Expression {
     constructor(exp) {
         super();
         this.exp = exp;
+        this.value;
         this.type;
     }
     analyze(context) {
         this.exp.analyze(context);
+        this.value = this.exp.value;
         this.type = this.exp.returnType ? this.exp.returnType : this.exp.type;
     }
     enforceType(type, context) {
@@ -637,6 +840,10 @@ class ParenthesisExpression extends Expression {
         // Don't increase indent, as the semantic meaning of parenthesis are already captured in the tree
         return `${this.exp.toString(indent)}`;
     }
+    optimize() {
+        this.exp = this.exp.optimize();
+        return this;
+    }
 }
 
 class Variable extends Expression {
@@ -644,14 +851,23 @@ class Variable extends Expression {
         super();
         this.var = variable;
         this.id;
+        this.value;
         this.type;
         this.returnType;
+        this.context;
     }
     analyze(context, beingAssignedTo = false) {
         this.var.analyze(context, beingAssignedTo);
-        this.id = this.var.id
+        console.log("VAR: ", this.var);
+        try {
+            this.value = getValue(this.var) || context.get(this.var.id).value;
+        } catch(err) {
+            this.value = "undefined";
+        }
+        this.id = this.var.id ? this.var.id : this.value;
         this.type = this.var.type;
         this.returnType = this.var.returnType;
+        this.context = context;
     }
     enforceType(type, context) {
         if (this.type == "undefined") {
@@ -666,6 +882,11 @@ class Variable extends Expression {
     toString(indent = 0) {
         // Don't increase indent, we already know literals and other data types are variables
         return `${this.var.toString(indent)}`;
+    }
+    optimize() {
+        this.var = this.var.optimize();
+        this.analyze(this.context);
+        return this;
     }
 }
 
@@ -699,6 +920,10 @@ class IdExpression extends Expression {
                 `${this.idExpBody.toString(++indent)}` +
                 `${(!this.idPostOp) ? "" : `\n${spacer.repeat(++indent)}${this.idPostOp}`}` +
                 `\n${spacer.repeat(--indent)})`;
+    }
+    optimize() {
+        this.idExpBody = this.idExpBody.optimize();
+        return this;
     }
 }
 
@@ -757,18 +982,25 @@ class IdExpressionBodyRecursive {
                `\n${this.idAppendage.toString(indent)}` +
                `\n${spacer.repeat(--indent)})`;
     }
+    optimize() {
+        this.idExpBody = this.idExpBody.optimize();
+        this.idAppendage = this.idAppendage.optimize();
+        return this;
+    }
 }
 
 class IdExpressionBodyBase {
     constructor(id) {
         this.id;
         this.idExpBase = id;
+        this.value;
         this.type;
         this.returnType;
     }
     analyze(context, beingAssignedTo = false) {
         this.idExpBase.analyze(context, beingAssignedTo);
         this.id = this.idExpBase.id;
+        this.value = this.idExpBase.value;
         this.type = this.idExpBase.type;
         this.returnType = this.idExpBase.returnType;
     }
@@ -777,10 +1009,10 @@ class IdExpressionBodyBase {
             if (context.isUndeclaredParameter(this.id)) {
                 this.type = type;
                 if (returnType !== "undefined") {
-                    context.setVariable(this.id, {type: type, returnType: returnType});
+                    context.setVariable(this.id, {type: type, returnType: returnType, value: this.value});
                     this.returnType = returnType;
                 } else {
-                    context.setVariable(this.id, {type: type});
+                    context.setVariable(this.id, {type: type, value: this.value});
                 }
                 context.removeUndeclaredParameter(this.id);
             } else {
@@ -793,6 +1025,10 @@ class IdExpressionBodyBase {
     }
     toString(indent = 0) {
         return this.idExpBase === "this" ? `${spacer.repeat(indent)}(${this.idExpBase})` : `${spacer.repeat(indent)}${this.idExpBase.toString(indent)}`;
+    }
+    optimize() {
+        this.idExpBase = this.idExpBase.optimize();
+        return this;
     }
 }
 
@@ -814,6 +1050,10 @@ class PeriodId {
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}${this.id.toString(++indent)}`;
+    }
+    optimize() {
+        this.id = this.id.optimize();
+        return this;
     }
 }
 
@@ -840,6 +1080,11 @@ class Arguments {
         }
         return string;
     }
+    optimize() {
+        this.args.forEach(a => a.optimize());
+        this.args.filter(a => a !== null);
+        return this;
+    }
 }
 
 class IdSelector {
@@ -859,6 +1104,10 @@ class IdSelector {
     }
     toString(indent = 0) {
         return `${this.variable.toString(indent)}`;
+    }
+    optimize() {
+        this.variable = this.variable.optimize();
+        return this;
     }
 }
 
@@ -883,6 +1132,10 @@ class List {
         }
         return string;
     }
+    optimize() {
+        this.varList.forEach(v => v.optimize());
+        this.varList.filter(v => v !== null);
+    }
 }
 
 class Tuple {
@@ -900,6 +1153,10 @@ class Tuple {
         return `${spacer.repeat(indent)}(Tuple` +
                `\n${this.elems.toString(++indent)}` +
                `\n${spacer.repeat(--indent)})`;
+    }
+    optimize() {
+        this.elems.optimize();
+        return this;
     }
 }
 
@@ -933,6 +1190,11 @@ class Dictionary {
         }
         return string;
     }
+    optimize() {
+        this.idValuePairs.forEach(p => p.optimize());
+        this.idValuePairs.filter(p => p !== null);
+        return this;
+    }
 }
 
 class IdValuePair {
@@ -945,6 +1207,10 @@ class IdValuePair {
     }
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.id} : ${this.variable.toString()})`;
+    }
+    optimize() {
+        this.variable = this.variable.optimize();
+        return this;
     }
 }
 
@@ -977,16 +1243,24 @@ class VarList {
         }
         return string;
     }
+    optimize() {
+        this.variables.forEach(v => v.optimize());
+        this.variables.filter(v => v !== null);
+        return this;
+    }
 }
 
 class IntLit {
     constructor(digits) {
-        this.digits = digits;
+        this.value = digits;
         this.type = TYPE.INTEGER;
     }
     analyze() {}
     toString(indent = 0) {
-        return `${spacer.repeat(indent)}(${this.digits})`;
+        return `${spacer.repeat(indent)}(${this.value})`;
+    }
+    optimize() {
+        return this;
     }
 }
 
@@ -999,6 +1273,9 @@ class FloatLit {
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.value})`;
     }
+    optimize() {
+        return this;
+    }
 }
 
 class StringLit {
@@ -1010,26 +1287,36 @@ class StringLit {
     toString(indent = 0) {
         return `${spacer.repeat(indent)}(${this.value})`;
     }
+    optimize() {
+        return this;
+    }
 }
 
 class BoolLit {
     constructor(boolVal) {
-        this.boolVal = boolVal;
+        this.value = boolVal;
         this.type = TYPE.BOOLEAN;
     }
     analyze() {}
     toString(indent = 0) {
-        return `${spacer.repeat(indent)}(${this.boolVal})`;
+        return `${spacer.repeat(indent)}(${this.value})`;
+    }
+    optimize() {
+        return this;
     }
 }
 
 class NullLit {
     constructor() {
+        this.value = "null"
         this.type = TYPE.NULL
     }
     analyze() {}
     toString(indent = 0) {
-        return `${spacer.repeat(indent)}(null)`;
+        return `${spacer.repeat(indent)}(${this.value})`;
+    }
+    optimize() {
+        return this;
     }
 }
 
@@ -1052,10 +1339,10 @@ class IdVariable {
             if (context.isUndeclaredParameter(this.id)) {
                 this.type = type;
                 if (returnType !== "undefined") {
-                    context.setVariable(this.id, {type: type, returnType: returnType});
+                    context.setVariable(this.id, {type: type, returnType: returnType, value: this.value});
                     this.returnType = returnType;
                 } else {
-                    context.setVariable(this.id, {type: type});
+                    context.setVariable(this.id, {type: type, value: this.value});
                 }
                 context.removeUndeclaredParameter(this.id);
             } else {
@@ -1071,11 +1358,15 @@ class IdVariable {
                 `\n${spacer.repeat(++indent)}(${this.id})` +
                 `\n${spacer.repeat(--indent)})`;
     }
+    optimize() {
+        return this;
+    }
 }
 
 class ConstId {
     constructor(letters) {
         this.id = letters;
+        this.value = this.id;
         this.type;
         this.returnType;
     }
@@ -1092,10 +1383,10 @@ class ConstId {
             if (context.isUndeclaredParameter(this.id)) {
                 this.type = type;
                 if (returnType !== "undefined") {
-                    context.setVariable(this.id, {type: type, returnType: returnType});
+                    context.setVariable(this.id, {type: type, returnType: returnType, value: this.value});
                     this.returnType = returnType;
                 } else {
-                    context.setVariable(this.id, {type: type});
+                    context.setVariable(this.id, {type: type, value: this.value});
                 }
                 context.removeUndeclaredParameter(this.id);
             } else {
@@ -1111,11 +1402,15 @@ class ConstId {
                 `\n${spacer.repeat(++indent)}(${this.id})` +
                 `\n${spacer.repeat(--indent)})`;
     }
+    optimize() {
+        return this;
+    }
 }
 
 class ClassId {
     constructor(className) {
         this.id = className;
+        this.value = this.id;
         this.type;
         this.returnType;
     }
@@ -1132,10 +1427,10 @@ class ClassId {
             if (context.isUndeclaredParameter(this.id)) {
                 this.type = type;
                 if (returnType !== "undefined") {
-                    context.setVariable(this.id, {type: type, returnType: returnType});
+                    context.setVariable(this.id, {type: type, returnType: returnType, value: this.value});
                     this.returnType = returnType;
                 } else {
-                    context.setVariable(this.id, {type: type});
+                    context.setVariable(this.id, {type: type, value: this.value});
                 }
                 context.removeUndeclaredParameter(this.id);
             } else {
@@ -1150,6 +1445,9 @@ class ClassId {
         return `(ClassId` +
                 `\n${spacer.repeat(++indent)}(${this.id})` +
                 `\n${spacer.repeat(--indent)})`;
+    }
+    optimize() {
+        return this;
     }
 }
 

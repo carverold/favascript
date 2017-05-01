@@ -1,0 +1,53 @@
+// Still needs redoing
+module.exports.getOptimized = function() {
+    return `(Program
+  (Block
+    (=
+      (IdExpression
+        (IdVariable
+          (x)
+        )
+      )
+      (2)
+    )
+    (If
+      (Case
+        (Condition
+          (>=
+            (IdExpression
+              (IdVariable
+                (x)
+              )
+            )
+            (2)
+          )
+        )
+        (Body
+          (Block
+            (-=
+              (IdExpression
+                (IdVariable
+                  (x)
+                )
+              )
+              (1)
+            )
+          )
+        )
+      )
+      (Else
+        (Block
+          (+=
+            (IdExpression
+              (IdVariable
+                (x)
+              )
+            )
+            (1)
+          )
+        )
+      )
+    )
+  )
+)`;
+};

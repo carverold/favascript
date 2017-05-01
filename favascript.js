@@ -1,9 +1,10 @@
 const argv = require('yargs')
     .usage('$0 [-a] [-s] [-g] filename')
-    .boolean(['a', 's', 'g'])
+    .boolean(['a', 's', 'g', 'o'])
     .describe('a', 'parse, then generate an AST')
     .describe('s', 'perform semantic analysis')
     .describe('g', 'generate Javascript code')
+    .describe('o', 'optimize Favascript code')
     .demand(1)
     .argv;
 
@@ -25,6 +26,11 @@ fs.readFile(argv._[0], 'utf-8', (err, text) => {
     if (argv.g) {
         program.analyze();
         console.log(program.gen());
+        return;
+    }
+    if (argv.o) {
+        program.analyze();
+        console.log(program.optimize());
         return;
     }
 })
