@@ -131,8 +131,17 @@ class Block {
         return string;
     }
     optimize() {
+        let newBody = [];
         for (let s in this.body) {
-            this.body[s] = this.body[s].optimize();
+            let st = this.body[s];
+            if (st instanceof ReturnStatement) {
+                st = st.optimize();
+                newBody.push(st);
+                return new Block(newBody);
+            } else {
+                this.body[s] = st.optimize();
+                newBody.push(st);
+            }
         }
         this.body.filter(s => s !== null);
         return this;
@@ -186,9 +195,13 @@ class BranchStatement extends Statement {
         let newConditions = [];
         let newThens = [];
 
+        for (let t in this.thenBlocks) {
+            this.thenBlocks[t] = this.thenBlocks[t].optimize();
+        }
+
         for (let c in this.conditions) {
             let cond = this.conditions[c];
-            cond.optimize();
+            cond = cond.optimize();
             cond.analyze(this.context);
             if (getValue(cond) === "true") {
                 newConditions.push(cond);
@@ -201,7 +214,6 @@ class BranchStatement extends Statement {
             newThens.push(this.thenBlocks[c]);
         }
         this.conditions.filter(c => c !== null);
-        this.thenBlocks.forEach(t => t.optimize());
         this.thenBlocks.filter(t => t !== null);
         this.elseBlock = this.elseBlock.optimize();
         return this;
@@ -275,7 +287,7 @@ class FunctionDeclarationStatement extends Statement {
     optimize() {
         this.parameterArray.forEach(p => p.optimize());
         this.parameterArray.filter(p => p !== null);
-        this.block.optimize();
+        this.block = this.block.optimize();
         return this;
     }
 }
@@ -1182,7 +1194,7 @@ class Tuple {
                `\n${spacer.repeat(--indent)})`;
     }
     optimize() {
-        this.elems.optimize();
+        this.elems = this.elems.optimize();
         return this;
     }
 }
