@@ -1,0 +1,7 @@
+f (n) {
+    if (n > 5) {
+        ret true
+    } else {
+        ret false
+    }
+}

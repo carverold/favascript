@@ -1,15 +1,15 @@
 x = true
 
-if (true) {
-    print(true)
+if (false) {
+    print(1)
 } elif (x == true) {
-    print(x)
+    print(2)
 } elif (false) {
-    print(false)
+    print(3)
 } elif (x == true) {
-    print(x)
+    print(4)
 } elif (x == false) {
-    print(x)
+    print(5)
 } else {
-    print(false)
+    print(6)
 }

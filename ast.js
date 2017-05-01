@@ -149,6 +149,7 @@ class BranchStatement extends Statement {
         this.conditions = conditions;
         this.thenBlocks = thenBlocks;
         this.elseBlock = elseBlock;
+        this.context;
     }
     analyze(context) {
         this.conditions.forEach(function(condition) {
@@ -159,9 +160,9 @@ class BranchStatement extends Statement {
         if (this.elseBlock !== null) {
             this.elseBlock.analyze(context.createChildContextForBlock());
         }
+        this.context = context;
     }
     toString(indent = 0) {
-        console.log(this.conditions.toString());
         var string = `${spacer.repeat(indent++)}(If`;
         for (var i in this.conditions) {
             string += `\n${spacer.repeat(indent)}(Case` +
@@ -188,14 +189,13 @@ class BranchStatement extends Statement {
         for (let c in this.conditions) {
             let cond = this.conditions[c];
             cond.optimize();
-            if (cond.value === "true") {
+            cond.analyze(this.context);
+            if (getValue(cond) === "true") {
                 newConditions.push(cond);
                 newThens.push(this.thenBlocks[c]);
-                let b = new BranchStatement(newConditions, newThens);
-                return b;
-                // return new BranchStatement(newConditions, newThens);
-            } else if (cond.value === "false") {
-                c += 1;
+                return new BranchStatement(newConditions, newThens);
+            } else if (getValue(cond) === "false") {
+                continue;
             }
             newConditions.push(cond);
             newThens.push(this.thenBlocks[c]);
@@ -275,6 +275,7 @@ class FunctionDeclarationStatement extends Statement {
     optimize() {
         this.parameterArray.forEach(p => p.optimize());
         this.parameterArray.filter(p => p !== null);
+        this.block.optimize();
         return this;
     }
 }
@@ -492,6 +493,10 @@ class AssignmentStatement extends Statement {
             let entry = this.context.get(variable);
             entry["value"] = value;
             this.context.setVariable(variable, entry);
+            console.log(this);
+            if (this.idExp.idExpBody instanceof IdExpressionBodyRecursive) {
+
+            }
             this.idExp.idExpBody.idExpBase.value = value;
         }
         this.idExp = this.idExp.optimize();
@@ -741,39 +746,41 @@ class BinaryExpression extends Expression {
             } else {
                 return new BoolLit(getValue(this.right))
             }
-        } else if (this.op == "+") {
-            let answer = leftFloat + rightFloat;
-            return returnNumber(this.type, answer.toString());
-        } else if (this.op == "-") {
-            let answer = leftFloat - rightFloat;
-            return returnNumber(this.type, answer.toString());
-        } else if (this.op == "/") {
-            let answer = leftFloat / rightFloat;
-            return returnNumber(this.type, answer.toString());
-        } else if (this.op == "*") {
-            let answer = leftFloat * rightFloat;
-            return returnNumber(this.type, answer.toString());
-        } else if (this.op == "<=") {
-            let answer = leftFloat <= rightFloat;
-            return new BoolLit(answer.toString());
-        } else if (this.op == "<") {
-            let answer = leftFloat < rightFloat;
-            return new BoolLit(answer.toString());
-        } else if (this.op == ">=") {
-            let answer = leftFloat >= rightFloat;
-            return new BoolLit(answer.toString());
-        } else if (this.op == ">") {
-            let answer = leftFloat > rightFloat;
-            return new BoolLit(answer.toString());
-        } else if (this.op == "^") {
-            let answer = Math.pow(leftFloat, rightFloat);
-            return returnNumber(this.type, answer.toString());
-        } else if (this.op == "//") {
-            let answer = Math.floor(leftFloat / rightFloat);
-            return returnNumber(this.type, answer.toString());
-        } else if (this.op == "%") {
-            let answer = leftFloat % rightFloat;
-            return returnNumber(this.type, answer.toString());
+        } else if (!isNaN(leftFloat) && !isNaN(rightFloat)) {
+            if (this.op == "+") {
+               let answer = leftFloat + rightFloat;
+               return returnNumber(this.type, answer.toString());
+           } else if (this.op == "-") {
+               let answer = leftFloat - rightFloat;
+               return returnNumber(this.type, answer.toString());
+           } else if (this.op == "/") {
+               let answer = leftFloat / rightFloat;
+               return returnNumber(this.type, answer.toString());
+           } else if (this.op == "*") {
+               let answer = leftFloat * rightFloat;
+               return returnNumber(this.type, answer.toString());
+           } else if (this.op == "<=") {
+               let answer = leftFloat <= rightFloat;
+               return new BoolLit(answer.toString());
+           } else if (this.op == "<") {
+               let answer = leftFloat < rightFloat;
+               return new BoolLit(answer.toString());
+           } else if (this.op == ">=") {
+               let answer = leftFloat >= rightFloat;
+               return new BoolLit(answer.toString());
+           } else if (this.op == ">") {
+               let answer = leftFloat > rightFloat;
+               return new BoolLit(answer.toString());
+           } else if (this.op == "^") {
+               let answer = Math.pow(leftFloat, rightFloat);
+               return returnNumber(this.type, answer.toString());
+           } else if (this.op == "//") {
+               let answer = Math.floor(leftFloat / rightFloat);
+               return returnNumber(this.type, answer.toString());
+           } else if (this.op == "%") {
+               let answer = leftFloat % rightFloat;
+               return returnNumber(this.type, answer.toString());
+           }
         } else if (this.op == "==") {
             let answer = getValue(this.left) == getValue(this.right);
             return new BoolLit(answer.toString());
@@ -845,7 +852,7 @@ class ParenthesisExpression extends Expression {
     }
     analyze(context) {
         this.exp.analyze(context);
-        this.value = this.exp.value;
+        this.value = getValue(this.exp);
         this.type = this.exp.returnType ? this.exp.returnType : this.exp.type;
     }
     enforceType(type, context) {

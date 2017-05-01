@@ -18,15 +18,8 @@ module.exports.getOptimized = function() {
         (Body
           (Block
             (Print
-              (true)
+              (2)
             )
-          )
-        )
-      )
-      (Else
-        (Block
-          (Print
-            (false)
           )
         )
       )

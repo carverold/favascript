@@ -86,6 +86,7 @@ optCode = {
     'idExp2.fav': require(path.resolve(validProgramsOptimized + '/idExp2.js')).getOptimized(),
     'ifElse1.fav': require(path.resolve(validProgramsOptimized + '/ifElse1.js')).getOptimized(),
     'ifElse2.fav': require(path.resolve(validProgramsOptimized + '/ifElse2.js')).getOptimized(),
+    'ifElse3.fav': require(path.resolve(validProgramsOptimized + '/ifElse3.js')).getOptimized(),
     'match1.fav': require(path.resolve(validProgramsOptimized + '/match1.js')).getOptimized(),
     'match2.fav': require(path.resolve(validProgramsOptimized + '/match2.js')).getOptimized(),
     'print1.fav': require(path.resolve(validProgramsOptimized + '/print1.js')).getOptimized(),

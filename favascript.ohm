@@ -19,7 +19,6 @@ Favascript {
     MatchExp    = ("match" IdExp "with" "|"? Var Match
                   ("|" Var Match)* ("|" "_" Match)?)
     Match       = "->" Block
-
     Exp         = Exp orOp BoolAndExp                                  -- reg
                 | BoolAndExp                                           -- pass
     BoolAndExp  = BoolAndExp andOp RelExp                              -- reg

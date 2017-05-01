@@ -10,15 +10,24 @@ function unpack(elem) {
     return elem.length === 0 ? null : elem[0];
 }
 
+function unpackBranch(elem) {
+    elem = elem.ast();
+    elem = Array.isArray(elem) ? elem : [elem];
+    return elem
+}
+
 function joinParams(parameter, parameters) {
     parameter = Array.isArray(parameter.ast()) ? parameter.ast() : [parameter.ast()];
     if (unpack(parameters) !== null) {
-        let p = parameter.concat(unpack(parameters));
-        console.log("************************************************************");
-        console.log("PARAMETER: ", unpack(parameters));
-        console.log("************************************************************");
-        return p;
-        // return parameter.concat(unpack(parameters));
+        return parameter.concat(unpack(parameters));
+    }
+    return parameter;
+}
+
+function joinBranchParams(parameter, parameters) {
+    parameter = Array.isArray(parameter.ast()) ? parameter.ast() : [parameter.ast()];
+    if (unpackBranch(parameters) !== null) {
+        return parameter.concat(unpackBranch(parameters));
     }
     return parameter;
 }
@@ -35,8 +44,7 @@ semantics = grammar.createSemantics().addOperation('ast', {
       return new ASTClasses.ClassDeclarationStatement(id.sourceString, block.ast());},
     Statement_match(matchExp) {return new ASTClasses.MatchStatement(matchExp.ast());},
     Statement_ifElse(i, ifExp, lCurly1, ifBlock, rCurly1, elif, exps, lCurly2, blocks, rCurly2, els, lCurly3, elseBlock, rCurly3) {
-        // console.log("ELIF EXPRESSIONS: ", exps);
-      return new ASTClasses.BranchStatement(joinParams(ifExp, exps), joinParams(ifBlock, blocks), unpack(elseBlock));},
+      return new ASTClasses.BranchStatement(joinBranchParams(ifExp, exps), joinBranchParams(ifBlock, blocks), unpack(elseBlock));},
     Statement_while(whil, exp, lCurly, block, rCurly) {return new ASTClasses.WhileStatement(exp.ast(), block.ast());},
     Statement_forIn(fo, id, iN, iDExp, lCurly, block, rCurly) {
       return new ASTClasses.ForInStatement(id.sourceString, iDExp.ast(), block.ast());},

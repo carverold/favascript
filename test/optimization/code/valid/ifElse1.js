@@ -23,13 +23,6 @@ module.exports.getOptimized = function() {
           )
         )
       )
-      (Else
-        (Block
-          (Print
-            (false)
-          )
-        )
-      )
     )
   )
 )`;
