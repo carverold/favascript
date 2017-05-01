@@ -1,7 +1,13 @@
 f (n) {
     if (n > 5) {
         ret true
+        n = 3
     } else {
         ret false
     }
+}
+
+f (m) {
+    ret m
+    m = 5
 }

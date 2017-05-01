@@ -114,7 +114,7 @@ class Context {
         // Case 1- updating the value of a variable within the current scope:
         if (this.symbolTable.hasOwnProperty(id)) {
             // Make sure the new value has the correct type (static typing):
-            if (this.symbolTable[id].type === signature.type || signature.type === "NULL") {
+            if (this.symbolTable[id].type === signature.type || signature.type === "NULL" || typeof this.symbolTable[id].type === "undefined") {
                 this.symbolTable[id] = signature;
             } else {
                 throw new Error(semanticErrors.changedImmutableType(id, this.symbolTable[id].type, signature.type))

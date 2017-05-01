@@ -38,6 +38,21 @@ module.exports.getOptimized = function() {
         )
       )
     )
+    (Func
+      (id f)
+      (Parameters
+        (id m)
+      )
+      (Block
+        (Return
+          (IdExpression
+            (IdVariable
+              (m)
+            )
+          )
+        )
+      )
+    )
   )
 )`;
 }
