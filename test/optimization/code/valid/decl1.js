@@ -7,7 +7,7 @@ module.exports.getOptimized = function() {
           (name)
         )
       )
-      (guav1231\")
+      (guav1231\\\")
     )
   )
 )`;

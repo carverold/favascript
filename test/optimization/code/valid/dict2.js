@@ -1,3 +1,14 @@
 module.exports.getOptimized = function() {
-    return `let v_0 = {};`;
+    return `(Program
+  (Block
+    (=
+      (IdExpression
+        (IdVariable
+          (dict)
+        )
+      )
+      (Dictionary)
+    )
+  )
+)`;
 }

@@ -252,7 +252,6 @@ class FunctionDeclarationStatement extends Statement {
         return string;
     }
     optimize() {
-        this.id = this.id.optimize();
         this.parameterArray.forEach(p => p.optimize());
         this.parameterArray.filter(p => p !== null);
         return this;
@@ -284,8 +283,9 @@ class Parameter {
         return string
     }
     optimize() {
-        this.id = this.id.optimize();
-        this.defaultValue = this.defaultValue.optimize();
+        if (this.defaultValue !== null) {
+            this.defaultValue = this.defaultValue.optimize();
+        }
         return this;
     }
 }
@@ -314,7 +314,6 @@ class ClassDeclarationStatement extends Statement {
                `\n${spacer.repeat(--indent)})`;
     }
     optimize() {
-        this.id = this.id.optimize();
         this.block = this.block.optimize();
         return this;
     }
@@ -385,7 +384,6 @@ class ForInStatement extends Statement {
                `\n${spacer.repeat(--indent)})`;
     }
     optimize() {
-        this.id = this.id.optimize();
         this.idExp = this.idExp.optimize();
         this.block = this.block.optimize();
         return this;
@@ -860,7 +858,12 @@ class Variable extends Expression {
     }
     analyze(context, beingAssignedTo = false) {
         this.var.analyze(context, beingAssignedTo);
-        this.value = getValue(this.var) || context.get(this.var.id).value;
+        console.log("VAR: ", this.var);
+        try {
+            this.value = getValue(this.var) || context.get(this.var.id).value;
+        } catch(err) {
+            this.value = "undefined";
+        }
         this.id = this.var.id ? this.var.id : this.value;
         this.type = this.var.type;
         this.returnType = this.var.returnType;
@@ -982,8 +985,6 @@ class IdExpressionBodyRecursive {
     optimize() {
         this.idExpBody = this.idExpBody.optimize();
         this.idAppendage = this.idAppendage.optimize();
-        this.appendageOp = this.appendageOp.optimize();
-        this.id = this.id.optimize();
         return this;
     }
 }
@@ -1132,7 +1133,7 @@ class List {
         return string;
     }
     optimize() {
-        this.varList.foreach(v => v.optimize());
+        this.varList.forEach(v => v.optimize());
         this.varList.filter(v => v !== null);
     }
 }
@@ -1154,8 +1155,7 @@ class Tuple {
                `\n${spacer.repeat(--indent)})`;
     }
     optimize() {
-        this.elems.forEach(e => e.optimize());
-        this.elems.filter(e => e !== null);
+        this.elems.optimize();
         return this;
     }
 }
@@ -1209,7 +1209,6 @@ class IdValuePair {
         return `${spacer.repeat(indent)}(${this.id} : ${this.variable.toString()})`;
     }
     optimize() {
-        this.id = this.id.optimize();
         this.variable = this.variable.optimize();
         return this;
     }

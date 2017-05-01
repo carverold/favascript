@@ -1,3 +1,20 @@
 module.exports.getOptimized = function() {
-    return `let v_0 = (\`hi\`, 3, true);`;
+    return `(Program
+  (Block
+    (=
+      (IdExpression
+        (IdVariable
+          (tuple)
+        )
+      )
+      (Tuple
+        (VarList
+          (hi)
+          (3)
+          (true)
+        )
+      )
+    )
+  )
+)`;
 }

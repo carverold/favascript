@@ -1,5 +1,30 @@
 module.exports.getOptimized = function() {
-    return `let v_0 = function (v_1, v_2 = 2, v_3 = 4) {
-    return (v_1 * v_2);
-}`;
+    return `(Program
+  (Block
+    (Func
+      (id multiply)
+      (Parameters
+        (id x)
+        (id y, default (2))
+        (id z, default (4))
+      )
+      (Block
+        (Return
+          (*
+            (IdExpression
+              (IdVariable
+                (x)
+              )
+            )
+            (IdExpression
+              (IdVariable
+                (y)
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+)`;
 }

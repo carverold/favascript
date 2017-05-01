@@ -1,11 +1,63 @@
 module.exports.getOptimized = function() {
-    return `class v_0 {
-    constructor(v_1, v_2 = 1.0) {
-        v_3.v_1 = v_1;
-        v_3.v_2 = v_2;
-    }
-    v_4() {
-        return true;
-    }
-}`;
+    return `(Program
+  (Block
+    (Class
+      (id Ball)
+      (Block
+        (Func
+          (id Ball)
+          (Parameters
+            (id radius)
+            (id weight, default (1.0))
+          )
+          (Block
+            (=
+              (IdExpression
+                (.
+                  (IdVariable
+                    (this)
+                  )
+                  (IdVariable
+                      (radius)
+                    )
+                )
+              )
+              (IdExpression
+                (IdVariable
+                  (radius)
+                )
+              )
+            )
+            (=
+              (IdExpression
+                (.
+                  (IdVariable
+                    (this)
+                  )
+                  (IdVariable
+                      (weight)
+                    )
+                )
+              )
+              (IdExpression
+                (IdVariable
+                  (weight)
+                )
+              )
+            )
+          )
+        )
+        (Func
+          (id is_round)
+          (Parameters)
+          (Block
+            (Return
+              (true)
+            )
+          )
+        )
+      )
+    )
+  )
+)`;
 };

@@ -1,4 +1,27 @@
 module.exports.getOptimized = function() {
-    return `let v_0 = {v_1: \`meow\`, v_2: \`woof\`};
-console.log(v_0[\`cat\`]);`;
+    return `(Program
+  (Block
+    (=
+      (IdExpression
+        (IdVariable
+          (dict)
+        )
+      )
+      (Dictionary
+        (cat : (meow))
+        (dog : (woof))
+      )
+    )
+    (Print
+      (IdExpression
+        ([]
+          (IdVariable
+            (dict)
+          )
+          (cat)
+        )
+      )
+    )
+  )
+)`;
 }
