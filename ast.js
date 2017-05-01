@@ -81,6 +81,32 @@ function getType(obj) {
     }
 }
 
+function getIdExp(variable) {
+    if (variable.hasOwnProperty("var")) {
+        if (variable["var"] instanceof IdExpression) {
+            return variable["var"];
+        } else {
+            return getIdExp(variable["var"]);
+        }
+    }
+}
+
+function getVar(variable) {
+    if (variable.hasOwnProperty("var")) {
+        return variable["var"];
+    } else {
+        console.log("***************VARIABLE: ", variable);
+        for (let a in variable) {
+            if (variable.hasOwnProperty(a)) {
+                console.log("***************PROPERTY: ", a);
+                return getVar(a);
+            }
+        }
+        console.log("fuck you");
+        return "undefined";
+    }
+}
+
 class Program {
     constructor(block) {
         this.block = block;
@@ -730,18 +756,69 @@ class BinaryExpression extends Expression {
         let leftFloat = parseFloat(getValue(this.left));
         let rightFloat = parseFloat(getValue(this.right));
 
-        let resetVariable = (variable, value) => {
-            let entry = this.context.get(variable);
-            entry["value"] = value;
-            this.context.setVariable(variable, entry);
-        }
-
         let returnNumber = (type, value) => {
             if (type == TYPE.INTEGER) {
                 return new IntLit(value);
             } else if (type == TYPE.FLOAT) {
                 return new FloatLit(value);
             }
+        }
+
+        // let getIdExp = (variable) => {
+        //     if (variable.hasOwnProperty("var")) {
+        //         if (variable["var"] instanceof IdExpression) {
+        //             return variable["var"];
+        //         } else {
+        //             return getIdExp(variable["var"]);
+        //         }
+        //     }
+        // }
+
+        // Strength Reduction
+        if (typeof getValue(this.left) === "undefined" ||
+            typeof getValue(this.right) === "undefined") {
+                if (this.op == "+") {
+                    if (leftFloat == 0) {
+                        return this.right;
+                    } else if (rightFloat == 0) {
+                        return this.left;
+                    } else if (this.left instanceof UnaryExpression && this.left.op == "-") {
+                        return new BinaryExpression(this.right, "-", this.left.operand);
+                    } else if (this.right instanceof UnaryExpression && this.right.op == "-") {
+                        return new BinaryExpression(this.left, "-", this.right.operand);
+                    }
+               } else if (this.op == "-") {
+                   if (leftFloat == 0) {
+                       let idExp = getIdExp(this.right);
+                       return new UnaryExpression("-", idExp);
+                   } else if (rightFloat == 0) {
+                       return this.left;
+                   } else if (this.left === this.right) {
+                       return new IntLit("0");
+                   } else if (this.right instanceof UnaryExpression && this.right.op == "-") {
+                       return new BinaryExpression(this.left, "+", this.right);
+                   }
+               } else if (this.op == "/") {
+                   if (leftFloat == 0) {
+                       return new IntLit("0");
+                   } else if (rightFloat == 1) {
+                       return this.left;
+                   } else if (this.left === this.right) {
+                       return new IntLit("1");
+                   }
+               } else if (this.op == "*") {
+                   if (leftFloat == 0 || rightFloat == 0) {
+                       return new IntLit("0");
+                   } else if (leftFloat == 1) {
+                       return this.right;
+                   } else if (rightFloat == 1) {
+                       return this.left;
+                   }
+               } else if (this.op == "%") {
+                   if (rightFloat == 1 || leftFloat == 0 || (this.left === this.right)) {
+                       return new IntLit("0");
+                   }
+               }
         }
 
 
@@ -847,7 +924,7 @@ class UnaryExpression extends Expression {
         }
     }
     toString(indent = 0) {
-        return `${spacer.repeat(indent)}(${this.op}\n${this.operand.toString(++indent)})`;
+        return `${spacer.repeat(indent)}(${this.op}\n${this.operand.toString(++indent)}\n${spacer.repeat(--indent)})`;
     }
     optimize() {
         this.operand = this.operand.optimize();
