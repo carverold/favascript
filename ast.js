@@ -131,7 +131,10 @@ class Block {
         return string;
     }
     optimize() {
-        this.body.map(s => s.optimize()).filter(s => s !== null);
+        for (let s in this.body) {
+            this.body[s] = this.body[s].optimize();
+        }
+        this.body.filter(s => s !== null);
         return this;
     }
 }
@@ -146,6 +149,7 @@ class BranchStatement extends Statement {
         this.conditions = conditions;
         this.thenBlocks = thenBlocks;
         this.elseBlock = elseBlock;
+        this.context;
     }
     analyze(context) {
         this.conditions.forEach(function(condition) {
@@ -156,6 +160,7 @@ class BranchStatement extends Statement {
         if (this.elseBlock !== null) {
             this.elseBlock.analyze(context.createChildContextForBlock());
         }
+        this.context = context;
     }
     toString(indent = 0) {
         var string = `${spacer.repeat(indent++)}(If`;
@@ -169,7 +174,7 @@ class BranchStatement extends Statement {
                       `\n${spacer.repeat(--indent)})` +
                       `\n${spacer.repeat(--indent)})`;
         }
-        if (this.elseBlock !== null) {
+        if (typeof this.elseBlock !== "undefined" && this.elseBlock !== null) {
             string += `\n${spacer.repeat(indent)}(Else` +
                       `\n${this.elseBlock.toString(++indent)}` +
                       `\n${spacer.repeat(--indent)})`;
@@ -178,7 +183,23 @@ class BranchStatement extends Statement {
         return string;
     }
     optimize() {
-        this.conditions.forEach(c => c.optimize());
+        let newConditions = [];
+        let newThens = [];
+
+        for (let c in this.conditions) {
+            let cond = this.conditions[c];
+            cond.optimize();
+            cond.analyze(this.context);
+            if (getValue(cond) === "true") {
+                newConditions.push(cond);
+                newThens.push(this.thenBlocks[c]);
+                return new BranchStatement(newConditions, newThens);
+            } else if (getValue(cond) === "false") {
+                continue;
+            }
+            newConditions.push(cond);
+            newThens.push(this.thenBlocks[c]);
+        }
         this.conditions.filter(c => c !== null);
         this.thenBlocks.forEach(t => t.optimize());
         this.thenBlocks.filter(t => t !== null);
@@ -254,6 +275,7 @@ class FunctionDeclarationStatement extends Statement {
     optimize() {
         this.parameterArray.forEach(p => p.optimize());
         this.parameterArray.filter(p => p !== null);
+        this.block.optimize();
         return this;
     }
 }
@@ -471,7 +493,11 @@ class AssignmentStatement extends Statement {
             let entry = this.context.get(variable);
             entry["value"] = value;
             this.context.setVariable(variable, entry);
-            this.idExp.idExpBody.idExpBase.value = value;
+            let target = this.idExp.idExpBody;
+            while (target instanceof IdExpressionBodyRecursive) {
+                target = target.idExpBody;
+            }
+            target.idExpBase.value = value;
         }
         this.idExp = this.idExp.optimize();
         this.exp = this.exp.optimize();
@@ -720,39 +746,41 @@ class BinaryExpression extends Expression {
             } else {
                 return new BoolLit(getValue(this.right))
             }
-        } else if (this.op == "+") {
-            let answer = leftFloat + rightFloat;
-            return returnNumber(this.type, answer.toString());
-        } else if (this.op == "-") {
-            let answer = leftFloat - rightFloat;
-            return returnNumber(this.type, answer.toString());
-        } else if (this.op == "/") {
-            let answer = leftFloat / rightFloat;
-            return returnNumber(this.type, answer.toString());
-        } else if (this.op == "*") {
-            let answer = leftFloat * rightFloat;
-            return returnNumber(this.type, answer.toString());
-        } else if (this.op == "<=") {
-            let answer = leftFloat <= rightFloat;
-            return new BoolLit(answer.toString());
-        } else if (this.op == "<") {
-            let answer = leftFloat < rightFloat;
-            return new BoolLit(answer.toString());
-        } else if (this.op == ">=") {
-            let answer = leftFloat >= rightFloat;
-            return new BoolLit(answer.toString());
-        } else if (this.op == ">") {
-            let answer = leftFloat > rightFloat;
-            return new BoolLit(answer.toString());
-        } else if (this.op == "^") {
-            let answer = Math.pow(leftFloat, rightFloat);
-            return returnNumber(this.type, answer.toString());
-        } else if (this.op == "//") {
-            let answer = Math.floor(leftFloat / rightFloat);
-            return returnNumber(this.type, answer.toString());
-        } else if (this.op == "%") {
-            let answer = leftFloat % rightFloat;
-            return returnNumber(this.type, answer.toString());
+        } else if (!isNaN(leftFloat) && !isNaN(rightFloat)) {
+            if (this.op == "+") {
+               let answer = leftFloat + rightFloat;
+               return returnNumber(this.type, answer.toString());
+           } else if (this.op == "-") {
+               let answer = leftFloat - rightFloat;
+               return returnNumber(this.type, answer.toString());
+           } else if (this.op == "/") {
+               let answer = leftFloat / rightFloat;
+               return returnNumber(this.type, answer.toString());
+           } else if (this.op == "*") {
+               let answer = leftFloat * rightFloat;
+               return returnNumber(this.type, answer.toString());
+           } else if (this.op == "<=") {
+               let answer = leftFloat <= rightFloat;
+               return new BoolLit(answer.toString());
+           } else if (this.op == "<") {
+               let answer = leftFloat < rightFloat;
+               return new BoolLit(answer.toString());
+           } else if (this.op == ">=") {
+               let answer = leftFloat >= rightFloat;
+               return new BoolLit(answer.toString());
+           } else if (this.op == ">") {
+               let answer = leftFloat > rightFloat;
+               return new BoolLit(answer.toString());
+           } else if (this.op == "^") {
+               let answer = Math.pow(leftFloat, rightFloat);
+               return returnNumber(this.type, answer.toString());
+           } else if (this.op == "//") {
+               let answer = Math.floor(leftFloat / rightFloat);
+               return returnNumber(this.type, answer.toString());
+           } else if (this.op == "%") {
+               let answer = leftFloat % rightFloat;
+               return returnNumber(this.type, answer.toString());
+           }
         } else if (this.op == "==") {
             let answer = getValue(this.left) == getValue(this.right);
             return new BoolLit(answer.toString());
@@ -824,7 +852,7 @@ class ParenthesisExpression extends Expression {
     }
     analyze(context) {
         this.exp.analyze(context);
-        this.value = this.exp.value;
+        this.value = getValue(this.exp);
         this.type = this.exp.returnType ? this.exp.returnType : this.exp.type;
     }
     enforceType(type, context) {
