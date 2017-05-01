@@ -1,0 +1,9 @@
+f (x, y) {
+    # Add
+    print(x + 0)
+    print(0 + x)
+    print(x + -2)
+    print(-3 + y)
+    # Sub
+    print(0 - x)
+}

@@ -78,6 +78,7 @@ optCode = {
     'decl2.fav': require(path.resolve(validProgramsOptimized + '/decl2.js')).getOptimized(),
     'decl3.fav': require(path.resolve(validProgramsOptimized + '/decl3.js')).getOptimized(),
     'decl4.fav': require(path.resolve(validProgramsOptimized + '/decl4.js')).getOptimized(),
+    'decl5.fav': require(path.resolve(validProgramsOptimized + '/decl5.js')).getOptimized(),
     'dict1.fav': require(path.resolve(validProgramsOptimized + '/dict1.js')).getOptimized(),
     'dict2.fav': require(path.resolve(validProgramsOptimized + '/dict2.js')).getOptimized(),
     'funcDecl1.fav': require(path.resolve(validProgramsOptimized + '/funcDecl1.js')).getOptimized(),
