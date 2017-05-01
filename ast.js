@@ -493,11 +493,11 @@ class AssignmentStatement extends Statement {
             let entry = this.context.get(variable);
             entry["value"] = value;
             this.context.setVariable(variable, entry);
-            console.log(this);
-            if (this.idExp.idExpBody instanceof IdExpressionBodyRecursive) {
-
+            let target = this.idExp.idExpBody;
+            while (target instanceof IdExpressionBodyRecursive) {
+                target = target.idExpBody;
             }
-            this.idExp.idExpBody.idExpBase.value = value;
+            target.idExpBase.value = value;
         }
         this.idExp = this.idExp.optimize();
         this.exp = this.exp.optimize();
