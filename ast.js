@@ -131,7 +131,10 @@ class Block {
         return string;
     }
     optimize() {
-        this.body.map(s => s.optimize()).filter(s => s !== null);
+        for (let s in this.body) {
+            this.body[s] = this.body[s].optimize();
+        }
+        this.body.filter(s => s !== null);
         return this;
     }
 }
@@ -158,6 +161,7 @@ class BranchStatement extends Statement {
         }
     }
     toString(indent = 0) {
+        console.log(this.conditions.toString());
         var string = `${spacer.repeat(indent++)}(If`;
         for (var i in this.conditions) {
             string += `\n${spacer.repeat(indent)}(Case` +
@@ -169,7 +173,7 @@ class BranchStatement extends Statement {
                       `\n${spacer.repeat(--indent)})` +
                       `\n${spacer.repeat(--indent)})`;
         }
-        if (this.elseBlock !== null) {
+        if (typeof this.elseBlock !== "undefined" && this.elseBlock !== null) {
             string += `\n${spacer.repeat(indent)}(Else` +
                       `\n${this.elseBlock.toString(++indent)}` +
                       `\n${spacer.repeat(--indent)})`;
@@ -178,7 +182,24 @@ class BranchStatement extends Statement {
         return string;
     }
     optimize() {
-        this.conditions.forEach(c => c.optimize());
+        let newConditions = [];
+        let newThens = [];
+
+        for (let c in this.conditions) {
+            let cond = this.conditions[c];
+            cond.optimize();
+            if (cond.value === "true") {
+                newConditions.push(cond);
+                newThens.push(this.thenBlocks[c]);
+                let b = new BranchStatement(newConditions, newThens);
+                return b;
+                // return new BranchStatement(newConditions, newThens);
+            } else if (cond.value === "false") {
+                c += 1;
+            }
+            newConditions.push(cond);
+            newThens.push(this.thenBlocks[c]);
+        }
         this.conditions.filter(c => c !== null);
         this.thenBlocks.forEach(t => t.optimize());
         this.thenBlocks.filter(t => t !== null);
